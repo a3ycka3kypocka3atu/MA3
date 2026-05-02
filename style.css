@@ -91,6 +91,15 @@ button {
   opacity: 0;
   transition: opacity 1.8s var(--ease-out);
   will-change: opacity;
+  pointer-events: none; /* Prevents user interaction with the video */
+}
+
+/* Hide native controls and overlays on strict browsers (iOS Safari) */
+video::-webkit-media-controls,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none;
 }
 
 .bg-video.active {
@@ -530,6 +539,18 @@ button {
   font-weight: 800;
   letter-spacing: -0.03em;
   margin-bottom: 36px;
+}
+
+.popup-title.has-subtitle {
+  margin-bottom: 12px;
+}
+
+.popup-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  margin-bottom: 36px;
+  max-width: 800px;
 }
 
 /* ── Service Cards Grid ── */
