@@ -11,10 +11,17 @@
   let currentVideoIndex = 0;
 
   function initVideos() {
+    // Force mute and playsinline for strict browsers (fixes Vercel/iOS autoplay blocks)
+    videos.forEach(v => {
+      v.muted = true;
+      v.defaultMuted = true;
+      v.playsInline = true;
+    });
+
     // Start first video
     const first = videos[0];
     first.classList.add('active');
-    first.play().catch(() => {});
+    first.play().catch(e => console.log('Autoplay blocked:', e));
 
     // When each video ends, crossfade to the next
     videos.forEach((video, index) => {
