@@ -41,16 +41,22 @@
     });
   }
 
-  // Autoplay on user interaction fallback (some browsers block autoplay)
+  // Autoplay on user interaction fallback (some browsers block autoplay until user interacts)
   function ensureAutoplay() {
-    const active = videos[0];
-    if (active.paused) {
+    const active = videos[currentVideoIndex];
+    if (active && active.paused) {
       active.play().catch(() => {});
     }
   }
 
-  document.addEventListener('click', ensureAutoplay, { once: true });
-  document.addEventListener('touchstart', ensureAutoplay, { once: true });
+  // Listen to ANY interaction to trigger playback (fixes strict mobile/Vercel policies)
+  const interactionEvents = ['click', 'touchstart', 'mousemove', 'scroll'];
+  const triggerPlayback = () => {
+    ensureAutoplay();
+    // Remove listeners once triggered
+    interactionEvents.forEach(e => document.removeEventListener(e, triggerPlayback));
+  };
+  interactionEvents.forEach(e => document.addEventListener(e, triggerPlayback, { passive: true }));
 
   // ── POPUP MANAGEMENT ──
   const popupServices = document.getElementById('popup-services');
