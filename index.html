@@ -14,7 +14,7 @@
 
   <!-- ═══ VIDEO BACKGROUND ═══ -->
   <div id="video-bg">
-    <video id="bg-video-1" class="bg-video active" src="1.mp4" muted playsinline></video>
+    <video id="bg-video-1" class="bg-video active" src="1.mp4" autoplay muted playsinline></video>
     <video id="bg-video-2" class="bg-video" src="2.mp4" muted playsinline></video>
     <video id="bg-video-3" class="bg-video" src="3.mp4" muted playsinline></video>
     <div class="video-overlay"></div>
@@ -66,12 +66,12 @@
     <section id="center-buttons" aria-label="Explore">
       <button class="section-btn" id="btn-services" type="button">
         <span class="section-btn__glass"></span>
-        <span class="section-btn__text">Наші Послуги</span>
+        <span class="section-btn__text">Our Services</span>
       </button>
 
       <button class="section-btn" id="btn-projects" type="button">
         <span class="section-btn__glass"></span>
-        <span class="section-btn__text">Наші Проєкти</span>
+        <span class="section-btn__text">Our Projects</span>
       </button>
     </section>
 
@@ -90,71 +90,72 @@
       <button class="popup-close" id="close-services" type="button" aria-label="Close">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
       </button>
-      <h2 class="popup-title">Наші Послуги</h2>
+      <h2 class="popup-title has-subtitle">Our Services</h2>
+      <p class="popup-subtitle">We are an AI-native web, growth & product studio. We build ready-made systems: from market analysis and idea generation to a fully working product and its launch.</p>
       <div class="popup-grid">
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
-          <h3>Маркетингова стратегія і ДНК клієнта</h3>
-          <p>Дослідження ринку, конкуренти, портрет клієнта, логіка оферу й економіка воронки.</p>
+          <h3>Marketing Strategy and Client DNA</h3>
+          <p>Market research, competitor analysis, client portrait, offer logic, and funnel economics.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
           </div>
-          <h3>Сайти і лендінги</h3>
-          <p>Структура, тексти, дизайн, frontend-розробка, збір заявок і базова SEO-підготовка.</p>
+          <h3>Sites and Landings</h3>
+          <p>Structure, texts, design, frontend development, lead generation, and basic SEO preparation.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </div>
-          <h3>MVP і продуктова розробка</h3>
-          <p>React/Vite інтерфейси, Supabase, кабінети, анкети, бази даних і логіка продукту.</p>
+          <h3>MVP and Product Development</h3>
+          <p>React/Vite interfaces, Supabase integration, personal cabinets, questionnaires, databases, and core product logic.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           </div>
-          <h3>Telegram-онбординг і боти</h3>
-          <p>Telegram bot flows, анкети, профілі, швидкий вхід користувача і збір заявок.</p>
+          <h3>Telegram Onboarding and Bots</h3>
+          <p>Telegram bot flows, forms, user profiles, quick user login, and lead generation.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </div>
-          <h3>Воронка і аналітика</h3>
-          <p>Аудит шляху клієнта, CTA, tracking checklist, точки втрати конверсії і план оптимізації.</p>
+          <h3>Funnel and Analytics</h3>
+          <p>Client journey audit, CTA placement, tracking checklists, identifying conversion drop points, and optimization planning.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
           </div>
-          <h3>Інтеграції і база даних</h3>
-          <p>Таблиці, профілі, matching logic, structured data flows і прості адмін-логіки.</p>
+          <h3>Integrations and Databases</h3>
+          <p>Data tables, profiles, matching logic, structured data flows, and simple admin logics.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
           </div>
-          <h3>Автоматизації</h3>
-          <p>n8n workflows, CRM sync і reporting flows.</p>
+          <h3>Automations</h3>
+          <p>n8n workflows, CRM synchronization, and automated reporting flows.</p>
         </div>
 
         <div class="service-card">
           <div class="service-card__icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
           </div>
-          <h3>Відео-автоматизація</h3>
-          <p>Remotion/code-driven video для персоналізованого креативу.</p>
+          <h3>Video Automation</h3>
+          <p>Remotion/code-driven video for personalized and scalable creatives.</p>
         </div>
 
       </div>
@@ -168,31 +169,31 @@
       <button class="popup-close" id="close-projects" type="button" aria-label="Close">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
       </button>
-      <h2 class="popup-title">Наші Проєкти</h2>
+      <h2 class="popup-title">Our Projects</h2>
       <div class="popup-grid popup-grid--projects">
 
         <div class="project-card">
           <div class="project-card__badge">Platform</div>
           <h3>Networking Platform</h3>
-          <p>Мережева інфраструктура для співпраці та нетворкінгу, створена для свідомих людей, націлених на здоровий спосіб життя, екологію та проактивну соціальну позицію. Включає фонд підтримки ініціатив.</p>
+          <p>A collaboration and networking platform designed for conscious individuals who lead a healthy lifestyle, care about nature, and hold a proactive social stance. It serves as a foundational infrastructure for networking, which also includes an internal fund for the support and development of new startups.</p>
         </div>
 
         <div class="project-card">
           <div class="project-card__badge">AI Tool</div>
           <h3>AI Personal Cabinet</h3>
-          <p>Інструмент для структурування інформації та зручної роботи над особистими й командними завданнями. Оснащений ШІ-асистентами та можливостями зручного шерингу всередині кабінетів.</p>
+          <p>A dedicated tool for structuring information and conveniently managing both personal and team projects. It is equipped with advanced AI assistants to optimize workflows and features robust sharing capabilities within the collaborative system.</p>
         </div>
 
         <div class="project-card">
           <div class="project-card__badge">Bot</div>
           <h3>Networking & Dating Bot</h3>
-          <p>Бот для знайомств, створення досьє та відстеження стосунків. Включає психологічні розбори, збереження даних та інтеграцію ігрових механік для друзів і груп.</p>
+          <p>An advanced bot designed for dating, creating personal dossiers, and relationship tracking. It includes secure data preservation, deep psychological analysis features, and integrated gaming mechanics designed for both friends and larger groups.</p>
         </div>
 
         <div class="project-card">
           <div class="project-card__badge">Education</div>
           <h3>Online/Offline School</h3>
-          <p>Освітній та ідейний проєкт, що поєднує онлайн-платформу з фізичними зустрічами (включаючи івенти у Празі з партнерами). Спрямований на психологічне здоров'я, самопізнання, духовність та екологічне мислення.</p>
+          <p>An educational and ideological project that bridges an online learning infrastructure with physical, real-world meetings (including events hosted with partners in Prague). The project focuses deeply on psychological and physical health, self-awareness, spirituality, and ecological thinking.</p>
         </div>
 
       </div>
