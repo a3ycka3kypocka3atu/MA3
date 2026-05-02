@@ -109,11 +109,11 @@
   });
 
   // ── AGENCY BUTTON LINKS ──
-  // Placeholder: links will be provided later
+  // Agency URLs
   const agencyLinks = {
-    'btn-regular': null,
-    'btn-digital': null,
-    'btn-ethic': null,
+    'btn-regular': 'https://agencyb-vert.vercel.app',
+    'btn-digital': 'https://marketing-agency-dusky.vercel.app',
+    'btn-ethic': 'https://etic-a.vercel.app',
   };
 
   Object.entries(agencyLinks).forEach(([id, url]) => {
