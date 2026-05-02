@@ -42,19 +42,26 @@
   }
 
   // Autoplay on user interaction fallback (some browsers block autoplay until user interacts)
-  function ensureAutoplay() {
-    const active = videos[currentVideoIndex];
-    if (active && active.paused) {
-      active.play().catch(() => {});
-    }
-  }
-
   // Listen to ANY interaction to trigger playback (fixes strict mobile/Vercel policies)
   const interactionEvents = ['click', 'touchstart', 'mousemove', 'scroll'];
   const triggerPlayback = () => {
-    ensureAutoplay();
-    // Remove listeners once triggered
-    interactionEvents.forEach(e => document.removeEventListener(e, triggerPlayback));
+    const active = videos[currentVideoIndex];
+    if (active && active.paused) {
+      active.muted = true; // Force mute again just in case
+      active.playsInline = true;
+      const playPromise = active.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // Success! Now we can safely remove the listeners
+          interactionEvents.forEach(e => document.removeEventListener(e, triggerPlayback));
+        }).catch(() => {
+          // Failed (e.g., interaction wasn't a strict enough gesture). Keep listening.
+        });
+      }
+    } else if (active && !active.paused) {
+      // Already playing naturally, remove listeners
+      interactionEvents.forEach(e => document.removeEventListener(e, triggerPlayback));
+    }
   };
   interactionEvents.forEach(e => document.addEventListener(e, triggerPlayback, { passive: true }));
 
