@@ -657,6 +657,21 @@ video::-webkit-media-controls-play-button {
   color: var(--fg-muted);
 }
 
+.project-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--glow-blue);
+  text-decoration: none;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.project-link:hover {
+  color: var(--fg-main);
+  transform: translateX(4px);
+}
+
 /* ═══════════════════════════════════════════════════════════
    ENTRANCE ANIMATIONS
    ═══════════════════════════════════════════════════════════ */
