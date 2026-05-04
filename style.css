@@ -667,6 +667,14 @@ video::-webkit-media-controls-play-button {
   transition: transform 0.2s, color 0.2s;
 }
 
+/* Make entire card clickable */
+.project-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
 .project-link:hover {
   color: var(--fg-main);
   transform: translateX(4px);
