@@ -379,6 +379,9 @@ video::-webkit-media-controls-play-button {
   justify-content: center;
   transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
   outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .section-btn__glass {
@@ -414,7 +417,14 @@ video::-webkit-media-controls-play-button {
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  color: #FFFFFF;
 }
+
+/* Specific button colors on hover */
+#btn-services:hover .section-btn__glass { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+#btn-schedule:hover .section-btn__glass { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+#btn-bot:hover .section-btn__glass { border-color: rgba(250, 204, 21, 0.5); box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
+#btn-projects:hover .section-btn__glass { border-color: rgba(165, 180, 252, 0.5); box-shadow: 0 0 20px rgba(165, 180, 252, 0.3); }
 
 /* ═══════════════════════════════════════════════════════════
    BRAND FOOTER
