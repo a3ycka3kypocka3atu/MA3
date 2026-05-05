@@ -619,6 +619,7 @@ video::-webkit-media-controls-play-button {
 }
 
 .project-card {
+  position: relative;
   padding: 32px 28px;
   border-radius: var(--radius-card);
   background: rgba(255, 255, 255, 0.03);

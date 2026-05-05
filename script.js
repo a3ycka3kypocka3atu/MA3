@@ -79,6 +79,10 @@
   const closeCases = document.getElementById('close-cases');
 
   function openPopup(popup) {
+    // Close any other open popups first
+    [popupServices, popupProjects, popupCases].forEach(p => {
+      if (p && p !== popup) closePopup(p);
+    });
     popup.classList.add('open');
     popup.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
