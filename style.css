@@ -677,9 +677,9 @@ video::-webkit-media-controls-play-button {
   z-index: 2;
 }
 
-.project-link:hover {
+.project-card:hover .project-link {
   color: var(--fg-main);
-  transform: translateX(4px);
+  transform: translateX(6px);
 }
 
 /* ═══════════════════════════════════════════════════════════
