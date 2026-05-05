@@ -68,10 +68,15 @@
   // ── POPUP MANAGEMENT ──
   const popupServices = document.getElementById('popup-services');
   const popupProjects = document.getElementById('popup-projects');
+  const popupCases = document.getElementById('popup-cases');
+
   const btnServices = document.getElementById('btn-services');
   const btnProjects = document.getElementById('btn-projects');
+  const btnCases = document.getElementById('btn-cases');
+
   const closeServices = document.getElementById('close-services');
   const closeProjects = document.getElementById('close-projects');
+  const closeCases = document.getElementById('close-cases');
 
   function openPopup(popup) {
     popup.classList.add('open');
@@ -87,12 +92,15 @@
 
   btnServices.addEventListener('click', () => openPopup(popupServices));
   btnProjects.addEventListener('click', () => openPopup(popupProjects));
+  if (btnCases) btnCases.addEventListener('click', () => openPopup(popupCases));
 
   closeServices.addEventListener('click', () => closePopup(popupServices));
   closeProjects.addEventListener('click', () => closePopup(popupProjects));
+  if (closeCases) closeCases.addEventListener('click', () => closePopup(popupCases));
 
   // Close on backdrop click
-  [popupServices, popupProjects].forEach(popup => {
+  [popupServices, popupProjects, popupCases].forEach(popup => {
+    if (!popup) return;
     popup.addEventListener('click', (e) => {
       if (e.target === popup || e.target.classList.contains('popup-backdrop')) {
         closePopup(popup);

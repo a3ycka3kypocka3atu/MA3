@@ -425,6 +425,7 @@ video::-webkit-media-controls-play-button {
 #btn-schedule:hover .section-btn__glass { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
 #btn-bot:hover .section-btn__glass { border-color: rgba(250, 204, 21, 0.5); box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
 #btn-projects:hover .section-btn__glass { border-color: rgba(165, 180, 252, 0.5); box-shadow: 0 0 20px rgba(165, 180, 252, 0.3); }
+#btn-cases:hover .section-btn__glass { border-color: rgba(236, 72, 153, 0.5); box-shadow: 0 0 20px rgba(236, 72, 153, 0.3); }
 
 /* ═══════════════════════════════════════════════════════════
    BRAND FOOTER
