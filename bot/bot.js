@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const { Telegraf, Markup, session } = require('telegraf');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -7,6 +8,10 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
+const ADMIN_CHAT_IDS = (process.env.ADMIN_CHAT_IDS || ADMIN_CHAT_ID || '')
+  .split(',')
+  .map(id => id.trim())
+  .filter(Boolean);
 
 if (!BOT_TOKEN || !SUPABASE_URL || !SUPABASE_KEY) {
   console.error("Missing required environment variables.");
@@ -20,103 +25,272 @@ bot.use(session());
 
 // ── CONSTANTS ──
 const MAIN_WEBSITE = 'https://ma-3-rose.vercel.app';
-const AGENCIES = [
+const OFFER_BRIEF_PATH = path.join(__dirname, 'MA3_offer_brief.md');
+const ADMIN_CONTACTS = [
   {
-    name: 'Santiago Way',
-    desc: 'Digital Zen Studio & Incubator. A space for community, yoga, and project launches in Prague.',
-    url: 'https://santiago-way.vercel.app'
+    label: 'Admin 1: @andrisav',
+    url: 'https://t.me/andrisav'
   },
   {
-    name: 'DetoxWay',
-    desc: 'Health, wellness, and conscious networking. Programs for physical and mental rejuvenation.',
-    url: 'https://detox-way.vercel.app'
-  },
-  {
-    name: 'MA3 Agency',
-    desc: 'Digital Infrastructure & Automations. We build the systems that power modern ecosystems.',
-    url: MAIN_WEBSITE
+    label: 'Admin 2: @Hirchak',
+    url: 'https://t.me/Hirchak'
   }
 ];
+
+const SERVICES = [
+  {
+    key: 'strategy',
+    name: 'Marketing Strategy and Client DNA',
+    price: '100€–300€',
+    market: '500€–1500€',
+    desc: 'Market research, competitor analysis, client portrait, offer logic, positioning, and funnel economics.'
+  },
+  {
+    key: 'sites',
+    name: 'Sites and Landings',
+    price: '150€–500€',
+    market: '800€–2500€',
+    desc: 'Fast modern websites and landing pages: structure, copy, design, frontend, lead capture, and basic SEO preparation.'
+  },
+  {
+    key: 'mvp',
+    name: 'MVP and Product Development',
+    price: '1500€–4000€',
+    market: '5000€–12000€',
+    desc: 'Product interfaces, personal cabinets, questionnaires, Supabase-backed data flows, sharing logic, and core MVP functionality.'
+  },
+  {
+    key: 'bots',
+    name: 'Telegram Onboarding and Bots',
+    price: '150€–500€',
+    market: '500€–2000€',
+    desc: 'Telegram bot flows, forms, user profiles, quick access, onboarding, lead generation, and internal routing.'
+  },
+  {
+    key: 'analytics',
+    name: 'Funnel and Analytics',
+    price: '100€–1000€',
+    market: '1500€–4000€',
+    desc: 'Client journey audit, CTA logic, tracking checklist, conversion gaps, and clear optimization priorities.'
+  },
+  {
+    key: 'integrations',
+    name: 'Integrations and Databases',
+    price: '200€–700€',
+    market: '700€–3000€',
+    desc: 'Databases, profiles, matching logic, structured data flows, simple admin logic, and clean tool-to-tool integration.'
+  },
+  {
+    key: 'automations',
+    name: 'Automations',
+    price: '300€–1000€',
+    market: '1000€–5000€',
+    desc: 'n8n workflows, CRM synchronization, internal notifications, reporting flows, and repeated-process automation.'
+  },
+  {
+    key: 'video',
+    name: 'Video Automation',
+    price: '300€–1000€',
+    market: '2000€–10000€',
+    desc: 'Remotion and code-driven video systems for personalized creatives, repeated content formats, and scalable production.'
+  }
+];
+
+function mainMenuKeyboard() {
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('🧩 Choose a Service', 'services_menu')],
+    [Markup.button.callback('🔍 Free Product & Market Analysis', 'free_audit')],
+    [Markup.button.callback('📄 Get Offer Brief', 'offer_brief')],
+    [Markup.button.callback('✍️ Ask / Send Project', 'ask_question')],
+    [Markup.button.callback('👤 Contact the Team', 'contact_team')],
+    [Markup.button.url('🌐 Visit Website', MAIN_WEBSITE)]
+  ]);
+}
+
+function serviceKeyboard() {
+  const serviceRows = SERVICES.map(service => [
+    Markup.button.callback(service.name, `service_${service.key}`)
+  ]);
+  return Markup.inlineKeyboard([
+    ...serviceRows,
+    [Markup.button.callback('🔍 Request free analysis', 'free_audit')],
+    [Markup.button.callback('⬅️ Main menu', 'main_menu')]
+  ]);
+}
+
+function contactKeyboard() {
+  return Markup.inlineKeyboard([
+    ADMIN_CONTACTS.map(contact => Markup.button.url(contact.label, contact.url)),
+    [Markup.button.callback('📨 Ask MA3 to contact me', 'contact_request')],
+    [Markup.button.callback('⬅️ Main menu', 'main_menu')]
+  ]);
+}
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function getUserLabel(ctx) {
+  const name = [ctx.from?.first_name, ctx.from?.last_name].filter(Boolean).join(' ') || 'Telegram user';
+  const username = ctx.from?.username ? `@${ctx.from.username}` : 'no username';
+  return `${name} (${username}, ID: ${ctx.from?.id})`;
+}
+
+async function notifyAdmins(ctx, type, content) {
+  if (!ADMIN_CHAT_IDS.length) {
+    console.warn('No ADMIN_CHAT_ID or ADMIN_CHAT_IDS configured. Inquiry was not forwarded to admins.');
+    return;
+  }
+
+  const message = `
+<b>New MA3 ${escapeHtml(type)}</b>
+
+<b>From:</b> ${escapeHtml(getUserLabel(ctx))}
+
+<b>Message:</b>
+${escapeHtml(content)}
+  `.trim();
+
+  await Promise.allSettled(
+    ADMIN_CHAT_IDS.map(chatId =>
+      bot.telegram.sendMessage(chatId, message, { parse_mode: 'HTML' })
+    )
+  );
+}
+
+async function saveInquiry(ctx, type, content) {
+  try {
+    await supabase.from('inquiries').insert([
+      {
+        telegram_id: ctx.from.id,
+        username: ctx.from.username,
+        type,
+        content,
+        created_at: new Date().toISOString()
+      }
+    ]);
+  } catch (err) {
+    console.warn('Could not save inquiry to Supabase, but admin notification was attempted.');
+  }
+}
 
 // ── START COMMAND ──
 bot.start((ctx) => {
   const welcomeText = `
-Welcome to **MA3 Agency Bot**! 🚀
+<b>Welcome to MA3.</b>
 
-We are a digital infrastructure hub specializing in automations, AI integrations, and community ecosystems.
+We are an AI-native web, growth and product studio.
 
-How can we help you today?
-  `;
+We help founders, small businesses and conscious projects build:
+• strategy and client DNA
+• websites and landing pages
+• MVPs and product systems
+• Telegram bots and onboarding
+• funnels, analytics and automations
 
-  ctx.replyWithMarkdown(
+You can choose a service, ask a question, send your project directly, or request a short free product and market analysis.
+  `.trim();
+
+  ctx.reply(
     welcomeText,
-    Markup.inlineKeyboard([
-      [Markup.button.callback('🔍 Free Business Audit', 'free_audit')],
-      [Markup.button.callback('🏢 Our Agencies', 'show_agencies')],
-      [Markup.button.callback('💡 Make an Offer', 'make_offer'), Markup.button.callback('❓ Ask a Question', 'ask_question')],
-      [Markup.button.url('🌐 Visit Website', MAIN_WEBSITE)]
-    ])
+    { parse_mode: 'HTML', ...mainMenuKeyboard() }
   );
+});
+
+bot.action('services_menu', (ctx) => {
+  ctx.answerCbQuery();
+  ctx.reply(
+    `<b>Choose the service you are interested in.</b>\n\nYou can also describe your project in your own words. We will help define what you need.`,
+    { parse_mode: 'HTML', ...serviceKeyboard() }
+  );
+});
+
+SERVICES.forEach(service => {
+  bot.action(`service_${service.key}`, (ctx) => {
+    ctx.answerCbQuery();
+    ctx.session = {
+      state: 'waiting_service_request',
+      selectedService: service.name
+    };
+
+    const serviceText = `
+<b>${escapeHtml(service.name)}</b>
+
+${escapeHtml(service.desc)}
+
+<b>Our early client price:</b> ${escapeHtml(service.price)}
+<s>Regular market price: ${escapeHtml(service.market)}</s>
+
+If this service fits your project, send us a short message:
+• what you want to build or improve
+• link to your product / website / social media, if you have one
+• your timeline and budget range, if already clear
+    `.trim();
+
+    ctx.reply(serviceText, {
+      parse_mode: 'HTML',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('🔍 Get free short analysis first', 'free_audit')],
+        [Markup.button.callback('👤 Contact the team', 'contact_team')],
+        [Markup.button.callback('⬅️ Services', 'services_menu')]
+      ])
+    });
+  });
 });
 
 // ── AUDIT LOGIC ──
 bot.action('free_audit', (ctx) => {
   const auditText = `
-**Free Business Analysis** 🔍
+<b>Free short product & market analysis</b>
 
-We will perform a deep-dive check of your business infrastructure and provide a free efficiency analysis. After our review, we will get in touch with a custom offer on how we can optimize your workflows and scale your project.
+We can prepare a short, precise first look at your product, market position and growth opportunities, so you can see how MA3 thinks before committing to paid work.
 
-**To get started, please send us:**
-• A link to your website or social media
-• A brief description of your current process
-• Or a document/brief for us to review
+Please send:
+• your website, product, social media or idea
+• what you sell / plan to launch
+• who your client is
+• what feels unclear right now: strategy, funnel, website, MVP, automation, bot, analytics
 
-_Please type your information below:_
-  `;
+We will review it and contact you with a compact, practical analysis.
+  `.trim();
   
   ctx.session = { state: 'waiting_audit' };
-  ctx.replyWithMarkdown(
+  ctx.reply(
     auditText,
-    Markup.inlineKeyboard([[Markup.button.callback('⬅️ Cancel', 'main_menu')]])
+    { parse_mode: 'HTML', ...Markup.inlineKeyboard([[Markup.button.callback('⬅️ Main menu', 'main_menu')]]) }
   );
 });
 
-// ── AGENCY MENU ──
-bot.action('show_agencies', (ctx) => {
-  let agencyText = `**Our Ecosystem** 🌐\n\n`;
-  AGENCIES.forEach(a => {
-    agencyText += `🔹 **${a.name}**\n${a.desc}\n[Visit Site](${a.url})\n\n`;
-  });
-
-  ctx.replyWithMarkdown(
-    agencyText,
-    Markup.inlineKeyboard([
-      [Markup.button.callback('⬅️ Back to Main Menu', 'main_menu')]
-    ])
+bot.action('offer_brief', async (ctx) => {
+  ctx.answerCbQuery();
+  await ctx.reply(
+    `<b>MA3 offer brief</b>\n\nThis file gives you a compact overview of what we build, our startup-friendly pricing logic and what to send us for a fast proposal.`,
+    { parse_mode: 'HTML' }
   );
+  await ctx.replyWithDocument({
+    source: OFFER_BRIEF_PATH,
+    filename: 'MA3_offer_brief.md'
+  });
 });
 
 bot.action('main_menu', (ctx) => {
   ctx.answerCbQuery();
   const welcomeText = `
-**MA3 Agency Bot** 🚀
-Digital Infrastructure Hub.
+<b>MA3 Agency Bot</b>
 
-How can we help you today?
-  `;
+Choose a service, request a free short analysis, send a project message, or contact the team directly.
+  `.trim();
 
   ctx.editMessageText(
     welcomeText,
     {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('🔍 Free Business Audit', 'free_audit')],
-        [Markup.button.callback('🏢 Our Agencies', 'show_agencies')],
-        [Markup.button.callback('💡 Make an Offer', 'make_offer'), Markup.button.callback('❓ Ask a Question', 'ask_question')],
-        [Markup.button.url('🌐 Visit Website', MAIN_WEBSITE)]
-      ])
+      parse_mode: 'HTML',
+      ...mainMenuKeyboard()
     }
-  );
+  ).catch(() => ctx.reply(welcomeText, { parse_mode: 'HTML', ...mainMenuKeyboard() }));
 });
 
 // ── OFFER / ASK LOGIC ──
@@ -126,8 +300,28 @@ bot.action('make_offer', (ctx) => {
 });
 
 bot.action('ask_question', (ctx) => {
+  ctx.answerCbQuery();
   ctx.session = { state: 'waiting_question' };
-  ctx.reply('What would you like to know? ❓\n\nPlease type your question below and our team will get back to you:');
+  ctx.reply(
+    'Write your question or project message here. You can send it freely: idea, link, current problem, or what you want MA3 to build.',
+    Markup.inlineKeyboard([[Markup.button.callback('⬅️ Main menu', 'main_menu')]])
+  );
+});
+
+bot.action('contact_team', (ctx) => {
+  ctx.answerCbQuery();
+  ctx.reply(
+    `<b>Contact MA3 team</b>\n\nYou can message us directly, or ask the bot to forward your request to the team.`,
+    { parse_mode: 'HTML', ...contactKeyboard() }
+  );
+});
+
+bot.action('contact_request', (ctx) => {
+  ctx.answerCbQuery();
+  ctx.session = { state: 'waiting_contact_request' };
+  ctx.reply(
+    'Please write a short message for the team: what you need, your project link if you have one, and the best way to contact you.'
+  );
 });
 
 bot.on('text', async (ctx, next) => {
@@ -135,42 +329,27 @@ bot.on('text', async (ctx, next) => {
 
   const userText = ctx.message.text;
   const state = ctx.session.state;
+  const selectedService = ctx.session.selectedService;
   ctx.session.state = null;
+  ctx.session.selectedService = null;
 
   let type = 'Inquiry';
   if (state === 'waiting_offer') type = 'Offer';
   if (state === 'waiting_question') type = 'Question';
-  if (state === 'waiting_audit') type = 'Business Audit Request';
+  if (state === 'waiting_audit') type = 'Free Product & Market Analysis Request';
+  if (state === 'waiting_service_request') type = `Service Request: ${selectedService}`;
+  if (state === 'waiting_contact_request') type = 'Direct Contact Request';
   
-  ctx.reply(`Thank you! Your ${type.toLowerCase()} has been received. Our team will review it and get back to you shortly with an analysis or response.`);
+  await ctx.reply(
+    `Thank you. Your message was sent to the MA3 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`,
+    Markup.inlineKeyboard([
+      [Markup.button.callback('👤 Contact directly', 'contact_team')],
+      [Markup.button.callback('⬅️ Main menu', 'main_menu')]
+    ])
+  );
 
-  // Send to Admin
-  if (ADMIN_CHAT_ID) {
-    const adminMsg = `
-🔔 **New ${type} received!**
-From: ${ctx.from.first_name} (@${ctx.from.username || 'none'})
-ID: ${ctx.from.id}
-
-**Content**:
-${userText}
-    `;
-    bot.telegram.sendMessage(ADMIN_CHAT_ID, adminMsg);
-  }
-
-  // Save to Supabase
-  try {
-    await supabase.from('inquiries').insert([
-      { 
-        telegram_id: ctx.from.id, 
-        username: ctx.from.username, 
-        type: type, 
-        content: userText,
-        created_at: new Date().toISOString()
-      }
-    ]);
-  } catch (err) {
-    console.warn('Could not save to Supabase, but admin was notified.');
-  }
+  await notifyAdmins(ctx, type, userText);
+  await saveInquiry(ctx, type, userText);
 });
 
 // ── LAUNCH ──
