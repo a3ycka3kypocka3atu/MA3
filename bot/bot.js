@@ -142,7 +142,7 @@ function getUserLabel(ctx) {
 async function notifyAdmins(ctx, type, content) {
   if (!ADMIN_CHAT_IDS.length) {
     console.warn('No ADMIN_CHAT_ID or ADMIN_CHAT_IDS configured. Inquiry was not forwarded to admins.');
-    return;
+    return false;
   }
 
   const message = `
@@ -154,11 +154,12 @@ async function notifyAdmins(ctx, type, content) {
 ${escapeHtml(content)}
   `.trim();
 
-  await Promise.allSettled(
+  const results = await Promise.allSettled(
     ADMIN_CHAT_IDS.map(chatId =>
       bot.telegram.sendMessage(chatId, message, { parse_mode: 'HTML' })
     )
   );
+  return results.some(result => result.status === 'fulfilled');
 }
 
 async function saveInquiry(ctx, type, content) {
@@ -197,6 +198,12 @@ You can choose a service, ask a question, send your project directly, or request
   ctx.reply(
     welcomeText,
     { parse_mode: 'HTML', ...mainMenuKeyboard() }
+  );
+});
+
+bot.command('myid', (ctx) => {
+  ctx.reply(
+    `Your Telegram numeric chat ID is:\n\n${ctx.chat.id}\n\nSend this number to the MA3 bot admin so it can be added to ADMIN_CHAT_IDS.`
   );
 });
 
@@ -340,16 +347,20 @@ bot.on('text', async (ctx, next) => {
   if (state === 'waiting_service_request') type = `Service Request: ${selectedService}`;
   if (state === 'waiting_contact_request') type = 'Direct Contact Request';
   
+  await saveInquiry(ctx, type, userText);
+  const sentToAdmins = await notifyAdmins(ctx, type, userText);
+
+  const confirmation = sentToAdmins
+    ? `Thank you. Your message was sent to the MA3 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`
+    : `Thank you. Your message was saved, but admin forwarding is not configured yet.\n\nPlease contact the team directly for now, or ask an admin to add numeric Telegram chat IDs to ADMIN_CHAT_IDS.`;
+
   await ctx.reply(
-    `Thank you. Your message was sent to the MA3 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`,
+    confirmation,
     Markup.inlineKeyboard([
       [Markup.button.callback('👤 Contact directly', 'contact_team')],
       [Markup.button.callback('⬅️ Main menu', 'main_menu')]
     ])
   );
-
-  await notifyAdmins(ctx, type, userText);
-  await saveInquiry(ctx, type, userText);
 });
 
 // ── LAUNCH ──
