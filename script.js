@@ -69,6 +69,7 @@
   const popupServices = document.getElementById('popup-services');
   const popupProjects = document.getElementById('popup-projects');
   const popupCases = document.getElementById('popup-cases');
+  const serviceDetail = document.getElementById('service-detail');
 
   const btnServices = document.getElementById('btn-services');
   const btnProjects = document.getElementById('btn-projects');
@@ -77,6 +78,12 @@
   const closeServices = document.getElementById('close-services');
   const closeProjects = document.getElementById('close-projects');
   const closeCases = document.getElementById('close-cases');
+  const closeServiceDetail = document.getElementById('close-service-detail');
+
+  const serviceDetailTitle = document.getElementById('service-detail-title');
+  const serviceDetailDescription = document.getElementById('service-detail-description');
+  const serviceDetailPrice = document.getElementById('service-detail-price');
+  const serviceDetailMarket = document.getElementById('service-detail-market');
 
   function openPopup(popup) {
     // Close any other open popups first
@@ -94,6 +101,24 @@
     document.body.style.overflow = 'hidden'; // keep body overflow hidden (fullscreen page)
   }
 
+  function openServiceDetail(card) {
+    if (!serviceDetail) return;
+
+    serviceDetailTitle.textContent = card.dataset.serviceTitle || '';
+    serviceDetailDescription.textContent = card.dataset.serviceDetail || '';
+    serviceDetailPrice.textContent = card.dataset.servicePrice || '';
+    serviceDetailMarket.textContent = card.dataset.serviceMarket || '';
+
+    serviceDetail.classList.add('open');
+    serviceDetail.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeServiceDetailPopup() {
+    if (!serviceDetail) return;
+    serviceDetail.classList.remove('open');
+    serviceDetail.setAttribute('aria-hidden', 'true');
+  }
+
   btnServices.addEventListener('click', () => openPopup(popupServices));
   btnProjects.addEventListener('click', () => openPopup(popupProjects));
   if (btnCases) btnCases.addEventListener('click', () => openPopup(popupCases));
@@ -101,6 +126,7 @@
   closeServices.addEventListener('click', () => closePopup(popupServices));
   closeProjects.addEventListener('click', () => closePopup(popupProjects));
   if (closeCases) closeCases.addEventListener('click', () => closePopup(popupCases));
+  if (closeServiceDetail) closeServiceDetail.addEventListener('click', closeServiceDetailPopup);
 
   // Close on backdrop click
   [popupServices, popupProjects, popupCases].forEach(popup => {
@@ -111,12 +137,21 @@
       }
     });
   });
+  if (serviceDetail) {
+    serviceDetail.addEventListener('click', (e) => {
+      if (e.target === serviceDetail || e.target.classList.contains('service-detail-backdrop')) {
+        closeServiceDetailPopup();
+      }
+    });
+  }
 
   // Close on Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      closeServiceDetailPopup();
       closePopup(popupServices);
       closePopup(popupProjects);
+      closePopup(popupCases);
     }
   });
 
@@ -137,14 +172,48 @@
     }
   });
 
+  // ── PROJECT/CASE CARDS CLICKABLE ──
+  function initProjectCards() {
+    document.querySelectorAll('.project-card').forEach(card => {
+      const link = card.querySelector('.project-link');
+      if (!link) return;
+
+      card.addEventListener('click', (e) => {
+        // Prevent double-firing if clicking directly on the link
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        if (href) {
+          window.open(href, link.target || '_blank', 'noopener');
+        }
+      });
+    });
+  }
+
+  // ── SERVICE CARD DETAILS ──
+  function initServiceCards() {
+    document.querySelectorAll('.service-card').forEach(card => {
+      card.addEventListener('click', () => openServiceDetail(card));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openServiceDetail(card);
+        }
+      });
+    });
+  }
+
   // ── INIT ──
   document.addEventListener('DOMContentLoaded', () => {
     initVideos();
+    initProjectCards();
+    initServiceCards();
   });
 
   // Also run init if DOM is already loaded
   if (document.readyState !== 'loading') {
     initVideos();
+    initProjectCards();
+    initServiceCards();
   }
 
 })();
