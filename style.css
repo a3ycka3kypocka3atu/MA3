@@ -134,6 +134,45 @@ video::-webkit-media-controls-play-button {
   gap: 0;
 }
 
+#language-switcher {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.28), 0 0 24px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.lang-btn {
+  min-width: 38px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: rgba(237, 237, 239, 0.58);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  transition: color 0.25s var(--ease-out), background 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+
+.lang-btn:hover {
+  color: var(--fg);
+  transform: translateY(-1px);
+}
+
+.lang-btn.active {
+  color: #EFFFF6;
+  background: rgba(16, 185, 129, 0.16);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
 /* ═══════════════════════════════════════════════════════════
    AGENCY BUTTONS (TOP)
    ═══════════════════════════════════════════════════════════ */
@@ -1053,6 +1092,13 @@ video::-webkit-media-controls-play-button {
 @media (max-width: 768px) {
   #main-content {
     padding: 24px 16px;
+  }
+
+  #language-switcher {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 18px;
   }
 
   #agency-buttons {
