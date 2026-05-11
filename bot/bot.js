@@ -120,7 +120,7 @@ function mainMenuKeyboard(ctx) {
   ];
 
   if (isAdmin(ctx)) {
-    rows.splice(1, 0, [Markup.button.callback('🏢 MA3 Office', 'ma3_office')]);
+    rows.unshift([Markup.button.callback('🏢 MA3 Office', 'ma3_office')]);
   }
 
   return Markup.inlineKeyboard(rows);
