@@ -178,6 +178,10 @@ function getAdminChatIds() {
   return [...new Set([...ADMIN_CHAT_IDS, ...readRegisteredAdminIds()])];
 }
 
+function safeAnswer(ctx) {
+  return ctx.answerCbQuery().catch(() => {});
+}
+
 async function notifyAdmins(ctx, type, content) {
   const adminChatIds = getAdminChatIds();
 
@@ -249,7 +253,7 @@ bot.command('myid', (ctx) => {
 });
 
 bot.action('services_menu', (ctx) => {
-  ctx.answerCbQuery();
+  safeAnswer(ctx);
   ctx.reply(
     `<b>Choose the service you are interested in.</b>\n\nYou can also describe your project in your own words. We will help define what you need.`,
     { parse_mode: 'HTML', ...serviceKeyboard() }
@@ -258,7 +262,7 @@ bot.action('services_menu', (ctx) => {
 
 SERVICES.forEach(service => {
   bot.action(`service_${service.key}`, (ctx) => {
-    ctx.answerCbQuery();
+    safeAnswer(ctx);
     ctx.session = {
       state: 'waiting_service_request',
       selectedService: service.name
@@ -313,7 +317,7 @@ We will review it and contact you with a compact, practical analysis.
 });
 
 bot.action('offer_brief', async (ctx) => {
-  ctx.answerCbQuery();
+  await safeAnswer(ctx);
   await ctx.reply(
     `<b>MA3 offer brief</b>\n\nThis file gives you a compact overview of what we build, our startup-friendly pricing logic and what to send us for a fast proposal.`,
     { parse_mode: 'HTML' }
@@ -325,7 +329,7 @@ bot.action('offer_brief', async (ctx) => {
 });
 
 bot.action('main_menu', (ctx) => {
-  ctx.answerCbQuery();
+  safeAnswer(ctx);
   const welcomeText = `
 <b>MA3 Agency Bot</b>
 
@@ -348,7 +352,7 @@ bot.action('make_offer', (ctx) => {
 });
 
 bot.action('ask_question', (ctx) => {
-  ctx.answerCbQuery();
+  safeAnswer(ctx);
   ctx.session = { state: 'waiting_question' };
   ctx.reply(
     'Write your question or project message here. You can send it freely: idea, link, current problem, or what you want MA3 to build.',
@@ -357,7 +361,7 @@ bot.action('ask_question', (ctx) => {
 });
 
 bot.action('contact_team', (ctx) => {
-  ctx.answerCbQuery();
+  safeAnswer(ctx);
   ctx.reply(
     `<b>Contact MA3 team</b>\n\nYou can message us directly, or ask the bot to forward your request to the team.`,
     { parse_mode: 'HTML', ...contactKeyboard() }
@@ -365,7 +369,7 @@ bot.action('contact_team', (ctx) => {
 });
 
 bot.action('contact_request', (ctx) => {
-  ctx.answerCbQuery();
+  safeAnswer(ctx);
   ctx.session = { state: 'waiting_contact_request' };
   ctx.reply(
     'Please write a short message for the team: what you need, your project link if you have one, and the best way to contact you.'
