@@ -1,6 +1,7 @@
 node_modules
 .DS_Store
 bot/.env
+bot/admin_chats.json
 bot/bot.log
 bot/bot.pid
 .agents

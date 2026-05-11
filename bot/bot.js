@@ -1,5 +1,6 @@
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
 const { Telegraf, Markup, session } = require('telegraf');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -22,10 +23,16 @@ const bot = new Telegraf(BOT_TOKEN);
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 bot.use(session());
+bot.use((ctx, next) => {
+  registerAdminIfNeeded(ctx);
+  return next();
+});
 
 // ── CONSTANTS ──
 const MAIN_WEBSITE = 'https://ma-3-rose.vercel.app';
 const OFFER_BRIEF_PATH = path.join(__dirname, 'MA3_offer_brief.md');
+const ADMIN_STORE_PATH = path.join(__dirname, 'admin_chats.json');
+const ADMIN_USERNAMES = ['andrisav', 'hirchak'];
 const ADMIN_CONTACTS = [
   {
     label: 'Admin 1: @andrisav',
@@ -139,8 +146,42 @@ function getUserLabel(ctx) {
   return `${name} (${username}, ID: ${ctx.from?.id})`;
 }
 
+function readRegisteredAdminIds() {
+  try {
+    if (!fs.existsSync(ADMIN_STORE_PATH)) return [];
+    const data = JSON.parse(fs.readFileSync(ADMIN_STORE_PATH, 'utf8'));
+    return Object.values(data)
+      .map(id => String(id).trim())
+      .filter(Boolean);
+  } catch (err) {
+    console.warn('Could not read registered admin chat IDs.');
+    return [];
+  }
+}
+
+function registerAdminIfNeeded(ctx) {
+  const username = ctx.from?.username?.toLowerCase();
+  if (!username || !ADMIN_USERNAMES.includes(username)) return;
+
+  try {
+    const data = fs.existsSync(ADMIN_STORE_PATH)
+      ? JSON.parse(fs.readFileSync(ADMIN_STORE_PATH, 'utf8'))
+      : {};
+    data[username] = ctx.chat.id;
+    fs.writeFileSync(ADMIN_STORE_PATH, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.warn('Could not register admin chat ID.');
+  }
+}
+
+function getAdminChatIds() {
+  return [...new Set([...ADMIN_CHAT_IDS, ...readRegisteredAdminIds()])];
+}
+
 async function notifyAdmins(ctx, type, content) {
-  if (!ADMIN_CHAT_IDS.length) {
+  const adminChatIds = getAdminChatIds();
+
+  if (!adminChatIds.length) {
     console.warn('No ADMIN_CHAT_ID or ADMIN_CHAT_IDS configured. Inquiry was not forwarded to admins.');
     return false;
   }
@@ -155,7 +196,7 @@ ${escapeHtml(content)}
   `.trim();
 
   const results = await Promise.allSettled(
-    ADMIN_CHAT_IDS.map(chatId =>
+    adminChatIds.map(chatId =>
       bot.telegram.sendMessage(chatId, message, { parse_mode: 'HTML' })
     )
   );
