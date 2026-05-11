@@ -44,6 +44,12 @@ const ADMIN_CONTACTS = [
   }
 ];
 
+const CLIENT_WORKSPACES = [
+  // Future client links go here, for example:
+  // { label: 'Client Name', url: 'https://notion.so/...' },
+  // { label: 'Client Folder', url: 'https://drive.google.com/...' },
+];
+
 const SERVICES = [
   {
     key: 'strategy',
@@ -103,15 +109,21 @@ const SERVICES = [
   }
 ];
 
-function mainMenuKeyboard() {
-  return Markup.inlineKeyboard([
+function mainMenuKeyboard(ctx) {
+  const rows = [
     [Markup.button.callback('🧩 Choose a Service', 'services_menu')],
     [Markup.button.callback('🔍 Free Product & Market Analysis', 'free_audit')],
     [Markup.button.callback('📄 Get Offer Brief', 'offer_brief')],
     [Markup.button.callback('✍️ Ask / Send Project', 'ask_question')],
     [Markup.button.callback('👤 Contact the Team', 'contact_team')],
     [Markup.button.url('🌐 Visit Website', MAIN_WEBSITE)]
-  ]);
+  ];
+
+  if (isAdmin(ctx)) {
+    rows.splice(1, 0, [Markup.button.callback('🏢 MA3 Office', 'ma3_office')]);
+  }
+
+  return Markup.inlineKeyboard(rows);
 }
 
 function serviceKeyboard() {
@@ -178,6 +190,16 @@ function getAdminChatIds() {
   return [...new Set([...ADMIN_CHAT_IDS, ...readRegisteredAdminIds()])];
 }
 
+function isAdmin(ctx) {
+  const username = ctx.from?.username?.toLowerCase();
+  const chatId = ctx.chat?.id ? String(ctx.chat.id) : '';
+
+  return (
+    Boolean(username && ADMIN_USERNAMES.includes(username)) ||
+    Boolean(chatId && getAdminChatIds().includes(chatId))
+  );
+}
+
 function safeAnswer(ctx) {
   return ctx.answerCbQuery().catch(() => {});
 }
@@ -242,7 +264,7 @@ You can choose a service, ask a question, send your project directly, or request
 
   ctx.reply(
     welcomeText,
-    { parse_mode: 'HTML', ...mainMenuKeyboard() }
+    { parse_mode: 'HTML', ...mainMenuKeyboard(ctx) }
   );
 });
 
@@ -328,6 +350,38 @@ bot.action('offer_brief', async (ctx) => {
   });
 });
 
+bot.action('ma3_office', (ctx) => {
+  safeAnswer(ctx);
+
+  if (!isAdmin(ctx)) {
+    return ctx.reply('This office area is available only for MA3 admins.');
+  }
+
+  const workspaceRows = CLIENT_WORKSPACES.map(client => [
+    Markup.button.url(client.label, client.url)
+  ]);
+
+  const keyboardRows = workspaceRows.length
+    ? workspaceRows
+    : [[Markup.button.callback('No client folders yet', 'ma3_office_empty')]];
+
+  ctx.reply(
+    `<b>MA3 Office</b>\n\nPrivate admin space for client work links.\n\nSoon this panel will contain buttons to each client folder: Notion, Google Drive, Docs, briefs, contracts, project notes and delivery materials.\n\nCurrent status: no client folders connected yet.`,
+    {
+      parse_mode: 'HTML',
+      ...Markup.inlineKeyboard([
+        ...keyboardRows,
+        [Markup.button.callback('⬅️ Main menu', 'main_menu')]
+      ])
+    }
+  );
+});
+
+bot.action('ma3_office_empty', (ctx) => {
+  safeAnswer(ctx);
+  ctx.reply('No client folders are connected yet. When we create the first client workspace, we will add it here as a button.');
+});
+
 bot.action('main_menu', (ctx) => {
   safeAnswer(ctx);
   const welcomeText = `
@@ -340,9 +394,9 @@ Choose a service, request a free short analysis, send a project message, or cont
     welcomeText,
     {
       parse_mode: 'HTML',
-      ...mainMenuKeyboard()
+      ...mainMenuKeyboard(ctx)
     }
-  ).catch(() => ctx.reply(welcomeText, { parse_mode: 'HTML', ...mainMenuKeyboard() }));
+  ).catch(() => ctx.reply(welcomeText, { parse_mode: 'HTML', ...mainMenuKeyboard(ctx) }));
 });
 
 // ── OFFER / ASK LOGIC ──
