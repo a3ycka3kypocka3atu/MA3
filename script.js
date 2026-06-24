@@ -43,7 +43,7 @@
         services: 'Our Services',
         bot: 'Agency Bot',
         projects: 'Our Projects',
-        cases: 'Our Cases',
+        cases: 'Our Projects',
       },
       footer: 'AI-native web, growth & product studio',
       services: {
@@ -108,9 +108,9 @@
         ['Bot', 'Networking & Dating Bot', 'An advanced Telegram bot for dating, personal dossiers, and relationship tracking. It includes secure data storage, deep psychological analysis, and game mechanics for friends and larger groups.', 'Open Bot →'],
         ['Education', 'Online/Offline School', 'An educational project connecting online learning infrastructure with physical meetings and partner events in Prague. The focus is psychological and physical health, self-awareness, spirituality, and ecological thinking.', 'Visit School →'],
       ],
-      casesTitle: 'Our Cases',
+      casesTitle: 'Our Projects',
       cases: [
-        ['Automation & Brand', 'Santiago Studio Prague', 'A complete ecosystem for a yoga and wellness studio: automated scheduling, registration bot, instructor management, member fund, hiring flows, and brand positioning.', 'View Case →'],
+        ['Conscious Platform', 'Santiago Studio Prague', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
         ['Health & Lifestyle', 'Detox Way of Life', 'A motivational platform for better living, combining Ayurveda, evidence-based nutrition, and bioflora optimization as a foundation for personal growth.', 'Visit Website →'],
         ['E-Commerce', 'Detox Only', 'A specialized product landing page and ecosystem for premium detox products and related health services.', 'View Product →'],
         ['Personal Brand', 'Meditation & Coaching', 'A complete school system and personal brand infrastructure for a meditation expert, including coaching formats and event management.', 'Join Event →'],
@@ -135,7 +135,7 @@
         services: 'Naše služby',
         bot: 'Agency Bot',
         projects: 'Naše projekty',
-        cases: 'Reference',
+        cases: 'Naše projekty',
       },
       footer: 'AI-native studio pro web, růst a produkt',
       services: {
@@ -200,9 +200,9 @@
         ['Bot', 'Networking & Dating Bot', 'Pokročilý Telegram bot pro seznamování, osobní profily a práci se vztahy. Obsahuje bezpečné uchování dat, hlubší psychologickou analýzu a herní mechaniky pro přátele i větší skupiny.', 'Otevřít bota →'],
         ['Vzdělávání', 'Online/Offline School', 'Vzdělávací projekt propojující online infrastrukturu s fyzickými setkáními a partnerskými akcemi v Praze. Zaměřuje se na psychické i fyzické zdraví, sebeuvědomění, spiritualitu a ekologické myšlení.', 'Navštívit školu →'],
       ],
-      casesTitle: 'Reference',
+      casesTitle: 'Naše projekty',
       cases: [
-        ['Automatizace & Brand', 'Santiago Studio Prague', 'Kompletní ekosystém pro yoga a wellness studio: automatizovaný rozvrh, registrační bot, správa lektorů, členský fond, náborové procesy a brand positioning.', 'Zobrazit case →'],
+        ['Vědomá platforma', 'Santiago Studio Prague', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
         ['Zdraví & Lifestyle', 'Detox Way of Life', 'Motivační platforma pro lepší život, která kombinuje Ayurvedu, vědecky podloženou výživu a optimalizaci bioflóry jako základ osobního růstu.', 'Navštívit web →'],
         ['E-commerce', 'Detox Only', 'Specializovaný produktový landing page a ekosystém pro prémiové detox produkty a související zdravotní služby.', 'Zobrazit produkt →'],
         ['Osobní brand', 'Meditation & Coaching', 'Kompletní školní systém a osobní brand pro odbornici na meditaci, včetně coachingové infrastruktury a správy eventů.', 'Připojit se →'],
@@ -227,7 +227,7 @@
         services: 'Наші послуги',
         bot: 'Agency Bot',
         projects: 'Наші проєкти',
-        cases: 'Кейси',
+        cases: 'Наші проєкти',
       },
       footer: 'AI-native студія вебу, росту та продукту',
       services: {
@@ -292,9 +292,9 @@
         ['Бот', 'Networking & Dating Bot', 'Просунутий Telegram-бот для знайомств, персональних досьє та роботи зі стосунками. Має безпечне збереження даних, глибшу психологічну аналітику й ігрові механіки для друзів та більших груп.', 'Відкрити бота →'],
         ['Освіта', 'Online/Offline School', 'Освітній проєкт, що поєднує онлайн-інфраструктуру з живими зустрічами та партнерськими подіями у Празі. Фокус — психічне й фізичне здоров’я, самоусвідомлення, духовність та екологічне мислення.', 'Перейти до школи →'],
       ],
-      casesTitle: 'Кейси',
+      casesTitle: 'Наші проєкти',
       cases: [
-        ['Автоматизація & Бренд', 'Santiago Studio Prague', 'Повна екосистема для yoga та wellness studio: автоматизований розклад, реєстраційний бот, управління інструкторами, фонд учасників клубу, HR-процеси та brand positioning.', 'Переглянути кейс →'],
+        ['Свідома платформа', 'Santiago Studio Prague', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
         ['Здоров’я & Lifestyle', 'Detox Way of Life', 'Мотиваційна платформа для кращого життя, що поєднує Аюрведу, науково обґрунтоване харчування й оптимізацію біофлори як основу особистого росту.', 'Перейти на сайт →'],
         ['E-commerce', 'Detox Only', 'Спеціалізований продуктовий landing page та екосистема для преміальних detox-продуктів і пов’язаних health-послуг.', 'Переглянути продукт →'],
         ['Особистий бренд', 'Meditation & Coaching', 'Комплексна система школи й особистого бренду для експертки з медитації, включно з coaching-інфраструктурою та управлінням подіями.', 'Приєднатися →'],
@@ -319,7 +319,7 @@
         services: 'Наши услуги',
         bot: 'Agency Bot',
         projects: 'Наши проекты',
-        cases: 'Кейсы',
+        cases: 'Наши проекты',
       },
       footer: 'AI-native студия веба, роста и продукта',
       services: {
@@ -384,9 +384,9 @@
         ['Бот', 'Networking & Dating Bot', 'Продвинутый Telegram-бот для знакомств, персональных досье и работы с отношениями. Включает безопасное хранение данных, глубокую психологическую аналитику и игровые механики для друзей и больших групп.', 'Открыть бота →'],
         ['Образование', 'Online/Offline School', 'Образовательный проект, соединяющий онлайн-инфраструктуру с живыми встречами и партнёрскими событиями в Праге. Фокус — психическое и физическое здоровье, самоосознанность, духовность и экологическое мышление.', 'Перейти к школе →'],
       ],
-      casesTitle: 'Кейсы',
+      casesTitle: 'Наши проекты',
       cases: [
-        ['Автоматизация & Бренд', 'Santiago Studio Prague', 'Полная экосистема для yoga и wellness studio: автоматизированное расписание, регистрационный бот, управление инструкторами, фонд участников клуба, HR-процессы и brand positioning.', 'Смотреть кейс →'],
+        ['Осознанная платформа', 'Santiago Studio Prague', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
         ['Здоровье & Lifestyle', 'Detox Way of Life', 'Мотивационная платформа для лучшей жизни, которая объединяет Аюрведу, научно обоснованное питание и оптимизацию биофлоры как основу личного роста.', 'Перейти на сайт →'],
         ['E-commerce', 'Detox Only', 'Специализированный продуктовый landing page и экосистема для премиальных detox-продуктов и связанных health-услуг.', 'Смотреть продукт →'],
         ['Личный бренд', 'Meditation & Coaching', 'Комплексная система школы и личного бренда для эксперта по медитации, включая coaching-инфраструктуру и управление событиями.', 'Присоединиться →'],
