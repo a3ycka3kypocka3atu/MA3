@@ -43,7 +43,7 @@
         services: 'Our Services',
         bot: 'Agency Bot',
         projects: 'Our Projects',
-        cases: 'Our Projects',
+        cases: 'Our Cases',
       },
       footer: 'AI-native web, growth & product studio',
       services: {
@@ -103,14 +103,14 @@
       },
       projectsTitle: 'Our Projects',
       projects: [
+        ['Conscious Platform', 'Santiago Platform Prague', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
         ['Platform', 'Networking Platform', 'A collaboration and networking platform designed for conscious individuals who lead a healthy lifestyle, care about nature, and hold a proactive social stance. It serves as foundational networking infrastructure with an internal fund for supporting and developing new startups.', 'Open Platform →'],
         ['AI Tool', 'AI Personal Cabinet', 'A dedicated tool for structuring information and managing personal or team projects. It includes advanced AI assistants for workflow optimization and robust sharing inside a collaborative system.', 'Open Project →'],
         ['Bot', 'Networking & Dating Bot', 'An advanced Telegram bot for dating, personal dossiers, and relationship tracking. It includes secure data storage, deep psychological analysis, and game mechanics for friends and larger groups.', 'Open Bot →'],
         ['Education', 'Online/Offline School', 'An educational project connecting online learning infrastructure with physical meetings and partner events in Prague. The focus is psychological and physical health, self-awareness, spirituality, and ecological thinking.', 'Visit School →'],
       ],
-      casesTitle: 'Our Projects',
+      casesTitle: 'Our Cases',
       cases: [
-        ['Conscious Platform', 'Santiago Platform Prague', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
         ['Health & Lifestyle', 'Detox Way of Life', 'A motivational platform for better living, combining Ayurveda, evidence-based nutrition, and bioflora optimization as a foundation for personal growth.', 'Visit Website →'],
         ['E-Commerce', 'Detox Only', 'A specialized product landing page and ecosystem for premium detox products and related health services.', 'View Product →'],
         ['Personal Brand', 'Meditation & Coaching', 'A complete school system and personal brand infrastructure for a meditation expert, including coaching formats and event management.', 'Join Event →'],
@@ -135,7 +135,7 @@
         services: 'Naše služby',
         bot: 'Agency Bot',
         projects: 'Naše projekty',
-        cases: 'Naše projekty',
+        cases: 'Reference',
       },
       footer: 'AI-native studio pro web, růst a produkt',
       services: {
@@ -195,14 +195,14 @@
       },
       projectsTitle: 'Naše projekty',
       projects: [
+        ['Vědomá platforma', 'Santiago Platform Prague', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
         ['Platforma', 'Networking Platform', 'Platforma pro spolupráci a networking pro vědomé lidi se zdravým životním stylem, vztahem k přírodě a aktivním společenským postojem. Funguje jako základní networkingová infrastruktura s interním fondem na podporu nových startupů.', 'Otevřít platformu →'],
         ['AI nástroj', 'AI Personal Cabinet', 'Nástroj pro strukturování informací a řízení osobních i týmových projektů. Obsahuje pokročilé AI asistenty pro optimalizaci práce a bezpečné sdílení v rámci spolupráce.', 'Otevřít projekt →'],
         ['Bot', 'Networking & Dating Bot', 'Pokročilý Telegram bot pro seznamování, osobní profily a práci se vztahy. Obsahuje bezpečné uchování dat, hlubší psychologickou analýzu a herní mechaniky pro přátele i větší skupiny.', 'Otevřít bota →'],
         ['Vzdělávání', 'Online/Offline School', 'Vzdělávací projekt propojující online infrastrukturu s fyzickými setkáními a partnerskými akcemi v Praze. Zaměřuje se na psychické i fyzické zdraví, sebeuvědomění, spiritualitu a ekologické myšlení.', 'Navštívit školu →'],
       ],
-      casesTitle: 'Naše projekty',
+      casesTitle: 'Reference',
       cases: [
-        ['Vědomá platforma', 'Santiago Platform Prague', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
         ['Zdraví & Lifestyle', 'Detox Way of Life', 'Motivační platforma pro lepší život, která kombinuje Ayurvedu, vědecky podloženou výživu a optimalizaci bioflóry jako základ osobního růstu.', 'Navštívit web →'],
         ['E-commerce', 'Detox Only', 'Specializovaný produktový landing page a ekosystém pro prémiové detox produkty a související zdravotní služby.', 'Zobrazit produkt →'],
         ['Osobní brand', 'Meditation & Coaching', 'Kompletní školní systém a osobní brand pro odbornici na meditaci, včetně coachingové infrastruktury a správy eventů.', 'Připojit se →'],
@@ -227,7 +227,7 @@
         services: 'Наші послуги',
         bot: 'Agency Bot',
         projects: 'Наші проєкти',
-        cases: 'Наші проєкти',
+        cases: 'Кейси',
       },
       footer: 'AI-native студія вебу, росту та продукту',
       services: {
@@ -287,14 +287,14 @@
       },
       projectsTitle: 'Наші проєкти',
       projects: [
+        ['Свідома платформа', 'Santiago Platform Prague', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
         ['Платформа', 'Networking Platform', 'Платформа для співпраці й нетворкінгу для свідомих людей зі здоровим способом життя, турботою про природу та активною соціальною позицією. Вона працює як базова інфраструктура нетворкінгу з внутрішнім фондом підтримки нових стартапів.', 'Відкрити платформу →'],
         ['AI-інструмент', 'AI Personal Cabinet', 'Інструмент для структурування інформації та зручного управління особистими й командними проєктами. Має AI-асистентів для оптимізації процесів і надійне спільне використання в колаборативній системі.', 'Відкрити проєкт →'],
         ['Бот', 'Networking & Dating Bot', 'Просунутий Telegram-бот для знайомств, персональних досьє та роботи зі стосунками. Має безпечне збереження даних, глибшу психологічну аналітику й ігрові механіки для друзів та більших груп.', 'Відкрити бота →'],
         ['Освіта', 'Online/Offline School', 'Освітній проєкт, що поєднує онлайн-інфраструктуру з живими зустрічами та партнерськими подіями у Празі. Фокус — психічне й фізичне здоров’я, самоусвідомлення, духовність та екологічне мислення.', 'Перейти до школи →'],
       ],
-      casesTitle: 'Наші проєкти',
+      casesTitle: 'Кейси',
       cases: [
-        ['Свідома платформа', 'Santiago Platform Prague', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
         ['Здоров’я & Lifestyle', 'Detox Way of Life', 'Мотиваційна платформа для кращого життя, що поєднує Аюрведу, науково обґрунтоване харчування й оптимізацію біофлори як основу особистого росту.', 'Перейти на сайт →'],
         ['E-commerce', 'Detox Only', 'Спеціалізований продуктовий landing page та екосистема для преміальних detox-продуктів і пов’язаних health-послуг.', 'Переглянути продукт →'],
         ['Особистий бренд', 'Meditation & Coaching', 'Комплексна система школи й особистого бренду для експертки з медитації, включно з coaching-інфраструктурою та управлінням подіями.', 'Приєднатися →'],
@@ -319,7 +319,7 @@
         services: 'Наши услуги',
         bot: 'Agency Bot',
         projects: 'Наши проекты',
-        cases: 'Наши проекты',
+        cases: 'Кейсы',
       },
       footer: 'AI-native студия веба, роста и продукта',
       services: {
@@ -379,14 +379,14 @@
       },
       projectsTitle: 'Наши проекты',
       projects: [
+        ['Осознанная платформа', 'Santiago Platform Prague', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
         ['Платформа', 'Networking Platform', 'Платформа для сотрудничества и нетворкинга для осознанных людей со здоровым образом жизни, заботой о природе и активной социальной позицией. Работает как базовая инфраструктура нетворкинга с внутренним фондом поддержки новых стартапов.', 'Открыть платформу →'],
         ['AI-инструмент', 'AI Personal Cabinet', 'Инструмент для структурирования информации и удобного управления личными и командными проектами. Включает AI-ассистентов для оптимизации процессов и надёжное совместное использование внутри коллаборативной системы.', 'Открыть проект →'],
         ['Бот', 'Networking & Dating Bot', 'Продвинутый Telegram-бот для знакомств, персональных досье и работы с отношениями. Включает безопасное хранение данных, глубокую психологическую аналитику и игровые механики для друзей и больших групп.', 'Открыть бота →'],
         ['Образование', 'Online/Offline School', 'Образовательный проект, соединяющий онлайн-инфраструктуру с живыми встречами и партнёрскими событиями в Праге. Фокус — психическое и физическое здоровье, самоосознанность, духовность и экологическое мышление.', 'Перейти к школе →'],
       ],
-      casesTitle: 'Наши проекты',
+      casesTitle: 'Кейсы',
       cases: [
-        ['Осознанная платформа', 'Santiago Platform Prague', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
         ['Здоровье & Lifestyle', 'Detox Way of Life', 'Мотивационная платформа для лучшей жизни, которая объединяет Аюрведу, научно обоснованное питание и оптимизацию биофлоры как основу личного роста.', 'Перейти на сайт →'],
         ['E-commerce', 'Detox Only', 'Специализированный продуктовый landing page и экосистема для премиальных detox-продуктов и связанных health-услуг.', 'Смотреть продукт →'],
         ['Личный бренд', 'Meditation & Coaching', 'Комплексная система школы и личного бренда для эксперта по медитации, включая coaching-инфраструктуру и управление событиями.', 'Присоединиться →'],
