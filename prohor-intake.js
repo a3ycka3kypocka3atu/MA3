@@ -514,11 +514,7 @@
 
     try {
       updateSyncIndicator('Отправляю в Google Sheets...', 'warn');
-      await fetch(SHEETS_WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(payload),
-      });
+      await sendToSheets(payload);
       state.lastSyncedAt = new Date().toISOString();
       saveLocal();
       updateSyncIndicator(`Отправлено ${formatTime(state.lastSyncedAt)}`, 'live');
@@ -532,11 +528,7 @@
     if (!SHEETS_WEB_APP_URL) return;
 
     try {
-      await fetch(SHEETS_WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(createPayload('survey_completed')),
-      });
+      await sendToSheets(createPayload('survey_completed'));
       state.lastSyncedAt = new Date().toISOString();
       saveLocal();
       updateSyncIndicator(`Финально отправлено ${formatTime(state.lastSyncedAt)}`, 'live');
@@ -568,6 +560,20 @@
       userAgent: navigator.userAgent,
       submittedAt: new Date().toISOString(),
     };
+  }
+
+  function sendToSheets(payload) {
+    const form = new URLSearchParams();
+    form.set('payload', JSON.stringify(payload));
+
+    return fetch(SHEETS_WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: form.toString(),
+    });
   }
 
   function updateProgress() {

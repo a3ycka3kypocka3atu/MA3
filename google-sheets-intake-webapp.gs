@@ -55,10 +55,34 @@ function doPost(e) {
   }
 }
 
-function doGet() {
+function doGet(e) {
+  if (e && e.parameter && e.parameter.payload) {
+    return doPost(e);
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({ ok: true, app: 'MA3 intake collector' }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function testWrite() {
+  const sheet = getSheet();
+  sheet.appendRow([
+    new Date(),
+    'manual_test',
+    'prohor',
+    'Prohor Music',
+    'manual-test',
+    'TEST',
+    'test',
+    'Manual Apps Script test',
+    0,
+    JSON.stringify({ status: 'manual test from Apps Script editor' }),
+    JSON.stringify({ status: 'manual test from Apps Script editor' }),
+    JSON.stringify(['test']),
+    'Apps Script editor',
+    'manual run',
+  ]);
 }
 
 function getSheet() {
@@ -74,6 +98,10 @@ function getSheet() {
 }
 
 function parsePayload(e) {
+  if (e && e.parameter && e.parameter.payload) {
+    return JSON.parse(e.parameter.payload);
+  }
+
   if (!e || !e.postData || !e.postData.contents) {
     return {};
   }
