@@ -103,7 +103,7 @@
       },
       projectsTitle: 'Our Projects',
       projects: [
-        ['Conscious Platform', 'Santiago Platform Prague', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
+        ['Conscious Platform', 'Santiago Platform', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
         ['Platform', 'Networking Platform', 'A collaboration and networking platform designed for conscious individuals who lead a healthy lifestyle, care about nature, and hold a proactive social stance. It serves as foundational networking infrastructure with an internal fund for supporting and developing new startups.', 'Open Platform →'],
         ['AI Tool', 'AI Personal Cabinet', 'A dedicated tool for structuring information and managing personal or team projects. It includes advanced AI assistants for workflow optimization and robust sharing inside a collaborative system.', 'Open Project →'],
         ['Bot', 'Networking & Dating Bot', 'An advanced Telegram bot for dating, personal dossiers, and relationship tracking. It includes secure data storage, deep psychological analysis, and game mechanics for friends and larger groups.', 'Open Bot →'],
@@ -195,7 +195,7 @@
       },
       projectsTitle: 'Naše projekty',
       projects: [
-        ['Vědomá platforma', 'Santiago Platform Prague', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
+        ['Vědomá platforma', 'Santiago Platform', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
         ['Platforma', 'Networking Platform', 'Platforma pro spolupráci a networking pro vědomé lidi se zdravým životním stylem, vztahem k přírodě a aktivním společenským postojem. Funguje jako základní networkingová infrastruktura s interním fondem na podporu nových startupů.', 'Otevřít platformu →'],
         ['AI nástroj', 'AI Personal Cabinet', 'Nástroj pro strukturování informací a řízení osobních i týmových projektů. Obsahuje pokročilé AI asistenty pro optimalizaci práce a bezpečné sdílení v rámci spolupráce.', 'Otevřít projekt →'],
         ['Bot', 'Networking & Dating Bot', 'Pokročilý Telegram bot pro seznamování, osobní profily a práci se vztahy. Obsahuje bezpečné uchování dat, hlubší psychologickou analýzu a herní mechaniky pro přátele i větší skupiny.', 'Otevřít bota →'],
@@ -287,7 +287,7 @@
       },
       projectsTitle: 'Наші проєкти',
       projects: [
-        ['Свідома платформа', 'Santiago Platform Prague', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
+        ['Свідома платформа', 'Santiago Platform', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
         ['Платформа', 'Networking Platform', 'Платформа для співпраці й нетворкінгу для свідомих людей зі здоровим способом життя, турботою про природу та активною соціальною позицією. Вона працює як базова інфраструктура нетворкінгу з внутрішнім фондом підтримки нових стартапів.', 'Відкрити платформу →'],
         ['AI-інструмент', 'AI Personal Cabinet', 'Інструмент для структурування інформації та зручного управління особистими й командними проєктами. Має AI-асистентів для оптимізації процесів і надійне спільне використання в колаборативній системі.', 'Відкрити проєкт →'],
         ['Бот', 'Networking & Dating Bot', 'Просунутий Telegram-бот для знайомств, персональних досьє та роботи зі стосунками. Має безпечне збереження даних, глибшу психологічну аналітику й ігрові механіки для друзів та більших груп.', 'Відкрити бота →'],
@@ -379,7 +379,7 @@
       },
       projectsTitle: 'Наши проекты',
       projects: [
-        ['Осознанная платформа', 'Santiago Platform Prague', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
+        ['Осознанная платформа', 'Santiago Platform', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
         ['Платформа', 'Networking Platform', 'Платформа для сотрудничества и нетворкинга для осознанных людей со здоровым образом жизни, заботой о природе и активной социальной позицией. Работает как базовая инфраструктура нетворкинга с внутренним фондом поддержки новых стартапов.', 'Открыть платформу →'],
         ['AI-инструмент', 'AI Personal Cabinet', 'Инструмент для структурирования информации и удобного управления личными и командными проектами. Включает AI-ассистентов для оптимизации процессов и надёжное совместное использование внутри коллаборативной системы.', 'Открыть проект →'],
         ['Бот', 'Networking & Dating Bot', 'Продвинутый Telegram-бот для знакомств, персональных досье и работы с отношениями. Включает безопасное хранение данных, глубокую психологическую аналитику и игровые механики для друзей и больших групп.', 'Открыть бота →'],
