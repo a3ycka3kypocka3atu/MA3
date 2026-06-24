@@ -9,7 +9,7 @@
   };
 
   // Paste the deployed Google Apps Script Web App URL here.
-  const SHEETS_WEB_APP_URL = '';
+  const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxI_YW1gBFGuzoVd96QyodQ888XfzMnV2qiCxeHd8i1wQYNhgkQFXgAW17Bnj2CUh1nbQ/exec';
 
   const STORAGE_KEY = `ma3:intake:${CLIENT.slug}:v1`;
   const SAVE_DELAY = 450;
