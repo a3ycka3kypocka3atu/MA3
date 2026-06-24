@@ -110,7 +110,7 @@
       ],
       casesTitle: 'Our Projects',
       cases: [
-        ['Conscious Platform', 'Santiago Studio Prague', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
+        ['Conscious Platform', 'Santiago Platform Prague', 'A platform for masters, spiritual practitioners, alternative and natural services, workshops, retreats, and conscious community events. Santiago connects this audience with the people, practices, and gatherings of their world.', 'Open Project →'],
         ['Health & Lifestyle', 'Detox Way of Life', 'A motivational platform for better living, combining Ayurveda, evidence-based nutrition, and bioflora optimization as a foundation for personal growth.', 'Visit Website →'],
         ['E-Commerce', 'Detox Only', 'A specialized product landing page and ecosystem for premium detox products and related health services.', 'View Product →'],
         ['Personal Brand', 'Meditation & Coaching', 'A complete school system and personal brand infrastructure for a meditation expert, including coaching formats and event management.', 'Join Event →'],
@@ -202,7 +202,7 @@
       ],
       casesTitle: 'Naše projekty',
       cases: [
-        ['Vědomá platforma', 'Santiago Studio Prague', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
+        ['Vědomá platforma', 'Santiago Platform Prague', 'Platforma pro mistry, duchovní průvodce, alternativní a přírodní služby, workshopy, retreaty a komunitní akce. Santiago propojuje tuto cílovou skupinu s lidmi, praxemi a událostmi z jejího světa.', 'Otevřít projekt →'],
         ['Zdraví & Lifestyle', 'Detox Way of Life', 'Motivační platforma pro lepší život, která kombinuje Ayurvedu, vědecky podloženou výživu a optimalizaci bioflóry jako základ osobního růstu.', 'Navštívit web →'],
         ['E-commerce', 'Detox Only', 'Specializovaný produktový landing page a ekosystém pro prémiové detox produkty a související zdravotní služby.', 'Zobrazit produkt →'],
         ['Osobní brand', 'Meditation & Coaching', 'Kompletní školní systém a osobní brand pro odbornici na meditaci, včetně coachingové infrastruktury a správy eventů.', 'Připojit se →'],
@@ -294,7 +294,7 @@
       ],
       casesTitle: 'Наші проєкти',
       cases: [
-        ['Свідома платформа', 'Santiago Studio Prague', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
+        ['Свідома платформа', 'Santiago Platform Prague', 'Платформа для майстрів, духовних практиків, альтернативних і природних послуг, воркшопів, ретритів та подій спільноти. Santiago поєднує цю аудиторію з людьми, практиками й подіями її світу.', 'Відкрити проєкт →'],
         ['Здоров’я & Lifestyle', 'Detox Way of Life', 'Мотиваційна платформа для кращого життя, що поєднує Аюрведу, науково обґрунтоване харчування й оптимізацію біофлори як основу особистого росту.', 'Перейти на сайт →'],
         ['E-commerce', 'Detox Only', 'Спеціалізований продуктовий landing page та екосистема для преміальних detox-продуктів і пов’язаних health-послуг.', 'Переглянути продукт →'],
         ['Особистий бренд', 'Meditation & Coaching', 'Комплексна система школи й особистого бренду для експертки з медитації, включно з coaching-інфраструктурою та управлінням подіями.', 'Приєднатися →'],
@@ -386,7 +386,7 @@
       ],
       casesTitle: 'Наши проекты',
       cases: [
-        ['Осознанная платформа', 'Santiago Studio Prague', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
+        ['Осознанная платформа', 'Santiago Platform Prague', 'Платформа для мастеров, духовных практиков, альтернативных и природных услуг, воркшопов, ретритов и событий сообщества. Santiago соединяет эту аудиторию с людьми, практиками и событиями её мира.', 'Открыть проект →'],
         ['Здоровье & Lifestyle', 'Detox Way of Life', 'Мотивационная платформа для лучшей жизни, которая объединяет Аюрведу, научно обоснованное питание и оптимизацию биофлоры как основу личного роста.', 'Перейти на сайт →'],
         ['E-commerce', 'Detox Only', 'Специализированный продуктовый landing page и экосистема для премиальных detox-продуктов и связанных health-услуг.', 'Смотреть продукт →'],
         ['Личный бренд', 'Meditation & Coaching', 'Комплексная система школы и личного бренда для эксперта по медитации, включая coaching-инфраструктуру и управление событиями.', 'Присоединиться →'],
