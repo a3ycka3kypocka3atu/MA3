@@ -292,7 +292,9 @@
   function saveLocal(message) {
     state.updatedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    dom.saveIndicator.textContent = message || `Збережено локально ${formatTime(state.updatedAt)}`;
+    if (dom.saveIndicator) {
+      dom.saveIndicator.textContent = message || `Сохранено локально ${formatTime(state.updatedAt)}`;
+    }
   }
 
   function formatTime(value) {
@@ -590,6 +592,7 @@
         : 'Google Sheets подключен'
       : 'Google Sheets не подключен');
 
+    if (!dom.syncIndicator) return;
     dom.syncIndicator.textContent = text;
     dom.syncIndicator.classList.toggle('is-live', tone === 'live' || (hasEndpoint && !tone));
     dom.syncIndicator.classList.toggle('is-warn', tone === 'warn' || (!hasEndpoint && !tone));

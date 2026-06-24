@@ -130,36 +130,6 @@ h1 {
   line-height: 1.7;
 }
 
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 24px;
-}
-
-.hero-meta span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-  padding: 7px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.hero-meta span.is-live {
-  border-color: rgba(102, 230, 173, 0.42);
-  color: var(--success);
-}
-
-.hero-meta span.is-warn {
-  border-color: rgba(255, 196, 111, 0.42);
-  color: var(--amber-strong);
-}
-
 .hero-art {
   position: relative;
   align-self: stretch;
