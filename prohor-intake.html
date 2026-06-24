@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Анкета Prohor Music для стратегии артиста и персонального бренда.">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Prohor Music — Анкета артиста</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="prohor-intake.css">
+</head>
+<body>
+  <main class="intake-shell">
+    <section class="intake-hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">MA3 анкета / Prohor Music</p>
+        <h1 id="page-title">Prohor: стратегия артиста</h1>
+        <p class="hero-lede">Короткие блоки про booking, контент, историю, EPK и медиа-стратегию. После каждого блока ответы сохраняются отдельно.</p>
+        <div class="hero-meta" aria-label="Статус формы">
+          <span id="save-indicator">Черновик готов</span>
+          <span id="sync-indicator">Google Sheets не подключен</span>
+        </div>
+      </div>
+
+      <figure class="hero-art">
+        <img src="assets/prohor-profile.jpeg" alt="Фото артиста Prohor">
+      </figure>
+    </section>
+
+    <section class="intake-workspace" aria-label="Рабочая область анкеты">
+      <aside class="progress-panel">
+        <div class="progress-topline">
+          <span>Прогресс</span>
+          <strong id="progress-percent">0%</strong>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <span id="progress-fill"></span>
+        </div>
+        <ol id="section-nav" class="section-nav" aria-label="Блоки вопросов"></ol>
+      </aside>
+
+      <form id="intake-form" class="form-stage" novalidate>
+        <div id="section-list"></div>
+      </form>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="prohor-intake.js"></script>
+</body>
+</html>
