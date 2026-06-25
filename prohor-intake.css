@@ -375,6 +375,14 @@ h1 {
   padding: 20px;
 }
 
+.section-head.is-clickable {
+  cursor: pointer;
+}
+
+.section-head.is-clickable:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
 .section-kicker {
   margin: 0 0 8px;
   color: var(--amber-strong);
@@ -400,6 +408,14 @@ h1 {
   line-height: 1.55;
 }
 
+.section-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .section-state {
   display: inline-flex;
   align-items: center;
@@ -413,6 +429,26 @@ h1 {
   font-size: 0.78rem;
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.section-edit-btn {
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 196, 111, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 196, 111, 0.1);
+  color: var(--amber-strong);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.section-edit-btn:hover {
+  border-color: rgba(255, 196, 111, 0.56);
+  background: rgba(255, 196, 111, 0.16);
+  color: var(--text);
 }
 
 .section-card.is-complete .section-state {
@@ -697,6 +733,10 @@ input[type="text"]:focus {
   .section-head {
     grid-template-columns: 1fr;
     padding: 16px;
+  }
+
+  .section-head-actions {
+    justify-content: flex-start;
   }
 
   .section-body {

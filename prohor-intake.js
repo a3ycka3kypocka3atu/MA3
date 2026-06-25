@@ -345,6 +345,8 @@
       const edited = state.editedSections.includes(section.id);
       const active = state.currentSection === section.id;
       const locked = isLocked(index);
+      const canOpen = !locked;
+      const showEditButton = canOpen && !active && (complete || edited);
       const classes = [
         'section-card',
         active ? 'is-active' : '',
@@ -355,13 +357,16 @@
 
       return `
         <article class="${classes}" data-section-card="${section.id}">
-          <div class="section-head">
+          <div class="section-head ${canOpen ? 'is-clickable' : ''}" ${canOpen ? `data-open-section="${section.id}" role="button" tabindex="0"` : ''}>
             <div>
               <p class="section-kicker">Блок ${section.code} / ${section.priority}</p>
               <h2 class="section-title">${escapeHtml(section.title)}</h2>
               <p class="section-note">${escapeHtml(section.note)}</p>
             </div>
-            <span class="section-state">${getSectionStateLabel(section, index)}</span>
+            <div class="section-head-actions">
+              <span class="section-state">${getSectionStateLabel(section, index)}</span>
+              ${showEditButton ? `<button class="section-edit-btn" type="button" data-nav-section="${section.id}">Изменить</button>` : ''}
+            </div>
           </div>
           <div class="section-body">
             <div class="field-grid">
@@ -691,6 +696,12 @@
   });
 
   document.addEventListener('click', (event) => {
+    const openedSection = event.target.closest('[data-open-section]');
+    if (openedSection && !event.target.closest('button, input, textarea, label, a')) {
+      setCurrentSection(openedSection.dataset.openSection);
+      return;
+    }
+
     const nav = event.target.closest('[data-nav-section]');
     if (nav && !nav.disabled) {
       setCurrentSection(nav.dataset.navSection);
@@ -713,6 +724,16 @@
     if (nextButton) {
       saveSection(nextButton.dataset.nextSection, true);
     }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const openedSection = event.target.closest('[data-open-section]');
+    if (!openedSection || (event.key !== 'Enter' && event.key !== ' ')) {
+      return;
+    }
+
+    event.preventDefault();
+    setCurrentSection(openedSection.dataset.openSection);
   });
 
   window.addEventListener('beforeunload', () => {
