@@ -5,11 +5,11 @@
     slug: 'prohor',
     name: 'Prohor Music',
     project: 'Анкета стратегии артиста',
-    version: '2026-06-24',
+    version: '2026-06-25',
   };
 
   // Paste the deployed Google Apps Script Web App URL here.
-  const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxI_YW1gBFGuzoVd96QyodQ888XfzMnV2qiCxeHd8i1wQYNhgkQFXgAW17Bnj2CUh1nbQ/exec';
+  const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwEETUNiWlhbuKsxnemyRmBBLWiH5cvBxneVYXt5nkF5aIYxvHXpNtmVd26hc6acktH6w/exec';
 
   const STORAGE_KEY = `ma3:intake:${CLIENT.slug}:v1`;
   const SAVE_DELAY = 450;
@@ -252,6 +252,7 @@
         respondentId: saved.respondentId || createRespondentId(),
         currentSection: saved.currentSection || sections[0].id,
         completedSections: Array.isArray(saved.completedSections) ? saved.completedSections : [],
+        editedSections: Array.isArray(saved.editedSections) ? saved.editedSections : [],
         answers: saved.answers || {},
         updatedAt: saved.updatedAt || null,
         lastSyncedAt: saved.lastSyncedAt || null,
@@ -261,6 +262,7 @@
         respondentId: createRespondentId(),
         currentSection: sections[0].id,
         completedSections: [],
+        editedSections: [],
         answers: {},
         updatedAt: null,
         lastSyncedAt: null,
@@ -278,6 +280,10 @@
 
   function normalizeState() {
     state.completedSections = state.completedSections.filter((sectionId) => {
+      return sections.some((section) => section.id === sectionId);
+    });
+
+    state.editedSections = state.editedSections.filter((sectionId) => {
       return sections.some((section) => section.id === sectionId);
     });
 
@@ -336,12 +342,14 @@
   function renderSections() {
     dom.sectionList.innerHTML = sections.map((section, index) => {
       const complete = state.completedSections.includes(section.id);
+      const edited = state.editedSections.includes(section.id);
       const active = state.currentSection === section.id;
       const locked = isLocked(index);
       const classes = [
         'section-card',
         active ? 'is-active' : '',
         complete ? 'is-complete' : '',
+        edited ? 'is-edited' : '',
         locked ? 'is-locked' : '',
       ].filter(Boolean).join(' ');
 
@@ -353,13 +361,14 @@
               <h2 class="section-title">${escapeHtml(section.title)}</h2>
               <p class="section-note">${escapeHtml(section.note)}</p>
             </div>
-            <span class="section-state">${complete ? 'сохранено' : active ? 'активно' : locked ? 'закрыто' : 'открыто'}</span>
+            <span class="section-state">${getSectionStateLabel(section, index)}</span>
           </div>
           <div class="section-body">
             <div class="field-grid">
               ${section.fields.map(renderField).join('')}
             </div>
             <div class="actions">
+              ${index > 0 ? `<button class="action-btn ghost" type="button" data-prev-section="${sections[index - 1].id}">Назад</button>` : ''}
               <button class="action-btn secondary" type="button" data-save-section="${section.id}">Сохранить блок</button>
               <button class="action-btn primary" type="button" data-next-section="${section.id}">
                 ${index === sections.length - 1 ? 'Сохранить и завершить' : 'Сохранить и дальше'}
@@ -428,6 +437,14 @@
     return '';
   }
 
+  function getSectionStateLabel(section, index) {
+    if (state.editedSections.includes(section.id)) return 'изменено';
+    if (state.completedSections.includes(section.id)) return 'сохранено';
+    if (state.currentSection === section.id) return 'активно';
+    if (isLocked(index)) return 'закрыто';
+    return 'открыто';
+  }
+
   function isLocked(index) {
     if (index === 0) return false;
     const previous = sections[index - 1];
@@ -472,6 +489,8 @@
     const section = sections[index];
     if (!section || isLocked(index)) return;
 
+    clearTimeout(saveTimer);
+
     const buttons = Array.from(document.querySelectorAll(`[data-save-section="${sectionId}"], [data-next-section="${sectionId}"]`));
     buttons.forEach((button) => {
       button.disabled = true;
@@ -483,6 +502,8 @@
     if (!state.completedSections.includes(sectionId)) {
       state.completedSections.push(sectionId);
     }
+
+    state.editedSections = state.editedSections.filter((editedSectionId) => editedSectionId !== sectionId);
 
     if (shouldAdvance && index < sections.length - 1) {
       state.currentSection = sections[index + 1].id;
@@ -544,6 +565,7 @@
         return acc;
       }, {})
       : {};
+    const sectionQuestionAnswers = section ? getQuestionAnswers([section]) : [];
 
     return {
       eventType,
@@ -553,6 +575,8 @@
       sectionCode: section ? section.code : '',
       sectionTitle: section ? section.title : '',
       sectionAnswers,
+      sectionQuestionAnswers,
+      allQuestionAnswers: getQuestionAnswers(sections),
       allAnswers: state.answers,
       completedSections: state.completedSections,
       progressPercent: getProgressPercent(),
@@ -560,6 +584,24 @@
       userAgent: navigator.userAgent,
       submittedAt: new Date().toISOString(),
     };
+  }
+
+  function getQuestionAnswers(sourceSections) {
+    return sourceSections.flatMap((section) => {
+      return section.fields.map((field) => {
+        const answer = state.answers[field.id] || (field.type === 'checkboxes' ? [] : '');
+
+        return {
+          sectionId: section.id,
+          sectionCode: section.code,
+          sectionTitle: section.title,
+          fieldId: field.id,
+          fieldType: field.type,
+          question: field.label,
+          answer,
+        };
+      });
+    });
   }
 
   function sendToSheets(payload) {
@@ -622,9 +664,27 @@
       .replace(/'/g, '&#039;');
   }
 
-  dom.form.addEventListener('input', () => {
+  function markSectionEdited(sectionId) {
+    if (!sectionId || !state.completedSections.includes(sectionId) || state.editedSections.includes(sectionId)) {
+      return;
+    }
+
+    state.editedSections.push(sectionId);
+
+    const card = document.querySelector(`[data-section-card="${sectionId}"]`);
+    const badge = card ? card.querySelector('.section-state') : null;
+    if (card) card.classList.add('is-edited');
+    if (badge) badge.textContent = 'изменено';
+  }
+
+  dom.form.addEventListener('input', (event) => {
     clearTimeout(saveTimer);
     saveTimer = window.setTimeout(() => {
+      const card = event.target.closest('[data-section-card]');
+      if (card) {
+        markSectionEdited(card.dataset.sectionCard);
+      }
+
       collectAnswers();
       saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
     }, SAVE_DELAY);
@@ -640,6 +700,12 @@
     const saveButton = event.target.closest('[data-save-section]');
     if (saveButton) {
       saveSection(saveButton.dataset.saveSection, false);
+      return;
+    }
+
+    const prevButton = event.target.closest('[data-prev-section]');
+    if (prevButton) {
+      setCurrentSection(prevButton.dataset.prevSection);
       return;
     }
 

@@ -420,6 +420,11 @@ h1 {
   color: var(--success);
 }
 
+.section-card.is-edited .section-state {
+  border-color: rgba(255, 196, 111, 0.4);
+  color: var(--amber-strong);
+}
+
 .section-card.is-active .section-state {
   border-color: rgba(255, 196, 111, 0.38);
   color: var(--amber-strong);
@@ -552,6 +557,13 @@ input[type="text"]:focus {
 .action-btn.secondary {
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.06);
+}
+
+.action-btn.ghost {
+  margin-right: auto;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: transparent;
+  color: var(--muted);
 }
 
 .action-btn.primary {
@@ -697,5 +709,9 @@ input[type="text"]:focus {
 
   .action-btn {
     width: 100%;
+  }
+
+  .action-btn.ghost {
+    margin-right: 0;
   }
 }
