@@ -370,11 +370,7 @@
               ${section.fields.map(renderField).join('')}
             </div>
             <div class="actions">
-              ${index > 0 ? `<button class="action-btn ghost" type="button" data-prev-section="${sections[index - 1].id}">Назад</button>` : ''}
-              <button class="action-btn secondary" type="button" data-save-section="${section.id}">Сохранить блок</button>
-              <button class="action-btn primary" type="button" data-next-section="${section.id}">
-                ${index === sections.length - 1 ? 'Сохранить и завершить' : 'Сохранить и дальше'}
-              </button>
+              <button class="action-btn primary" type="button" data-save-section="${section.id}">Сохранить ответы в этом блоке</button>
             </div>
             <div class="completion-panel ${isEverythingComplete() && index === sections.length - 1 ? 'is-visible' : ''}">
               <strong>Анкета завершена.</strong>
@@ -503,14 +499,14 @@
     });
   }
 
-  async function saveSection(sectionId, shouldAdvance) {
+  async function saveSection(sectionId) {
     const index = sections.findIndex((section) => section.id === sectionId);
     const section = sections[index];
     if (!section) return;
 
     clearTimeout(saveTimer);
 
-    const buttons = Array.from(document.querySelectorAll(`[data-save-section="${sectionId}"], [data-next-section="${sectionId}"]`));
+    const buttons = Array.from(document.querySelectorAll(`[data-save-section="${sectionId}"]`));
     buttons.forEach((button) => {
       button.disabled = true;
       button.textContent = 'Сохраняю...';
@@ -520,25 +516,17 @@
 
     state.editedSections = state.editedSections.filter((editedSectionId) => editedSectionId !== sectionId);
 
-    if (shouldAdvance && index < sections.length - 1) {
-      state.currentSection = sections[index + 1].id;
-    } else {
-      state.currentSection = sectionId;
-    }
+    state.currentSection = sectionId;
 
     saveLocal(`Блок ${section.code} сохранен ${formatTime(state.updatedAt)}`);
     render();
     await syncSection(section);
 
-    if (shouldAdvance && index === sections.length - 1 && isEverythingComplete()) {
+    if (isEverythingComplete()) {
       await syncAllComplete();
-      showToast('Анкета завершена. Спасибо, ответы сохранены.');
-    } else if (shouldAdvance && index === sections.length - 1) {
-      showToast('Ответы сохранены. Незаполненные вопросы можно оставить пустыми или вернуться к ним позже.');
-    } else if (shouldAdvance) {
-      showToast(`Блок ${section.code} сохранен. Открыт следующий блок.`);
+      showToast('Ответы сохранены. Анкета заполнена полностью.');
     } else {
-      showToast(`Блок ${section.code} сохранен.`);
+      showToast(`Ответы в блоке ${section.code} сохранены.`);
     }
   }
 
@@ -750,20 +738,10 @@
 
     const saveButton = event.target.closest('[data-save-section]');
     if (saveButton) {
-      saveSection(saveButton.dataset.saveSection, false);
+      saveSection(saveButton.dataset.saveSection);
       return;
     }
 
-    const prevButton = event.target.closest('[data-prev-section]');
-    if (prevButton) {
-      setCurrentSection(prevButton.dataset.prevSection);
-      return;
-    }
-
-    const nextButton = event.target.closest('[data-next-section]');
-    if (nextButton) {
-      saveSection(nextButton.dataset.nextSection, true);
-    }
   });
 
   document.addEventListener('keydown', (event) => {
