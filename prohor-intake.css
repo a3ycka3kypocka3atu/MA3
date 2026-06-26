@@ -311,11 +311,6 @@ h1 {
   color: var(--text);
 }
 
-.section-nav button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.42;
-}
-
 .section-nav button.is-active {
   border-color: var(--line-strong);
   background: rgba(224, 161, 79, 0.12);
@@ -355,10 +350,6 @@ h1 {
 
 .section-card {
   overflow: hidden;
-}
-
-.section-card.is-locked {
-  opacity: 0.52;
 }
 
 .section-card.is-active {
@@ -451,11 +442,6 @@ h1 {
   color: var(--text);
 }
 
-.section-card.is-complete .section-state {
-  border-color: rgba(102, 230, 173, 0.36);
-  color: var(--success);
-}
-
 .section-card.is-edited .section-state {
   border-color: rgba(255, 196, 111, 0.4);
   color: var(--amber-strong);
@@ -466,13 +452,14 @@ h1 {
   color: var(--amber-strong);
 }
 
-.section-body {
-  display: none;
-  padding: 0 20px 20px;
+.section-card.is-complete .section-state {
+  border-color: rgba(102, 230, 173, 0.36);
+  color: var(--success);
 }
 
-.section-card.is-active .section-body {
+.section-body {
   display: block;
+  padding: 0 20px 20px;
 }
 
 .field-grid {

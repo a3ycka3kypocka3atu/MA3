@@ -320,10 +320,9 @@
   }
 
   function renderNav() {
-    dom.sectionNav.innerHTML = sections.map((section, index) => {
+    dom.sectionNav.innerHTML = sections.map((section) => {
       const complete = isSectionComplete(section);
       const active = state.currentSection === section.id;
-      const locked = isLocked(index);
       const classes = [
         active ? 'is-active' : '',
         complete ? 'is-complete' : '',
@@ -331,7 +330,7 @@
 
       return `
         <li>
-          <button class="${classes}" type="button" data-nav-section="${section.id}" ${locked ? 'disabled' : ''}>
+          <button class="${classes}" type="button" data-nav-section="${section.id}">
             <span class="nav-index">${complete ? '✓' : section.code}</span>
             <span class="nav-title">${escapeHtml(section.title)}</span>
           </button>
@@ -345,27 +344,24 @@
       const complete = isSectionComplete(section);
       const edited = state.editedSections.includes(section.id);
       const active = state.currentSection === section.id;
-      const locked = isLocked(index);
-      const canOpen = !locked;
-      const showEditButton = canOpen && !active && (complete || edited);
+      const showEditButton = !active && (complete || edited);
       const classes = [
         'section-card',
         active ? 'is-active' : '',
         complete ? 'is-complete' : '',
         edited ? 'is-edited' : '',
-        locked ? 'is-locked' : '',
       ].filter(Boolean).join(' ');
 
       return `
         <article class="${classes}" data-section-card="${section.id}">
-          <div class="section-head ${canOpen ? 'is-clickable' : ''}" ${canOpen ? `data-open-section="${section.id}" role="button" tabindex="0"` : ''}>
+          <div class="section-head is-clickable" data-open-section="${section.id}" role="button" tabindex="0">
             <div>
               <p class="section-kicker">Блок ${section.code} / ${section.priority}</p>
               <h2 class="section-title">${escapeHtml(section.title)}</h2>
               <p class="section-note">${escapeHtml(section.note)}</p>
             </div>
             <div class="section-head-actions">
-              <span class="section-state">${getSectionStateLabel(section, index)}</span>
+              <span class="section-state">${getSectionStateLabel(section)}</span>
               ${showEditButton ? `<button class="section-edit-btn" type="button" data-nav-section="${section.id}">Изменить</button>` : ''}
             </div>
           </div>
@@ -443,16 +439,11 @@
     return '';
   }
 
-  function getSectionStateLabel(section, index) {
+  function getSectionStateLabel(section) {
     if (isSectionComplete(section)) return 'сохранено';
     if (state.editedSections.includes(section.id)) return 'изменено';
     if (state.currentSection === section.id) return 'активно';
-    if (isLocked(index)) return 'закрыто';
     return 'открыто';
-  }
-
-  function isLocked(index) {
-    return false;
   }
 
   function hasAnswer(value) {
@@ -515,7 +506,7 @@
   async function saveSection(sectionId, shouldAdvance) {
     const index = sections.findIndex((section) => section.id === sectionId);
     const section = sections[index];
-    if (!section || isLocked(index)) return;
+    if (!section) return;
 
     clearTimeout(saveTimer);
 
@@ -539,9 +530,11 @@
     render();
     await syncSection(section);
 
-    if (shouldAdvance && index === sections.length - 1) {
+    if (shouldAdvance && index === sections.length - 1 && isEverythingComplete()) {
       await syncAllComplete();
       showToast('Анкета завершена. Спасибо, ответы сохранены.');
+    } else if (shouldAdvance && index === sections.length - 1) {
+      showToast('Ответы сохранены. Незаполненные вопросы можно оставить пустыми или вернуться к ним позже.');
     } else if (shouldAdvance) {
       showToast(`Блок ${section.code} сохранен. Открыт следующий блок.`);
     } else {
@@ -750,7 +743,7 @@
     }
 
     const nav = event.target.closest('[data-nav-section]');
-    if (nav && !nav.disabled) {
+    if (nav) {
       setCurrentSection(nav.dataset.navSection);
       return;
     }
