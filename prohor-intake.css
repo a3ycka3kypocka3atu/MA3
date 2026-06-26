@@ -568,6 +568,38 @@ input[type="text"]:focus {
   accent-color: var(--amber);
 }
 
+.choice input[data-single-choice] {
+  display: grid;
+  place-content: center;
+  appearance: none;
+  border: 2px solid rgba(255, 248, 235, 0.48);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.choice input[data-single-choice]::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--amber-strong);
+  content: "";
+  transform: scale(0);
+  transition: transform 0.14s ease;
+}
+
+.choice input[data-single-choice]:checked {
+  border-color: var(--amber-strong);
+}
+
+.choice input[data-single-choice]:checked::before {
+  transform: scale(1);
+}
+
+.choice input[data-single-choice]:focus-visible {
+  outline: 3px solid rgba(94, 222, 230, 0.28);
+  outline-offset: 2px;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

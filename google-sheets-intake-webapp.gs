@@ -1,43 +1,65 @@
 const SPREADSHEET_ID = '18JxwZgWl66mSAkGdCBHAB9EsHypZtYFDVqq2oviAkeI';
 const ANSWERS_SHEET_NAME = 'Question answers';
-const RAW_EVENTS_SHEET_NAME = 'Raw submission events';
+const MAINTENANCE_TOKEN = 'ma3-prohor-2026-06-25';
 
-const ANSWERS_HEADERS = [
-  'received_at',
-  'submitted_at',
-  'event_type',
-  'client_slug',
-  'client_name',
-  'respondent_id',
-  'section_code',
-  'section_id',
-  'section_title',
-  'question_id',
-  'question',
-  'answer',
-  'field_type',
-  'progress_percent',
-  'page_url',
-  'user_agent',
-];
+const TABLE_HEADERS = ['Вопрос', 'Ответ'];
 
-const RAW_HEADERS = [
-  'received_at',
-  'submitted_at',
-  'event_type',
-  'client_slug',
-  'client_name',
-  'respondent_id',
-  'section_code',
-  'section_id',
-  'section_title',
-  'progress_percent',
-  'section_answers_json',
-  'section_question_answers_json',
-  'all_answers_json',
-  'completed_sections_json',
-  'page_url',
-  'user_agent',
+const BLOCKS = [
+  {
+    title: 'A. Операционные вопросы',
+    questions: [
+      'Сколько сейчас обычно проходит времени от “клиент написал” до “выступление состоялось”?',
+      'Добавь реальный контекст по срокам',
+      'Откуда сейчас приходят запросы на выступления?',
+      'Какие каналы реально дают самые качественные запросы?',
+      'Есть ли уже premium-tier выступления или близкие к этому прецеденты?',
+    ],
+  },
+  {
+    title: 'B. Контент-производство',
+    questions: [
+      'Что ты сейчас снимаешь или уже имеешь в сырых материалах?',
+      'Что из этого можно реально найти и передать нам?',
+      'Есть ли stock-видео с прошлых выступлений?',
+      'Какие события или поездки запланированы на ближайшие 6 месяцев?',
+      'Есть ли UGC-команда или videographer на локации?',
+      'Как сейчас выглядит реальный процесс съемки?',
+    ],
+  },
+  {
+    title: 'C. История и нарратив',
+    questions: [
+      'Какая твоя личная история в музыке — коротко, 3-5 предложений?',
+      'Что тебя удерживает в музыке сейчас, когда сложно?',
+      'Какой один момент карьеры был “тогда я понял, что это мое”?',
+    ],
+  },
+  {
+    title: 'D. Технические вопросы',
+    questions: [
+      'Техрайдер существует?',
+      'Что точно должно быть в техрайдере?',
+      'Длина сетов — какой минимальный и комфортный формат?',
+      'Нужен ли back-up DJ на случай форс-мажора?',
+      'Как сейчас закрываешь риски форс-мажора?',
+    ],
+  },
+  {
+    title: 'E. Партнерства и коллаборации',
+    questions: [
+      'С кем из артистов дружишь или уже работал?',
+      'Есть ли лейбл, менеджмент или booking agent, с которыми готов сотрудничать в будущем?',
+      'Кто из артистов в твоем жанре — уровень мечты?',
+    ],
+  },
+  {
+    title: 'F. Тон коммуникации',
+    questions: [
+      '3-5 слов, которыми тебя описывают друзья или фаны',
+      'Что тебя бесит в музыкальной индустрии?',
+      'С чем точно НЕ хочешь, чтобы ассоциировался твой бренд?',
+    ],
+  },
 ];
 
 function doPost(e) {
@@ -46,8 +68,18 @@ function doPost(e) {
 
   try {
     const payload = parsePayload(e);
-    const rows = upsertQuestionAnswerRows(payload);
-    appendRawEvent(payload);
+    const sheet = getAnswerSheet();
+    const answersByQuestion = readExistingAnswers(sheet);
+    const updates = buildAnswerUpdates(payload);
+
+    Object.keys(updates).forEach((question) => {
+      answersByQuestion[normalizeQuestion(question)] = {
+        question,
+        answer: updates[question],
+      };
+    });
+
+    const rows = renderGroupedAnswers(sheet, answersByQuestion);
 
     return jsonResponse({
       ok: true,
@@ -65,6 +97,14 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'clear' && e.parameter.token === MAINTENANCE_TOKEN) {
+    return jsonResponse(clearQuestionAnswersSheet());
+  }
+
+  if (e && e.parameter && e.parameter.action === 'compact' && e.parameter.token === MAINTENANCE_TOKEN) {
+    return jsonResponse(compactQuestionAnswersSheet());
+  }
+
   if (e && e.parameter && e.parameter.payload) {
     return doPost(e);
   }
@@ -76,156 +116,182 @@ function doGet(e) {
   });
 }
 
-function upsertQuestionAnswerRows(payload) {
-  const sheet = getSheet(ANSWERS_SHEET_NAME, ANSWERS_HEADERS);
-  const rows = buildQuestionAnswerRows(payload);
+function compactQuestionAnswersSheet() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(ANSWERS_SHEET_NAME) || spreadsheet.insertSheet(ANSWERS_SHEET_NAME);
+  const answersByQuestion = readExistingAnswers(sheet);
+  const rows = renderGroupedAnswers(sheet, answersByQuestion);
 
-  if (!rows.length) {
-    return 0;
-  }
+  cleanupExtraSheets(spreadsheet);
 
-  const existingRowsByKey = getExistingAnswerRowsByKey(sheet);
-  const rowsToAppend = [];
-  const duplicateRowNumbersToDelete = [];
+  return {
+    ok: true,
+    sheet: ANSWERS_SHEET_NAME,
+    rows,
+  };
+}
 
-  rows.forEach((row) => {
-    const key = getQuestionAnswerRowKey(row);
-    const existingRowNumbers = existingRowsByKey[key] || [];
+function clearQuestionAnswersSheet() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(ANSWERS_SHEET_NAME) || spreadsheet.insertSheet(ANSWERS_SHEET_NAME);
+  const rows = renderGroupedAnswers(sheet, {});
 
-    if (existingRowNumbers.length) {
-      sheet.getRange(existingRowNumbers[0], 1, 1, row.length).setValues([row]);
-      duplicateRowNumbersToDelete.push.apply(duplicateRowNumbersToDelete, existingRowNumbers.slice(1));
+  cleanupExtraSheets(spreadsheet);
+
+  return {
+    ok: true,
+    sheet: ANSWERS_SHEET_NAME,
+    cleared: true,
+    rows,
+  };
+}
+
+function cleanupExtraSheets(spreadsheet) {
+  deleteSheetIfExists(spreadsheet, 'Raw submission events');
+  deleteSheetIfExists(spreadsheet, 'Intake responses');
+  deleteEmptySheetIfExists(spreadsheet, 'Sheet1');
+}
+
+function buildAnswerUpdates(payload) {
+  const source = payload.sectionQuestionAnswers && payload.sectionQuestionAnswers.length
+    ? payload.sectionQuestionAnswers
+    : payload.allQuestionAnswers || [];
+  const updates = {};
+  const knownQuestions = getKnownQuestionsByKey();
+
+  source.forEach((item) => {
+    const question = item.question || '';
+    const key = normalizeQuestion(question);
+
+    if (!knownQuestions[key]) {
       return;
     }
 
-    rowsToAppend.push(row);
+    updates[knownQuestions[key]] = formatAnswer(item.answer);
   });
 
-  deleteRowsFromBottom(sheet, duplicateRowNumbersToDelete);
-
-  if (rowsToAppend.length) {
-    sheet
-      .getRange(sheet.getLastRow() + 1, 1, rowsToAppend.length, rowsToAppend[0].length)
-      .setValues(rowsToAppend);
-  }
-
-  return rows.length;
+  return updates;
 }
 
-function getExistingAnswerRowsByKey(sheet) {
-  const lastRow = sheet.getLastRow();
-  const existingRowsByKey = {};
+function readExistingAnswers(sheet) {
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0] || [];
+  const questionIndex = findHeaderIndex(headers, ['question', 'Вопрос']);
+  const answerIndex = findHeaderIndex(headers, ['answer', 'Ответ']);
+  const knownQuestions = getKnownQuestionsByKey();
+  const answersByQuestion = {};
 
-  if (lastRow < 2) {
-    return existingRowsByKey;
-  }
+  values.slice(1).forEach((row) => {
+    const question = questionIndex >= 0 ? row[questionIndex] : row[0];
+    const answer = answerIndex >= 0 ? row[answerIndex] : row[1];
+    const key = normalizeQuestion(question);
 
-  const values = sheet.getRange(2, 1, lastRow - 1, ANSWERS_HEADERS.length).getValues();
-  values.forEach((row, index) => {
-    const key = getQuestionAnswerRowKey(row);
-    if (key) {
-      if (!existingRowsByKey[key]) {
-        existingRowsByKey[key] = [];
-      }
-
-      existingRowsByKey[key].push(index + 2);
+    if (!key || !knownQuestions[key] || isTestQuestion(key)) {
+      return;
     }
+
+    answersByQuestion[key] = {
+      question: knownQuestions[key],
+      answer: formatAnswer(answer),
+    };
   });
 
-  return existingRowsByKey;
+  return answersByQuestion;
 }
 
-function getQuestionAnswerRowKey(row) {
-  const clientSlug = row[3] || '';
-  const respondentId = row[5] || '';
-  const sectionId = row[7] || '';
-  const questionId = row[9] || '';
+function renderGroupedAnswers(sheet, answersByQuestion) {
+  const rows = [];
+  const blockRowNumbers = [];
 
-  if (!clientSlug || !respondentId || !sectionId || !questionId) {
-    return '';
+  BLOCKS.forEach((block) => {
+    const questionRows = block.questions.map((question) => {
+      const saved = answersByQuestion[normalizeQuestion(question)];
+      return [question, saved ? saved.answer : ''];
+    });
+
+    rows.push([block.title, '']);
+    blockRowNumbers.push(rows.length + 1);
+    rows.push.apply(rows, questionRows);
+  });
+
+  sheet.clear();
+  sheet.getRange(1, 1, 1, TABLE_HEADERS.length).setValues([TABLE_HEADERS]);
+  sheet.setFrozenRows(1);
+
+  if (rows.length) {
+    sheet.getRange(2, 1, rows.length, TABLE_HEADERS.length).setValues(rows);
   }
 
-  return [clientSlug, respondentId, sectionId, questionId].join('::');
+  if (sheet.getMaxColumns() > TABLE_HEADERS.length) {
+    sheet.deleteColumns(TABLE_HEADERS.length + 1, sheet.getMaxColumns() - TABLE_HEADERS.length);
+  }
+
+  formatAnswerSheet(sheet, blockRowNumbers);
+  return rows.length - blockRowNumbers.length;
 }
 
-function deleteRowsFromBottom(sheet, rowNumbers) {
-  const uniqueRowNumbers = Array.from(new Set(rowNumbers)).sort((a, b) => b - a);
-  uniqueRowNumbers.forEach((rowNumber) => {
-    sheet.deleteRow(rowNumber);
-  });
-}
-
-function buildQuestionAnswerRows(payload) {
-  const receivedAt = new Date();
-  const submittedAt = payload.submittedAt ? new Date(payload.submittedAt) : '';
-  const client = payload.client || {};
-  const questionAnswers = payload.sectionQuestionAnswers || [];
-
-  return questionAnswers.map((item) => [
-    receivedAt,
-    submittedAt,
-    payload.eventType || '',
-    client.slug || '',
-    client.name || '',
-    payload.respondentId || '',
-    item.sectionCode || payload.sectionCode || '',
-    item.sectionId || payload.sectionId || '',
-    item.sectionTitle || payload.sectionTitle || '',
-    item.fieldId || '',
-    item.question || '',
-    formatAnswer(item.answer),
-    item.fieldType || '',
-    payload.progressPercent || '',
-    payload.pageUrl || '',
-    payload.userAgent || '',
-  ]);
-}
-
-function appendRawEvent(payload) {
-  const sheet = getSheet(RAW_EVENTS_SHEET_NAME, RAW_HEADERS);
-  const client = payload.client || {};
-
-  sheet.appendRow([
-    new Date(),
-    payload.submittedAt ? new Date(payload.submittedAt) : '',
-    payload.eventType || '',
-    client.slug || '',
-    client.name || '',
-    payload.respondentId || '',
-    payload.sectionCode || '',
-    payload.sectionId || '',
-    payload.sectionTitle || '',
-    payload.progressPercent || '',
-    JSON.stringify(payload.sectionAnswers || {}),
-    JSON.stringify(payload.sectionQuestionAnswers || []),
-    JSON.stringify(payload.allAnswers || {}),
-    JSON.stringify(payload.completedSections || []),
-    payload.pageUrl || '',
-    payload.userAgent || '',
-  ]);
-}
-
-function getSheet(name, headers) {
+function getAnswerSheet() {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(name) || spreadsheet.insertSheet(name);
-  ensureHeaders(sheet, headers);
+  const sheet = spreadsheet.getSheetByName(ANSWERS_SHEET_NAME) || spreadsheet.insertSheet(ANSWERS_SHEET_NAME);
+
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, TABLE_HEADERS.length).setValues([TABLE_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+
   return sheet;
 }
 
-function ensureHeaders(sheet, headers) {
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(headers);
-    sheet.setFrozenRows(1);
+function formatAnswerSheet(sheet, blockRowNumbers) {
+  const lastRow = Math.max(sheet.getLastRow(), 1);
+  const fullRange = sheet.getRange(1, 1, lastRow, TABLE_HEADERS.length);
+
+  sheet.setColumnWidth(1, 480);
+  sheet.setColumnWidth(2, 360);
+  fullRange.setWrap(true);
+  fullRange.setFontWeight('normal');
+  fullRange.setBackground('#ffffff');
+
+  sheet.getRange(1, 1, 1, TABLE_HEADERS.length)
+    .setFontWeight('bold')
+    .setBackground('#dbeafe');
+
+  blockRowNumbers.forEach((rowNumber) => {
+    sheet.getRange(rowNumber, 1, 1, TABLE_HEADERS.length)
+      .setFontWeight('bold')
+      .setBackground('#eef2ff');
+  });
+}
+
+function getKnownQuestionsByKey() {
+  const knownQuestions = {};
+
+  BLOCKS.forEach((block) => {
+    block.questions.forEach((question) => {
+      knownQuestions[normalizeQuestion(question)] = question;
+    });
+  });
+
+  return knownQuestions;
+}
+
+function deleteSheetIfExists(spreadsheet, name) {
+  const sheet = spreadsheet.getSheetByName(name);
+
+  if (sheet && spreadsheet.getSheets().length > 1) {
+    spreadsheet.deleteSheet(sheet);
+  }
+}
+
+function deleteEmptySheetIfExists(spreadsheet, name) {
+  const sheet = spreadsheet.getSheetByName(name);
+
+  if (!sheet || spreadsheet.getSheets().length <= 1) {
     return;
   }
 
-  const currentHeaders = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-  const headersMatch = headers.every((header, index) => currentHeaders[index] === header);
-
-  if (!headersMatch) {
-    sheet.insertRowBefore(1);
-    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-    sheet.setFrozenRows(1);
+  if (sheet.getLastRow() <= 1 && sheet.getLastColumn() <= 1 && !sheet.getRange(1, 1).getValue()) {
+    spreadsheet.deleteSheet(sheet);
   }
 }
 
@@ -239,6 +305,23 @@ function parsePayload(e) {
   }
 
   return JSON.parse(e.postData.contents);
+}
+
+function findHeaderIndex(headers, candidates) {
+  return headers.findIndex((header) => {
+    return candidates.includes(String(header).trim());
+  });
+}
+
+function normalizeQuestion(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isTestQuestion(value) {
+  return value.indexOf('codex') !== -1
+    || value.indexOf('get payload test') !== -1
+    || value.indexOf('post test') !== -1
+    || value.indexOf('does the script save') !== -1;
 }
 
 function formatAnswer(value) {
@@ -265,39 +348,17 @@ function jsonResponse(value) {
 
 function testWrite() {
   const payload = {
-    eventType: 'manual_test',
-    submittedAt: new Date().toISOString(),
-    client: {
-      slug: 'prohor',
-      name: 'Prohor Music',
-    },
-    respondentId: 'manual-test',
-    sectionCode: 'TEST',
-    sectionId: 'test',
-    sectionTitle: 'Manual Apps Script test',
-    progressPercent: 0,
-    sectionAnswers: {
-      test_question: 'test answer',
-    },
     sectionQuestionAnswers: [
       {
-        sectionCode: 'TEST',
-        sectionId: 'test',
-        sectionTitle: 'Manual Apps Script test',
-        fieldId: 'test_question',
-        fieldType: 'textarea',
-        question: 'Does the script save questions and answers?',
-        answer: 'Yes, this is a manual test row from Apps Script.',
+        question: 'Что тебя удерживает в музыке сейчас, когда сложно?',
+        answer: 'Manual test answer',
       },
     ],
-    allAnswers: {
-      test_question: 'test answer',
-    },
-    completedSections: ['test'],
-    pageUrl: 'Apps Script editor',
-    userAgent: 'manual run',
   };
 
-  upsertQuestionAnswerRows(payload);
-  appendRawEvent(payload);
+  doPost({
+    parameter: {
+      payload: JSON.stringify(payload),
+    },
+  });
 }

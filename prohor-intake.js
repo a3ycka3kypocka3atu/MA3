@@ -5,13 +5,13 @@
     slug: 'prohor',
     name: 'Prohor Music',
     project: 'Анкета стратегии артиста',
-    version: '2026-06-25',
+    version: '2026-06-26-clean',
   };
 
   // Paste the deployed Google Apps Script Web App URL here.
-  const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwEETUNiWlhbuKsxnemyRmBBLWiH5cvBxneVYXt5nkF5aIYxvHXpNtmVd26hc6acktH6w/exec';
+  const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz-gi4dPRrWjKZGyDwJvzGY0UP4Vl-v0zKraZSptiSQJ62739PIFq8bpL8j-Vjy_RSDOw/exec';
 
-  const STORAGE_KEY = `ma3:intake:${CLIENT.slug}:v1`;
+  const STORAGE_KEY = `ma3:intake:${CLIENT.slug}:v2`;
   const SAVE_DELAY = 450;
 
   const sections = [
@@ -411,7 +411,7 @@
           <div class="choice-grid">
             ${field.options.map((option) => `
               <label class="choice">
-                <input type="radio" name="${field.id}" value="${escapeHtml(option)}" ${answer === option ? 'checked' : ''}>
+                <input type="checkbox" name="${field.id}" data-single-choice="${field.id}" value="${escapeHtml(option)}" ${answer === option ? 'checked' : ''}>
                 <span>${escapeHtml(option)}</span>
               </label>
             `).join('')}
@@ -693,6 +693,30 @@
       collectAnswers();
       saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
     }, SAVE_DELAY);
+  });
+
+  dom.form.addEventListener('change', (event) => {
+    if (event.target.matches('input[data-single-choice]') && event.target.checked) {
+      dom.form
+        .querySelectorAll(`input[data-single-choice="${event.target.dataset.singleChoice}"]`)
+        .forEach((input) => {
+          if (input !== event.target) {
+            input.checked = false;
+          }
+        });
+    }
+
+    if (!event.target.matches('input[type="radio"], input[type="checkbox"]')) {
+      return;
+    }
+
+    const card = event.target.closest('[data-section-card]');
+    if (card) {
+      markSectionEdited(card.dataset.sectionCard);
+    }
+
+    collectAnswers();
+    saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
   });
 
   document.addEventListener('click', (event) => {
