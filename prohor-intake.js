@@ -287,10 +287,11 @@
       return sections.some((section) => section.id === sectionId);
     });
 
+    syncCompletedSectionsFromAnswers();
+
     const currentIndex = sections.findIndex((section) => section.id === state.currentSection);
-    if (currentIndex === -1 || isLocked(currentIndex)) {
-      const firstOpen = sections.find((section, index) => !state.completedSections.includes(section.id) && !isLocked(index));
-      state.currentSection = firstOpen ? firstOpen.id : sections[sections.length - 1].id;
+    if (currentIndex === -1) {
+      state.currentSection = sections[0].id;
       saveLocal();
     }
   }
@@ -320,7 +321,7 @@
 
   function renderNav() {
     dom.sectionNav.innerHTML = sections.map((section, index) => {
-      const complete = state.completedSections.includes(section.id);
+      const complete = isSectionComplete(section);
       const active = state.currentSection === section.id;
       const locked = isLocked(index);
       const classes = [
@@ -341,7 +342,7 @@
 
   function renderSections() {
     dom.sectionList.innerHTML = sections.map((section, index) => {
-      const complete = state.completedSections.includes(section.id);
+      const complete = isSectionComplete(section);
       const edited = state.editedSections.includes(section.id);
       const active = state.currentSection === section.id;
       const locked = isLocked(index);
@@ -443,17 +444,37 @@
   }
 
   function getSectionStateLabel(section, index) {
+    if (isSectionComplete(section)) return 'сохранено';
     if (state.editedSections.includes(section.id)) return 'изменено';
-    if (state.completedSections.includes(section.id)) return 'сохранено';
     if (state.currentSection === section.id) return 'активно';
     if (isLocked(index)) return 'закрыто';
     return 'открыто';
   }
 
   function isLocked(index) {
-    if (index === 0) return false;
-    const previous = sections[index - 1];
-    return !state.completedSections.includes(previous.id);
+    return false;
+  }
+
+  function hasAnswer(value) {
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    return String(value || '').trim() !== '';
+  }
+
+  function isSectionComplete(section) {
+    return section.fields.every((field) => hasAnswer(state.answers[field.id]));
+  }
+
+  function syncCompletedSectionsFromAnswers() {
+    state.completedSections = sections
+      .filter(isSectionComplete)
+      .map((section) => section.id);
+
+    state.editedSections = state.editedSections.filter((sectionId) => {
+      return !state.completedSections.includes(sectionId);
+    });
   }
 
   function collectAnswers() {
@@ -474,6 +495,8 @@
         state.answers[field.id] = input ? input.value.trim() : '';
       });
     });
+
+    syncCompletedSectionsFromAnswers();
   }
 
   function setCurrentSection(sectionId) {
@@ -503,10 +526,6 @@
     });
 
     collectAnswers();
-
-    if (!state.completedSections.includes(sectionId)) {
-      state.completedSections.push(sectionId);
-    }
 
     state.editedSections = state.editedSections.filter((editedSectionId) => editedSectionId !== sectionId);
 
@@ -691,6 +710,8 @@
       }
 
       collectAnswers();
+      renderNav();
+      updateProgress();
       saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
     }, SAVE_DELAY);
   });
@@ -716,6 +737,8 @@
     }
 
     collectAnswers();
+    renderNav();
+    updateProgress();
     saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
   });
 
