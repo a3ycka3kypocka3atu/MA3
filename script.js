@@ -35,9 +35,9 @@
         close: 'Close',
       },
       agencies: [
-        ['Regular Business Agency', 'Stability · Reliability · Results'],
-        ['Digital & Startups Agency', 'Technology · Innovation · Scale'],
-        ['Ethic & Conscious Agency', 'Meaning · Ethics · Harmony'],
+        ['Regular Business Agency', 'Stability · Reliability · Results', 'Websites, funnels and automations for service businesses.'],
+        ['Digital & Startups Agency', 'Technology · Innovation · Scale', 'MVPs, AI tools and launch systems for startups.'],
+        ['Ethic & Conscious Agency', 'Meaning · Ethics · Harmony', 'Meaningful digital systems for conscious brands and communities.'],
       ],
       sections: {
         services: 'Our Services',
@@ -127,9 +127,9 @@
         close: 'Zavřít',
       },
       agencies: [
-        ['Regular Business Agency', 'Stabilita · Spolehlivost · Výsledek'],
-        ['Digital & Startups Agency', 'Technologie · Inovace · Škálování'],
-        ['Ethic & Conscious Agency', 'Smysl · Etika · Harmonie'],
+        ['Regular Business Agency', 'Stabilita · Spolehlivost · Výsledek', 'Weby, funnely a automatizace pro lokální služby a týmy.'],
+        ['Digital & Startups Agency', 'Technologie · Inovace · Škálování', 'MVP, AI nástroje a launch systémy pro startupy.'],
+        ['Ethic & Conscious Agency', 'Smysl · Etika · Harmonie', 'Smysluplné digitální systémy pro vědomé značky a komunity.'],
       ],
       sections: {
         services: 'Naše služby',
@@ -219,9 +219,9 @@
         close: 'Закрити',
       },
       agencies: [
-        ['Regular Business Agency', 'Стабільність · Надійність · Результат'],
-        ['Digital & Startups Agency', 'Технології · Інновації · Масштабування'],
-        ['Ethic & Conscious Agency', 'Сенс · Етика · Гармонія'],
+        ['Regular Business Agency', 'Стабільність · Надійність · Результат', 'Сайти, воронки й автоматизації для сервісного бізнесу.'],
+        ['Digital & Startups Agency', 'Технології · Інновації · Масштабування', 'MVP, AI-інструменти та системи запуску для стартапів.'],
+        ['Ethic & Conscious Agency', 'Сенс · Етика · Гармонія', 'Смислові digital-системи для conscious-брендів і спільнот.'],
       ],
       sections: {
         services: 'Наші послуги',
@@ -311,9 +311,9 @@
         close: 'Закрыть',
       },
       agencies: [
-        ['Regular Business Agency', 'Стабильность · Надёжность · Результат'],
-        ['Digital & Startups Agency', 'Технологии · Инновации · Масштабирование'],
-        ['Ethic & Conscious Agency', 'Смысл · Этика · Гармония'],
+        ['Regular Business Agency', 'Стабильность · Надёжность · Результат', 'Сайты, воронки и автоматизации для сервисного бизнеса.'],
+        ['Digital & Startups Agency', 'Технологии · Инновации · Масштабирование', 'MVP, AI-инструменты и системы запуска для стартапов.'],
+        ['Ethic & Conscious Agency', 'Смысл · Этика · Гармония', 'Смысловые digital-системы для conscious-брендов и сообществ.'],
       ],
       sections: {
         services: 'Наши услуги',
@@ -559,7 +559,8 @@
       if (!agency) return;
       setText('.agency-btn__title', agency[0], button);
       setText('.agency-btn__subtitle', agency[1], button);
-      button.setAttribute('aria-label', `${agency[0]}. ${agency[1]}`);
+      setText('.agency-btn__description', agency[2], button);
+      button.setAttribute('aria-label', `${agency[0]}. ${agency[1]}. ${agency[2] || ''}`);
     });
 
     setText('#btn-services .section-btn__text', t.sections.services);

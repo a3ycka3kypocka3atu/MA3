@@ -391,6 +391,29 @@ video::-webkit-media-controls-play-button {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.12), 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+.agency-btn__description {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(245, 247, 250, 0.82);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.agency-blue .agency-btn__description {
+  border-color: rgba(59, 130, 246, 0.24);
+}
+
+.agency-green .agency-btn__description {
+  border-color: rgba(16, 185, 129, 0.24);
+}
+
+.agency-yellow .agency-btn__description {
+  border-color: rgba(250, 204, 21, 0.24);
+}
+
 /* ═══════════════════════════════════════════════════════════
    CENTER SECTION BUTTONS
    ═══════════════════════════════════════════════════════════ */
@@ -1114,6 +1137,25 @@ video::-webkit-media-controls-play-button {
     padding: clamp(18px, 2.8vh, 24px) 20px;
   }
 
+  .agency-btn__content {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 4px;
+  }
+
+  .agency-btn__icon {
+    grid-row: 1 / span 3;
+    margin-bottom: 0;
+  }
+
+  .agency-btn__title,
+  .agency-btn__subtitle,
+  .agency-btn__description {
+    grid-column: 2;
+  }
+
   .agency-btn__title {
     font-size: 1.05rem;
   }
@@ -1214,7 +1256,8 @@ video::-webkit-media-controls-play-button {
   }
 
   .agency-btn__content {
-    gap: 6px;
+    column-gap: 12px;
+    row-gap: 3px;
   }
 
   .agency-btn__title {
@@ -1223,6 +1266,13 @@ video::-webkit-media-controls-play-button {
 
   .agency-btn__subtitle {
     font-size: 0.82rem;
+  }
+
+  .agency-btn__description {
+    margin-top: 6px;
+    padding-top: 8px;
+    font-size: 0.78rem;
+    line-height: 1.34;
   }
 
   .section-btn {
@@ -1276,6 +1326,13 @@ video::-webkit-media-controls-play-button {
 
   .agency-btn__subtitle {
     font-size: 0.76rem;
+  }
+
+  .agency-btn__description {
+    margin-top: 4px;
+    padding-top: 6px;
+    font-size: 0.72rem;
+    line-height: 1.25;
   }
 
   #center-buttons {
