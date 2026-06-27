@@ -127,9 +127,9 @@
         close: 'Zavřít',
       },
       agencies: [
-        ['Regular Business Agency', 'Stabilita · Spolehlivost · Výsledek', 'Weby, funnely a automatizace pro lokální služby a týmy.'],
-        ['Digital & Startups Agency', 'Technologie · Inovace · Škálování', 'MVP, AI nástroje a launch systémy pro startupy.'],
-        ['Ethic & Conscious Agency', 'Smysl · Etika · Harmonie', 'Smysluplné digitální systémy pro vědomé značky a komunity.'],
+        ['Agentura pro stabilní byznys', 'Stabilita · Spolehlivost · Výsledek', 'Weby, funnely a automatizace pro lokální služby a týmy.'],
+        ['Digitální a startupová agentura', 'Technologie · Inovace · Škálování', 'MVP, AI nástroje a launch systémy pro startupy.'],
+        ['Agentura pro společenské a přírodní projekty', 'Smysl · Etika · Harmonie', 'Digitální systémy pro sociální, přírodní, kulturní a veřejné projekty.'],
       ],
       sections: {
         services: 'Naše služby',
@@ -219,9 +219,9 @@
         close: 'Закрити',
       },
       agencies: [
-        ['Regular Business Agency', 'Стабільність · Надійність · Результат', 'Сайти, воронки й автоматизації для сервісного бізнесу.'],
-        ['Digital & Startups Agency', 'Технології · Інновації · Масштабування', 'MVP, AI-інструменти та системи запуску для стартапів.'],
-        ['Ethic & Conscious Agency', 'Сенс · Етика · Гармонія', 'Смислові digital-системи для conscious-брендів і спільнот.'],
+        ['Агенція для стабільного бізнесу', 'Стабільність · Надійність · Результат', 'Сайти, воронки й автоматизації для сервісного бізнесу.'],
+        ['Digital та стартап-агенція', 'Технології · Інновації · Масштабування', 'MVP, AI-інструменти та системи запуску для стартапів.'],
+        ['Агенція соціальних і природних проєктів', 'Сенс · Етика · Гармонія', 'Digital-системи для соціальних, природних, культурних і державних проєктів.'],
       ],
       sections: {
         services: 'Наші послуги',
@@ -311,9 +311,9 @@
         close: 'Закрыть',
       },
       agencies: [
-        ['Regular Business Agency', 'Стабильность · Надёжность · Результат', 'Сайты, воронки и автоматизации для сервисного бизнеса.'],
-        ['Digital & Startups Agency', 'Технологии · Инновации · Масштабирование', 'MVP, AI-инструменты и системы запуска для стартапов.'],
-        ['Ethic & Conscious Agency', 'Смысл · Этика · Гармония', 'Смысловые digital-системы для conscious-брендов и сообществ.'],
+        ['Агентство для стабильного бизнеса', 'Стабильность · Надёжность · Результат', 'Сайты, воронки и автоматизации для сервисного бизнеса.'],
+        ['Digital и стартап-агентство', 'Технологии · Инновации · Масштабирование', 'MVP, AI-инструменты и системы запуска для стартапов.'],
+        ['Агентство социальных и природных проектов', 'Смысл · Этика · Гармония', 'Digital-системы для социальных, природных, культурных и государственных проектов.'],
       ],
       sections: {
         services: 'Наши услуги',
