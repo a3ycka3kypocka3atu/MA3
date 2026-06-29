@@ -663,37 +663,64 @@ video::-webkit-media-controls-play-button {
   border: none;
   background: transparent;
   cursor: pointer;
+  isolation: isolate;
+}
+
+.section-btn::before {
+  content: '';
+  position: absolute;
+  inset: -9px;
+  z-index: -1;
+  border-radius: 24px;
+  background: rgba(8, 12, 24, 0.48);
+  filter: blur(8px);
+  box-shadow:
+    0 0 28px rgba(255, 255, 255, 0.24),
+    0 0 58px rgba(255, 255, 255, 0.12);
+  opacity: 0.86;
+  transition: opacity 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  pointer-events: none;
 }
 
 .section-btn__glass {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.09) 0%, transparent 38%),
-    rgba(8, 12, 24, 0.78);
+    linear-gradient(160deg, rgba(255, 255, 255, 0.11) 0%, transparent 38%),
+    rgba(8, 12, 24, 0.92);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(234, 240, 255, 0.22);
+  border: 1px solid rgba(234, 240, 255, 0.3);
   border-radius: var(--radius-btn);
   transition: background 0.3s var(--ease-out), border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
   box-shadow:
-    0 14px 38px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    0 14px 38px rgba(0, 0, 0, 0.38),
+    0 0 18px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .section-btn:hover .section-btn__glass {
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.12) 0%, transparent 38%),
-    rgba(8, 12, 24, 0.84);
-  border-color: rgba(255, 255, 255, 0.3);
+    linear-gradient(160deg, rgba(255, 255, 255, 0.15) 0%, transparent 38%),
+    rgba(8, 12, 24, 0.95);
+  border-color: rgba(255, 255, 255, 0.42);
   box-shadow:
     0 16px 42px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    0 0 24px rgba(255, 255, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .section-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.section-btn:hover::before {
+  opacity: 1;
+  background: rgba(8, 12, 24, 0.58);
+  box-shadow:
+    0 0 34px rgba(255, 255, 255, 0.34),
+    0 0 76px rgba(255, 255, 255, 0.18);
 }
 
 .section-btn:active {
@@ -710,12 +737,7 @@ video::-webkit-media-controls-play-button {
   text-shadow: var(--text-shadow-readable);
 }
 
-/* Specific button colors on hover */
-#btn-services:hover .section-btn__glass { border-color: rgba(59, 130, 246, 0.56); box-shadow: 0 0 26px rgba(59, 130, 246, 0.3), 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
-#btn-schedule:hover .section-btn__glass { border-color: rgba(16, 185, 129, 0.56); box-shadow: 0 0 26px rgba(16, 185, 129, 0.3), 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
-#btn-bot:hover .section-btn__glass { border-color: rgba(250, 204, 21, 0.58); box-shadow: 0 0 26px rgba(250, 204, 21, 0.3), 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
-#btn-projects:hover .section-btn__glass { border-color: rgba(165, 180, 252, 0.56); box-shadow: 0 0 26px rgba(165, 180, 252, 0.3), 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
-#btn-cases:hover .section-btn__glass { border-color: rgba(236, 72, 153, 0.52); box-shadow: 0 0 26px rgba(236, 72, 153, 0.24), 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+/* Section buttons intentionally use only neutral white light. */
 
 /* ═══════════════════════════════════════════════════════════
    ECOSYSTEM CONCEPT
