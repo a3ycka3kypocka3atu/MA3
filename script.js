@@ -26,19 +26,38 @@
   const translations = {
     en: {
       htmlLang: 'en',
-      metaDescription: 'MA3 — AI-native web, growth & product studio. Three agencies, one integrated service system.',
+      metaDescription: 'MA3 — AI-native web, growth & product studio. Three operating directions, one integrated ecosystem.',
       pageTitle: 'MA3 — Agency 3.0',
       aria: {
         language: 'Language',
-        chooseAgency: 'Choose Agency',
+        chooseAgency: 'Choose Direction',
+        concept: 'More than a marketing agency',
         explore: 'Explore',
         close: 'Close',
       },
       agencies: [
-        ['Regular Business Agency', 'Stability · Reliability · Results', 'Websites, funnels and automations for service businesses.'],
-        ['Digital & Startups Agency', 'Technology · Innovation · Scale', 'MVPs, AI tools and launch systems for startups.'],
-        ['Ethic & Conscious Agency', 'Meaning · Ethics · Harmony', 'Meaningful digital systems for conscious brands and communities.'],
+        ['Business Systems', 'For traditional business', 'Restaurants • Clinics • Manufacturing\nServices • Hotels • Real Estate\nFocus: Websites • Marketing • Automation • AI\nCRM • Operations • Teams'],
+        ['Digital Products', 'For digital products', 'SaaS • AI • Platforms • Marketplaces\nMobile Apps • Startups\nFocus: MVP • Product Design • Marketing\nAI • Launch • Growth'],
+        ['Impact Systems', 'For public-impact projects', 'Education • Ecology • Culture • NGOs • Foundations\nGovernment & International Projects\nFocus: Marketing • Digital • Automation • AI\nCommunications • Communities'],
       ],
+      concept: {
+        title: 'More than a marketing agency',
+        ticker: [
+          'More than a marketing agency',
+          'Building businesses, products, teams and ecosystems.',
+          'From strategy to real-world execution.',
+          'We don’t just deliver services. We build systems that grow.',
+          'Connecting talented people with meaningful projects.',
+          'Where business growth meets positive impact.',
+        ],
+        subTicker: 'Strategy • Building Businesses • Marketing • Launching Products • AI • Optimizing Operations • Automation • Growing Teams • Websites • Digital Platforms • Community • Partnerships • Innovation • Long-Term Growth',
+        points: [
+          ['Systems', 'We solve organizations as complete systems — from strategy and technology to teams, operations and real-world execution.'],
+          ['Practice', 'Alongside client work, we build our own businesses, products and social initiatives that continuously expand our experience and ecosystem.'],
+          ['Network', 'These projects bring together talented people, experienced professionals and partners who become part of our collaborative network.'],
+          ['Value', 'Together we create stronger teams, meaningful projects and long-term value for businesses, communities and society — because we believe meaningful work can help make the world a better place.'],
+        ],
+      },
       sections: {
         services: 'Our Services',
         bot: 'Agency Bot',
@@ -118,19 +137,38 @@
     },
     cs: {
       htmlLang: 'cs',
-      metaDescription: 'MA3 — AI-native studio pro web, růst a produkt. Tři agentury, jeden propojený systém služeb.',
+      metaDescription: 'MA3 — AI-native studio pro web, růst a produkt. Tři směry činnosti, jeden propojený ekosystém.',
       pageTitle: 'MA3 — Agentura 3.0',
       aria: {
         language: 'Jazyk',
-        chooseAgency: 'Vyberte agenturu',
+        chooseAgency: 'Vyberte směr',
+        concept: 'Víc než marketingová agentura',
         explore: 'Prozkoumat',
         close: 'Zavřít',
       },
       agencies: [
-        ['Agentura pro stabilní byznys', 'Stabilita · Spolehlivost · Výsledek', 'Weby, funnely a automatizace pro lokální služby a týmy.'],
-        ['Digitální a startupová agentura', 'Technologie · Inovace · Škálování', 'MVP, AI nástroje a launch systémy pro startupy.'],
-        ['Agentura pro společenské a přírodní projekty', 'Smysl · Etika · Harmonie', 'Digitální systémy pro sociální, přírodní, kulturní a veřejné projekty.'],
+        ['Business Systems', 'Pro tradiční byznys', 'Restaurace • Kliniky • Výroba\nSlužby • Hotely • Reality\nFokus: Weby • Marketing • Automatizace • AI\nCRM • Provoz • Týmy'],
+        ['Digital Products', 'Pro digitální produkty', 'SaaS • AI • Platformy • Marketplace\nMobilní aplikace • Startupy\nFokus: MVP • Product Design • Marketing\nAI • Launch • Growth'],
+        ['Impact Systems', 'Pro společensky důležité projekty', 'Vzdělávání • Ekologie • Kultura • NGO • Fondy\nStátní a mezinárodní projekty\nFokus: Marketing • Digital • Automatizace • AI\nKomunikace • Komunity'],
       ],
+      concept: {
+        title: 'Víc než marketingová agentura',
+        ticker: [
+          'More than a marketing agency',
+          'Building businesses, products, teams and ecosystems.',
+          'From strategy to real-world execution.',
+          'We don’t just deliver services. We build systems that grow.',
+          'Connecting talented people with meaningful projects.',
+          'Where business growth meets positive impact.',
+        ],
+        subTicker: 'Strategy • Building Businesses • Marketing • Launching Products • AI • Optimizing Operations • Automation • Growing Teams • Websites • Digital Platforms • Community • Partnerships • Innovation • Long-Term Growth',
+        points: [
+          ['Systémy', 'Řešíme organizace jako ucelené systémy — od strategie a technologií po týmy, provoz a reálnou realizaci.'],
+          ['Praxe', 'Vedle klientské práce budujeme vlastní firmy, produkty a sociální iniciativy, které průběžně rozšiřují naši zkušenost i ekosystém.'],
+          ['Síť', 'Tyto projekty propojují talentované lidi, zkušené profesionály a partnery, kteří se stávají součástí naší spolupracující sítě.'],
+          ['Hodnota', 'Společně vytváříme silnější týmy, smysluplné projekty a dlouhodobou hodnotu pro firmy, komunity i společnost — protože věříme, že smysluplná práce může pomáhat dělat svět lepším.'],
+        ],
+      },
       sections: {
         services: 'Naše služby',
         bot: 'Agency Bot',
@@ -210,19 +248,38 @@
     },
     uk: {
       htmlLang: 'uk',
-      metaDescription: 'MA3 — AI-native студія вебу, росту та продукту. Три агенції, одна цілісна система послуг.',
+      metaDescription: 'MA3 — AI-native студія вебу, росту та продукту. Три напрями діяльності, одна цілісна екосистема.',
       pageTitle: 'MA3 — Агенція 3.0',
       aria: {
         language: 'Мова',
-        chooseAgency: 'Виберіть агенцію',
+        chooseAgency: 'Виберіть напрям',
+        concept: 'Більше ніж маркетингова агенція',
         explore: 'Навігація',
         close: 'Закрити',
       },
       agencies: [
-        ['Агенція для стабільного бізнесу', 'Стабільність · Надійність · Результат', 'Сайти, воронки й автоматизації для сервісного бізнесу.'],
-        ['Digital та стартап-агенція', 'Технології · Інновації · Масштабування', 'MVP, AI-інструменти та системи запуску для стартапів.'],
-        ['Агенція соціальних і природних проєктів', 'Сенс · Етика · Гармонія', 'Digital-системи для соціальних, природних, культурних і державних проєктів.'],
+        ['Business Systems', 'Для традиційного бізнесу', 'Ресторани • Клініки • Виробництво\nСервіси • Готелі • Нерухомість\nФокус: Сайти • Маркетинг • Автоматизація\nAI • CRM • Операції • Команди'],
+        ['Digital Products', 'Для цифрових продуктів', 'SaaS • AI • Платформи • Marketplace\nMobile Apps • Стартапи\nФокус: MVP • Product Design • Маркетинг\nAI • Launch • Growth'],
+        ['Impact Systems', 'Для суспільно важливих проєктів', 'Освіта • Екологія • Культура • ГО • Фонди\nДержавні та міжнародні проєкти\nФокус: Маркетинг • Digital • Автоматизація • AI\nКомунікації • Спільноти'],
       ],
+      concept: {
+        title: 'Більше ніж маркетингова агенція',
+        ticker: [
+          'More than a marketing agency',
+          'Building businesses, products, teams and ecosystems.',
+          'From strategy to real-world execution.',
+          'We don’t just deliver services. We build systems that grow.',
+          'Connecting talented people with meaningful projects.',
+          'Where business growth meets positive impact.',
+        ],
+        subTicker: 'Strategy • Building Businesses • Marketing • Launching Products • AI • Optimizing Operations • Automation • Growing Teams • Websites • Digital Platforms • Community • Partnerships • Innovation • Long-Term Growth',
+        points: [
+          ['Системи', 'Ми працюємо з організаціями як із цілісними системами — від стратегії й технологій до команд, операцій і реальної реалізації.'],
+          ['Практика', 'Поруч із клієнтською роботою ми будуємо власні бізнеси, продукти й соціальні ініціативи, які постійно розширюють наш досвід та екосистему.'],
+          ['Мережа', 'Ці проєкти об’єднують талановитих людей, досвідчених професіоналів і партнерів, які стають частиною нашої колаборативної мережі.'],
+          ['Цінність', 'Разом ми створюємо сильніші команди, змістовні проєкти й довгострокову цінність для бізнесу, спільнот і суспільства — бо віримо, що осмислена робота може допомагати робити світ кращим.'],
+        ],
+      },
       sections: {
         services: 'Наші послуги',
         bot: 'Agency Bot',
@@ -302,19 +359,38 @@
     },
     ru: {
       htmlLang: 'ru',
-      metaDescription: 'MA3 — AI-native студия веба, роста и продукта. Три агентства, одна цельная система услуг.',
+      metaDescription: 'MA3 — AI-native студия веба, роста и продукта. Три направления деятельности, одна цельная экосистема.',
       pageTitle: 'MA3 — Агентство 3.0',
       aria: {
         language: 'Язык',
-        chooseAgency: 'Выберите агентство',
+        chooseAgency: 'Выберите направление',
+        concept: 'Больше чем маркетинговое агентство',
         explore: 'Навигация',
         close: 'Закрыть',
       },
       agencies: [
-        ['Агентство для стабильного бизнеса', 'Стабильность · Надёжность · Результат', 'Сайты, воронки и автоматизации для сервисного бизнеса.'],
-        ['Digital и стартап-агентство', 'Технологии · Инновации · Масштабирование', 'MVP, AI-инструменты и системы запуска для стартапов.'],
-        ['Агентство социальных и природных проектов', 'Смысл · Этика · Гармония', 'Digital-системы для социальных, природных, культурных и государственных проектов.'],
+        ['Business Systems', 'Для традиционного бизнеса', 'Рестораны • Клиники • Производство\nСервисы • Отели • Недвижимость\nФокус: Сайты • Маркетинг • Автоматизация\nAI • CRM • Операции • Команды'],
+        ['Digital Products', 'Для цифровых продуктов', 'SaaS • AI • Платформы • Marketplace\nMobile Apps • Стартапы\nФокус: MVP • Product Design • Маркетинг\nAI • Launch • Growth'],
+        ['Impact Systems', 'Для общественно важных проектов', 'Образование • Экология • Культура • НКО • Фонды\nГосударственные и международные проекты\nФокус: Маркетинг • Digital • Автоматизация • AI\nКоммуникации • Сообщества'],
       ],
+      concept: {
+        title: 'Больше чем маркетинговое агентство',
+        ticker: [
+          'More than a marketing agency',
+          'Building businesses, products, teams and ecosystems.',
+          'From strategy to real-world execution.',
+          'We don’t just deliver services. We build systems that grow.',
+          'Connecting talented people with meaningful projects.',
+          'Where business growth meets positive impact.',
+        ],
+        subTicker: 'Strategy • Building Businesses • Marketing • Launching Products • AI • Optimizing Operations • Automation • Growing Teams • Websites • Digital Platforms • Community • Partnerships • Innovation • Long-Term Growth',
+        points: [
+          ['Системы', 'Мы работаем с организациями как с целостными системами — от стратегии и технологий до команд, операций и реального внедрения.'],
+          ['Практика', 'Параллельно с клиентской работой мы создаём собственные бизнесы, продукты и социальные инициативы, которые постоянно расширяют наш опыт и экосистему.'],
+          ['Сеть', 'Эти проекты объединяют талантливых людей, опытных профессионалов и партнёров, которые становятся частью нашей коллаборативной сети.'],
+          ['Ценность', 'Вместе мы создаём более сильные команды, осмысленные проекты и долгосрочную ценность для бизнеса, сообществ и общества — потому что верим, что осмысленная работа может помогать делать мир лучше.'],
+        ],
+      },
       sections: {
         services: 'Наши услуги',
         bot: 'Agency Bot',
@@ -481,6 +557,56 @@
     if (element) element.textContent = text;
   }
 
+  function createAgencyDescriptionTag(text, isLabel = false) {
+    const tag = document.createElement('span');
+    tag.className = isLabel ? 'agency-btn__tag agency-btn__tag--label' : 'agency-btn__tag';
+    tag.textContent = text;
+    return tag;
+  }
+
+  function renderAgencyDescription(element, description) {
+    if (!element) return;
+
+    element.textContent = '';
+    description
+      .split('\n')
+      .map(line => line.trim())
+      .filter(Boolean)
+      .forEach(line => {
+        const labelMatch = line.match(/^([^:]+):\s*(.*)$/);
+        if (labelMatch) {
+          const [, label, rest] = labelMatch;
+          element.appendChild(createAgencyDescriptionTag(label, true));
+          rest
+            .split('•')
+            .map(part => part.trim())
+            .filter(Boolean)
+            .forEach(part => element.appendChild(createAgencyDescriptionTag(part)));
+          return;
+        }
+
+        line
+          .split('•')
+          .map(part => part.trim())
+          .filter(Boolean)
+          .forEach(part => element.appendChild(createAgencyDescriptionTag(part)));
+      });
+  }
+
+  function renderTickerTrack(track, items, className, copies = 2) {
+    if (!track) return;
+    track.textContent = '';
+
+    Array.from({ length: copies }).forEach(() => {
+      items.forEach(text => {
+        const item = document.createElement('span');
+        item.className = className;
+        item.textContent = text;
+        track.appendChild(item);
+      });
+    });
+  }
+
   function setServiceCard(card, item, price, labels, index) {
     card.dataset.serviceIndex = String(index);
     card.dataset.serviceTitle = item.title;
@@ -551,15 +677,17 @@
 
     const agencySection = document.getElementById('agency-buttons');
     const centerSection = document.getElementById('center-buttons');
+    const conceptSection = document.getElementById('agency-manifesto');
     if (agencySection) agencySection.setAttribute('aria-label', t.aria.chooseAgency);
     if (centerSection) centerSection.setAttribute('aria-label', t.aria.explore);
+    if (conceptSection) conceptSection.setAttribute('aria-label', t.aria.concept);
 
     document.querySelectorAll('.agency-btn').forEach((button, index) => {
       const agency = t.agencies[index];
       if (!agency) return;
       setText('.agency-btn__title', agency[0], button);
       setText('.agency-btn__subtitle', agency[1], button);
-      setText('.agency-btn__description', agency[2], button);
+      renderAgencyDescription(button.querySelector('.agency-btn__description'), agency[2]);
       button.setAttribute('aria-label', `${agency[0]}. ${agency[1]}. ${agency[2] || ''}`);
     });
 
@@ -568,6 +696,24 @@
     setText('#btn-projects .section-btn__text', t.sections.projects);
     setText('#btn-cases .section-btn__text', t.sections.cases);
     setText('.brand-tagline', t.footer);
+    const ticker = document.querySelector('.agency-manifesto__ticker');
+    if (ticker) ticker.setAttribute('aria-label', t.concept.ticker.join('. '));
+    renderTickerTrack(
+      document.querySelector('.agency-manifesto__ticker:not(.agency-manifesto__ticker--sub) .agency-manifesto__ticker-track'),
+      t.concept.ticker,
+      'agency-manifesto__ticker-text'
+    );
+    const subTicker = document.querySelector('.agency-manifesto__ticker--sub');
+    if (subTicker) subTicker.setAttribute('aria-label', t.concept.subTicker);
+    document.querySelectorAll('.agency-manifesto__ticker-text--sub').forEach(item => {
+      item.textContent = t.concept.subTicker;
+    });
+    document.querySelectorAll('.agency-manifesto__point').forEach((point, index) => {
+      const content = t.concept.points[index];
+      if (!content) return;
+      setText('.agency-manifesto__point-title', content[0], point);
+      setText('p', content[1], point);
+    });
 
     [popupServices, popupProjects, popupCases].forEach(popup => {
       if (popup) popup.setAttribute('aria-label', popup === popupServices ? t.services.title : popup === popupProjects ? t.projectsTitle : t.casesTitle);
