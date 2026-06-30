@@ -36,9 +36,9 @@
         close: 'Close',
       },
       agencies: [
-        ['Business Systems', 'For traditional business', 'Restaurants • Clinics • Manufacturing\nServices • Hotels • Real Estate\nFocus: Websites • Marketing • Automation • AI\nCRM • Operations • Teams'],
-        ['Digital Products', 'For digital products', 'SaaS • AI • Platforms • Marketplaces\nMobile Apps • Startups\nFocus: MVP • Product Design • Marketing\nAI • Launch • Growth'],
-        ['Impact Systems', 'For public-impact projects', 'Education • Ecology • Culture • NGOs • Foundations\nGovernment & International Projects\nFocus: Marketing • Digital • Automation • AI\nCommunications • Communities'],
+        ['Business Systems', 'For traditional business', 'Restaurants • Clinics • Manufacturing\nServices • Hotels • Real Estate\nTools we focus on: Websites • Marketing • Automation • AI\nCRM • Operations • Teams'],
+        ['Digital Products', 'For digital products', 'SaaS • AI • Platforms • Marketplaces\nMobile Apps • Startups\nTools we focus on: MVP • Product Design • Marketing\nAI • Launch • Growth'],
+        ['Impact Systems', 'For public-impact projects', 'Education • Ecology • Culture • NGOs • Foundations\nGovernment & International Projects\nTools we focus on: Marketing • Digital • Automation • AI\nCommunications • Communities'],
       ],
       concept: {
         title: 'More than a marketing agency',
@@ -147,9 +147,9 @@
         close: 'Zavřít',
       },
       agencies: [
-        ['Business Systems', 'Pro tradiční byznys', 'Restaurace • Kliniky • Výroba\nSlužby • Hotely • Reality\nFokus: Weby • Marketing • Automatizace • AI\nCRM • Provoz • Týmy'],
-        ['Digital Products', 'Pro digitální produkty', 'SaaS • AI • Platformy • Marketplace\nMobilní aplikace • Startupy\nFokus: MVP • Product Design • Marketing\nAI • Launch • Growth'],
-        ['Impact Systems', 'Pro společensky důležité projekty', 'Vzdělávání • Ekologie • Kultura • NGO • Fondy\nStátní a mezinárodní projekty\nFokus: Marketing • Digital • Automatizace • AI\nKomunikace • Komunity'],
+        ['Business Systems', 'Pro tradiční byznys', 'Restaurace • Kliniky • Výroba\nSlužby • Hotely • Reality\nNaše hlavní nástroje: Weby • Marketing • Automatizace • AI\nCRM • Provoz • Týmy'],
+        ['Digital Products', 'Pro digitální produkty', 'SaaS • AI • Platformy • Marketplace\nMobilní aplikace • Startupy\nNaše hlavní nástroje: MVP • Product Design • Marketing\nAI • Launch • Growth'],
+        ['Impact Systems', 'Pro společensky důležité projekty', 'Vzdělávání • Ekologie • Kultura • NGO • Fondy\nStátní a mezinárodní projekty\nNaše hlavní nástroje: Marketing • Digital • Automatizace • AI\nKomunikace • Komunity'],
       ],
       concept: {
         title: 'Víc než marketingová agentura',
@@ -258,9 +258,9 @@
         close: 'Закрити',
       },
       agencies: [
-        ['Business Systems', 'Для традиційного бізнесу', 'Ресторани • Клініки • Виробництво\nСервіси • Готелі • Нерухомість\nФокус: Сайти • Маркетинг • Автоматизація\nAI • CRM • Операції • Команди'],
-        ['Digital Products', 'Для цифрових продуктів', 'SaaS • AI • Платформи • Marketplace\nMobile Apps • Стартапи\nФокус: MVP • Product Design • Маркетинг\nAI • Launch • Growth'],
-        ['Impact Systems', 'Для суспільно важливих проєктів', 'Освіта • Екологія • Культура • ГО • Фонди\nДержавні та міжнародні проєкти\nФокус: Маркетинг • Digital • Автоматизація • AI\nКомунікації • Спільноти'],
+        ['Business Systems', 'Для традиційного бізнесу', 'Ресторани • Клініки • Виробництво\nСервіси • Готелі • Нерухомість\nКлючові інструменти: Сайти • Маркетинг • Автоматизація\nAI • CRM • Операції • Команди'],
+        ['Digital Products', 'Для цифрових продуктів', 'SaaS • AI • Платформи • Marketplace\nMobile Apps • Стартапи\nКлючові інструменти: MVP • Product Design • Маркетинг\nAI • Launch • Growth'],
+        ['Impact Systems', 'Для суспільно важливих проєктів', 'Освіта • Екологія • Культура • ГО • Фонди\nДержавні та міжнародні проєкти\nКлючові інструменти: Маркетинг • Digital • Автоматизація • AI\nКомунікації • Спільноти'],
       ],
       concept: {
         title: 'Більше ніж маркетингова агенція',
@@ -369,9 +369,9 @@
         close: 'Закрыть',
       },
       agencies: [
-        ['Business Systems', 'Для традиционного бизнеса', 'Рестораны • Клиники • Производство\nСервисы • Отели • Недвижимость\nФокус: Сайты • Маркетинг • Автоматизация\nAI • CRM • Операции • Команды'],
-        ['Digital Products', 'Для цифровых продуктов', 'SaaS • AI • Платформы • Marketplace\nMobile Apps • Стартапы\nФокус: MVP • Product Design • Маркетинг\nAI • Launch • Growth'],
-        ['Impact Systems', 'Для общественно важных проектов', 'Образование • Экология • Культура • НКО • Фонды\nГосударственные и международные проекты\nФокус: Маркетинг • Digital • Автоматизация • AI\nКоммуникации • Сообщества'],
+        ['Business Systems', 'Для традиционного бизнеса', 'Рестораны • Клиники • Производство\nСервисы • Отели • Недвижимость\nКлючевые инструменты: Сайты • Маркетинг • Автоматизация\nAI • CRM • Операции • Команды'],
+        ['Digital Products', 'Для цифровых продуктов', 'SaaS • AI • Платформы • Marketplace\nMobile Apps • Стартапы\nКлючевые инструменты: MVP • Product Design • Маркетинг\nAI • Launch • Growth'],
+        ['Impact Systems', 'Для общественно важных проектов', 'Образование • Экология • Культура • НКО • Фонды\nГосударственные и международные проекты\nКлючевые инструменты: Маркетинг • Digital • Автоматизация • AI\nКоммуникации • Сообщества'],
       ],
       concept: {
         title: 'Больше чем маркетинговое агентство',
@@ -559,7 +559,7 @@
 
   function createAgencyDescriptionTag(text, isLabel = false) {
     const tag = document.createElement('span');
-    tag.className = isLabel ? 'agency-btn__tag agency-btn__tag--label' : 'agency-btn__tag';
+    tag.className = isLabel ? 'agency-btn__focus-heading' : 'agency-btn__tag';
     tag.textContent = text;
     return tag;
   }
