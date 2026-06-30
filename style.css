@@ -2001,8 +2001,21 @@ video::-webkit-media-controls-play-button {
   }
 
   .agency-manifesto__ticker-track {
-    animation: none !important;
+    animation: manifestoTicker 92s linear infinite !important;
     padding-left: 0;
-    transform: none;
+  }
+
+  .agency-manifesto__ticker-track--reverse {
+    animation: manifestoTickerReverse 82s linear infinite !important;
+  }
+}
+
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .agency-manifesto__ticker-track {
+    animation-duration: 46s !important;
+  }
+
+  .agency-manifesto__ticker-track--reverse {
+    animation-duration: 38s !important;
   }
 }
