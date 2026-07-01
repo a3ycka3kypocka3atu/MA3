@@ -1,6 +1,6 @@
 const SPREADSHEET_ID = '18JxwZgWl66mSAkGdCBHAB9EsHypZtYFDVqq2oviAkeI';
 const ANSWERS_SHEET_NAME = 'Question answers';
-const MAINTENANCE_TOKEN = 'ma3-prohor-2026-06-25';
+const MAINTENANCE_TOKEN = '34forfree7-prohor-2026-06-25';
 
 const TABLE_HEADERS = ['Вопрос', 'Ответ'];
 
@@ -111,7 +111,7 @@ function doGet(e) {
 
   return jsonResponse({
     ok: true,
-    app: 'MA3 Prohor intake collector',
+    app: '34ForFree7 Prohor intake collector',
     spreadsheetId: SPREADSHEET_ID,
   });
 }

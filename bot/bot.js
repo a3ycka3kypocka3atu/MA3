@@ -29,8 +29,8 @@ bot.use((ctx, next) => {
 });
 
 // ── CONSTANTS ──
-const MAIN_WEBSITE = 'https://ma-3-rose.vercel.app';
-const OFFER_BRIEF_PATH = path.join(__dirname, 'MA3_offer_brief.md');
+const MAIN_WEBSITE = 'https://34forfree7-rose.vercel.app';
+const OFFER_BRIEF_PATH = path.join(__dirname, '34ForFree7_offer_brief.md');
 const ADMIN_STORE_PATH = path.join(__dirname, 'admin_chats.json');
 const ADMIN_USERNAMES = ['andrisav', 'hirchak'];
 const ADMIN_CONTACTS = [
@@ -120,7 +120,7 @@ function mainMenuKeyboard(ctx) {
   ];
 
   if (isAdmin(ctx)) {
-    rows.unshift([Markup.button.callback('🏢 MA3 Office', 'ma3_office')]);
+    rows.unshift([Markup.button.callback('🏢 34ForFree7 Office', '34forfree7_office')]);
   }
 
   return Markup.inlineKeyboard(rows);
@@ -140,7 +140,7 @@ function serviceKeyboard() {
 function contactKeyboard() {
   return Markup.inlineKeyboard([
     ADMIN_CONTACTS.map(contact => Markup.button.url(contact.label, contact.url)),
-    [Markup.button.callback('📨 Ask MA3 to contact me', 'contact_request')],
+    [Markup.button.callback('📨 Ask 34ForFree7 to contact me', 'contact_request')],
     [Markup.button.callback('⬅️ Main menu', 'main_menu')]
   ]);
 }
@@ -213,7 +213,7 @@ async function notifyAdmins(ctx, type, content) {
   }
 
   const message = `
-<b>New MA3 ${escapeHtml(type)}</b>
+<b>New 34ForFree7 ${escapeHtml(type)}</b>
 
 <b>From:</b> ${escapeHtml(getUserLabel(ctx))}
 
@@ -248,7 +248,7 @@ async function saveInquiry(ctx, type, content) {
 // ── START COMMAND ──
 bot.start((ctx) => {
   const welcomeText = `
-<b>Welcome to MA3.</b>
+<b>Welcome to 34ForFree7.</b>
 
 We are an AI-native web, growth and product studio.
 
@@ -270,7 +270,7 @@ You can choose a service, ask a question, send your project directly, or request
 
 bot.command('myid', (ctx) => {
   ctx.reply(
-    `Your Telegram numeric chat ID is:\n\n${ctx.chat.id}\n\nSend this number to the MA3 bot admin so it can be added to ADMIN_CHAT_IDS.`
+    `Your Telegram numeric chat ID is:\n\n${ctx.chat.id}\n\nSend this number to the 34ForFree7 bot admin so it can be added to ADMIN_CHAT_IDS.`
   );
 });
 
@@ -320,7 +320,7 @@ bot.action('free_audit', (ctx) => {
   const auditText = `
 <b>Free short product & market analysis</b>
 
-We can prepare a short, precise first look at your product, market position and growth opportunities, so you can see how MA3 thinks before committing to paid work.
+We can prepare a short, precise first look at your product, market position and growth opportunities, so you can see how 34ForFree7 thinks before committing to paid work.
 
 Please send:
 • your website, product, social media or idea
@@ -341,20 +341,20 @@ We will review it and contact you with a compact, practical analysis.
 bot.action('offer_brief', async (ctx) => {
   await safeAnswer(ctx);
   await ctx.reply(
-    `<b>MA3 offer brief</b>\n\nThis file gives you a compact overview of what we build, our startup-friendly pricing logic and what to send us for a fast proposal.`,
+    `<b>34ForFree7 offer brief</b>\n\nThis file gives you a compact overview of what we build, our startup-friendly pricing logic and what to send us for a fast proposal.`,
     { parse_mode: 'HTML' }
   );
   await ctx.replyWithDocument({
     source: OFFER_BRIEF_PATH,
-    filename: 'MA3_offer_brief.md'
+    filename: '34ForFree7_offer_brief.md'
   });
 });
 
-bot.action('ma3_office', (ctx) => {
+bot.action('34forfree7_office', (ctx) => {
   safeAnswer(ctx);
 
   if (!isAdmin(ctx)) {
-    return ctx.reply('This office area is available only for MA3 admins.');
+    return ctx.reply('This office area is available only for 34ForFree7 admins.');
   }
 
   const workspaceRows = CLIENT_WORKSPACES.map(client => [
@@ -363,10 +363,10 @@ bot.action('ma3_office', (ctx) => {
 
   const keyboardRows = workspaceRows.length
     ? workspaceRows
-    : [[Markup.button.callback('No client folders yet', 'ma3_office_empty')]];
+    : [[Markup.button.callback('No client folders yet', '34forfree7_office_empty')]];
 
   ctx.reply(
-    `<b>MA3 Office</b>\n\nPrivate admin space for client work links.\n\nSoon this panel will contain buttons to each client folder: Notion, Google Drive, Docs, briefs, contracts, project notes and delivery materials.\n\nCurrent status: no client folders connected yet.`,
+    `<b>34ForFree7 Office</b>\n\nPrivate admin space for client work links.\n\nSoon this panel will contain buttons to each client folder: Notion, Google Drive, Docs, briefs, contracts, project notes and delivery materials.\n\nCurrent status: no client folders connected yet.`,
     {
       parse_mode: 'HTML',
       ...Markup.inlineKeyboard([
@@ -377,7 +377,7 @@ bot.action('ma3_office', (ctx) => {
   );
 });
 
-bot.action('ma3_office_empty', (ctx) => {
+bot.action('34forfree7_office_empty', (ctx) => {
   safeAnswer(ctx);
   ctx.reply('No client folders are connected yet. When we create the first client workspace, we will add it here as a button.');
 });
@@ -385,7 +385,7 @@ bot.action('ma3_office_empty', (ctx) => {
 bot.action('main_menu', (ctx) => {
   safeAnswer(ctx);
   const welcomeText = `
-<b>MA3 Agency Bot</b>
+<b>34ForFree7 Agency Bot</b>
 
 Choose a service, request a free short analysis, send a project message, or contact the team directly.
   `.trim();
@@ -409,7 +409,7 @@ bot.action('ask_question', (ctx) => {
   safeAnswer(ctx);
   ctx.session = { state: 'waiting_question' };
   ctx.reply(
-    'Write your question or project message here. You can send it freely: idea, link, current problem, or what you want MA3 to build.',
+    'Write your question or project message here. You can send it freely: idea, link, current problem, or what you want 34ForFree7 to build.',
     Markup.inlineKeyboard([[Markup.button.callback('⬅️ Main menu', 'main_menu')]])
   );
 });
@@ -417,7 +417,7 @@ bot.action('ask_question', (ctx) => {
 bot.action('contact_team', (ctx) => {
   safeAnswer(ctx);
   ctx.reply(
-    `<b>Contact MA3 team</b>\n\nYou can message us directly, or ask the bot to forward your request to the team.`,
+    `<b>Contact 34ForFree7 team</b>\n\nYou can message us directly, or ask the bot to forward your request to the team.`,
     { parse_mode: 'HTML', ...contactKeyboard() }
   );
 });
@@ -450,7 +450,7 @@ bot.on('text', async (ctx, next) => {
   const sentToAdmins = await notifyAdmins(ctx, type, userText);
 
   const confirmation = sentToAdmins
-    ? `Thank you. Your message was sent to the MA3 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`
+    ? `Thank you. Your message was sent to the 34ForFree7 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`
     : `Thank you. Your message was saved, but admin forwarding is not configured yet.\n\nPlease contact the team directly for now, or ask an admin to add numeric Telegram chat IDs to ADMIN_CHAT_IDS.`;
 
   await ctx.reply(

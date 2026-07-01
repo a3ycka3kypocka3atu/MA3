@@ -1,4 +1,4 @@
-# MA3 Telegram Bot Deployment
+# 34ForFree7 Telegram Bot Deployment
 
 The bot must run as a persistent Node.js process. GitHub stores the code, but it does not run the bot.
 
@@ -7,8 +7,8 @@ The bot must run as a persistent Node.js process. GitHub stores the code, but it
 This repository includes `render.yaml` at the repo root. It defines a Render worker service for the `bot/` folder.
 
 1. Open Render and create a new Blueprint from the GitHub repository.
-2. Select the repository `a3ycka3kypocka3atu/MA3`.
-3. Render will read `render.yaml` and create `ma3-telegram-bot`.
+2. Select the repository `a3ycka3kypocka3atu/34ForFree7`.
+3. Render will read `render.yaml` and create `34forfree7-telegram-bot`.
 4. Add these environment variables in Render:
    - `BOT_TOKEN`
    - `SUPABASE_URL`

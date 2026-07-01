@@ -1,6 +1,6 @@
-# MA3 Offer Brief
+# 34ForFree7 Offer Brief
 
-MA3 is an AI-native web, growth and product studio.
+34ForFree7 is an AI-native web, growth and product studio.
 
 We help founders, small businesses and conscious projects move from unclear idea or scattered tools to a working digital system: strategy, website, MVP, bot, funnel, analytics, automation and content infrastructure.
 
@@ -65,7 +65,7 @@ We help founders, small businesses and conscious projects move from unclear idea
 
 We currently offer startup-friendly pricing because we are building long-term partnerships and first strong case studies.
 
-This does not mean low quality. We work with experienced specialists and modern technologies, but intentionally keep pricing below average market rates while developing the MA3 portfolio.
+This does not mean low quality. We work with experienced specialists and modern technologies, but intentionally keep pricing below average market rates while developing the 34ForFree7 portfolio.
 
 ## Free Short Analysis
 
@@ -90,6 +90,6 @@ Send a short message with:
 - approximate budget range, if clear
 - your Telegram or preferred contact
 
-MA3 team contacts:
+34ForFree7 team contacts:
 - Admin 1: @andrisav
 - Admin 2: @Hirchak

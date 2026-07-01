@@ -1,7 +1,7 @@
 {
-  "name": "ma3-studio-bot",
+  "name": "34forfree7-studio-bot",
   "version": "1.0.0",
-  "description": "Telegram Bot for MA3 Agency",
+  "description": "Telegram Bot for 34ForFree7 Agency",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"

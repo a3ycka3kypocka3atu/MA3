@@ -1,6 +1,6 @@
 services:
   - type: worker
-    name: ma3-telegram-bot
+    name: 34forfree7-telegram-bot
     runtime: node
     rootDir: bot
     plan: starter

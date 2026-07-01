@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
-   MA3 AGENCY 3.0 — JAVASCRIPT
+   34ForFree7 — JAVASCRIPT
    Video cycling · Popups · Interactions
    ═══════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
 
-  const LANG_STORAGE_KEY = 'ma3-language';
+  const LANG_STORAGE_KEY = '34forfree7-language';
   const supportedLangs = ['en', 'cs', 'uk', 'ru'];
   let currentLang = supportedLangs.includes(localStorage.getItem(LANG_STORAGE_KEY))
     ? localStorage.getItem(LANG_STORAGE_KEY)
@@ -26,8 +26,8 @@
   const translations = {
     en: {
       htmlLang: 'en',
-      metaDescription: 'MA3 — AI-native web, growth & product studio. Three operating directions, one integrated ecosystem.',
-      pageTitle: 'MA3 — Agency 3.0',
+      metaDescription: '34ForFree7 — AI-native web, growth & product studio. Three operating directions, one integrated ecosystem.',
+      pageTitle: '34ForFree7 — AI-native Studio',
       aria: {
         language: 'Language',
         chooseAgency: 'Choose Direction',
@@ -60,11 +60,14 @@
       },
       sections: {
         services: 'Our Services',
+        growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
         projects: 'Our Projects',
         cases: 'Our Cases',
       },
-      footer: 'AI-native web, growth & product studio',
+      growthTitle: 'Personal Growth & Creator System',
+      footer: 'Marketing, Automation & Startup Agency',
+      footerImpact: 'Powered by a Nonprofit Organization Building Impact Through Conscious Innovation',
       services: {
         title: 'Our Services',
         subtitle: 'We are an AI-native web, growth & product studio. We build ready-made systems: from market analysis and idea generation to a fully working product and its launch.',
@@ -137,8 +140,8 @@
     },
     cs: {
       htmlLang: 'cs',
-      metaDescription: 'MA3 — AI-native studio pro web, růst a produkt. Tři směry činnosti, jeden propojený ekosystém.',
-      pageTitle: 'MA3 — Agentura 3.0',
+      metaDescription: '34ForFree7 — AI-native studio pro web, růst a produkt. Tři směry činnosti, jeden propojený ekosystém.',
+      pageTitle: '34ForFree7 — AI-native Studio',
       aria: {
         language: 'Jazyk',
         chooseAgency: 'Vyberte směr',
@@ -171,11 +174,14 @@
       },
       sections: {
         services: 'Naše služby',
+        growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
         projects: 'Naše projekty',
         cases: 'Reference',
       },
-      footer: 'AI-native studio pro web, růst a produkt',
+      growthTitle: 'Personal Growth & Creator System',
+      footer: 'Marketing, Automation & Startup Agency',
+      footerImpact: 'Powered by a Nonprofit Organization Building Impact Through Conscious Innovation',
       services: {
         title: 'Naše služby',
         subtitle: 'Jsme AI-native studio pro web, růst a produkt. Stavíme hotové systémy: od analýzy trhu a formulace nápadu až po funkční produkt a jeho uvedení na trh.',
@@ -248,8 +254,8 @@
     },
     uk: {
       htmlLang: 'uk',
-      metaDescription: 'MA3 — AI-native студія вебу, росту та продукту. Три напрями діяльності, одна цілісна екосистема.',
-      pageTitle: 'MA3 — Агенція 3.0',
+      metaDescription: '34ForFree7 — AI-native студія вебу, росту та продукту. Три напрями діяльності, одна цілісна екосистема.',
+      pageTitle: '34ForFree7 — AI-native Studio',
       aria: {
         language: 'Мова',
         chooseAgency: 'Виберіть напрям',
@@ -282,11 +288,14 @@
       },
       sections: {
         services: 'Наші послуги',
+        growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
         projects: 'Наші проєкти',
         cases: 'Кейси',
       },
-      footer: 'AI-native студія вебу, росту та продукту',
+      growthTitle: 'Personal Growth & Creator System',
+      footer: 'Marketing, Automation & Startup Agency',
+      footerImpact: 'Powered by a Nonprofit Organization Building Impact Through Conscious Innovation',
       services: {
         title: 'Наші послуги',
         subtitle: 'Ми AI-native студія вебу, росту та продукту. Створюємо готові системи: від аналізу ринку й формування ідеї до робочого продукту та його запуску.',
@@ -359,8 +368,8 @@
     },
     ru: {
       htmlLang: 'ru',
-      metaDescription: 'MA3 — AI-native студия веба, роста и продукта. Три направления деятельности, одна цельная экосистема.',
-      pageTitle: 'MA3 — Агентство 3.0',
+      metaDescription: '34ForFree7 — AI-native студия веба, роста и продукта. Три направления деятельности, одна цельная экосистема.',
+      pageTitle: '34ForFree7 — AI-native Studio',
       aria: {
         language: 'Язык',
         chooseAgency: 'Выберите направление',
@@ -393,11 +402,14 @@
       },
       sections: {
         services: 'Наши услуги',
+        growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
         projects: 'Наши проекты',
         cases: 'Кейсы',
       },
-      footer: 'AI-native студия веба, роста и продукта',
+      growthTitle: 'Personal Growth & Creator System',
+      footer: 'Marketing, Automation & Startup Agency',
+      footerImpact: 'Powered by a Nonprofit Organization Building Impact Through Conscious Innovation',
       services: {
         title: 'Наши услуги',
         subtitle: 'Мы AI-native студия веба, роста и продукта. Собираем готовые системы: от анализа рынка и формулировки идеи до рабочего продукта и его запуска.',
@@ -531,15 +543,18 @@
 
   // ── POPUP MANAGEMENT ──
   const popupServices = document.getElementById('popup-services');
+  const popupGrowth = document.getElementById('popup-growth');
   const popupProjects = document.getElementById('popup-projects');
   const popupCases = document.getElementById('popup-cases');
   const serviceDetail = document.getElementById('service-detail');
 
   const btnServices = document.getElementById('btn-services');
+  const btnGrowth = document.getElementById('btn-growth');
   const btnProjects = document.getElementById('btn-projects');
   const btnCases = document.getElementById('btn-cases');
 
   const closeServices = document.getElementById('close-services');
+  const closeGrowth = document.getElementById('close-growth');
   const closeProjects = document.getElementById('close-projects');
   const closeCases = document.getElementById('close-cases');
   const closeServiceDetail = document.getElementById('close-service-detail');
@@ -692,10 +707,12 @@
     });
 
     setText('#btn-services .section-btn__text', t.sections.services);
+    setText('#btn-growth .section-btn__text', t.sections.growth);
     setText('#btn-bot .section-btn__text', t.sections.bot);
     setText('#btn-projects .section-btn__text', t.sections.projects);
     setText('#btn-cases .section-btn__text', t.sections.cases);
     setText('.brand-tagline', t.footer);
+    setText('.brand-impact', t.footerImpact);
     const ticker = document.querySelector('.agency-manifesto__ticker');
     if (ticker) ticker.setAttribute('aria-label', t.concept.ticker.join('. '));
     renderTickerTrack(
@@ -715,8 +732,8 @@
       setText('p', content[1], point);
     });
 
-    [popupServices, popupProjects, popupCases].forEach(popup => {
-      if (popup) popup.setAttribute('aria-label', popup === popupServices ? t.services.title : popup === popupProjects ? t.projectsTitle : t.casesTitle);
+    [popupServices, popupGrowth, popupProjects, popupCases].forEach(popup => {
+      if (popup) popup.setAttribute('aria-label', popup === popupServices ? t.services.title : popup === popupGrowth ? t.growthTitle : popup === popupProjects ? t.projectsTitle : t.casesTitle);
     });
     document.querySelectorAll('.popup-close').forEach(button => {
       button.setAttribute('aria-label', t.aria.close);
@@ -742,8 +759,9 @@
   }
 
   function openPopup(popup) {
+    if (!popup) return;
     // Close any other open popups first
-    [popupServices, popupProjects, popupCases].forEach(p => {
+    [popupServices, popupGrowth, popupProjects, popupCases].forEach(p => {
       if (p && p !== popup) closePopup(p);
     });
     popup.classList.add('open');
@@ -752,6 +770,7 @@
   }
 
   function closePopup(popup) {
+    if (!popup) return;
     popup.classList.remove('open');
     popup.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'hidden'; // keep body overflow hidden (fullscreen page)
@@ -772,12 +791,14 @@
     serviceDetail.setAttribute('aria-hidden', 'true');
   }
 
-  btnServices.addEventListener('click', () => openPopup(popupServices));
-  btnProjects.addEventListener('click', () => openPopup(popupProjects));
+  if (btnServices) btnServices.addEventListener('click', () => openPopup(popupServices));
+  if (btnGrowth) btnGrowth.addEventListener('click', () => openPopup(popupGrowth));
+  if (btnProjects) btnProjects.addEventListener('click', () => openPopup(popupProjects));
   if (btnCases) btnCases.addEventListener('click', () => openPopup(popupCases));
 
-  closeServices.addEventListener('click', () => closePopup(popupServices));
-  closeProjects.addEventListener('click', () => closePopup(popupProjects));
+  if (closeServices) closeServices.addEventListener('click', () => closePopup(popupServices));
+  if (closeGrowth) closeGrowth.addEventListener('click', () => closePopup(popupGrowth));
+  if (closeProjects) closeProjects.addEventListener('click', () => closePopup(popupProjects));
   if (closeCases) closeCases.addEventListener('click', () => closePopup(popupCases));
   if (closeServiceDetail) closeServiceDetail.addEventListener('click', closeServiceDetailPopup);
 
@@ -788,7 +809,7 @@
   });
 
   // Close on backdrop click
-  [popupServices, popupProjects, popupCases].forEach(popup => {
+  [popupServices, popupGrowth, popupProjects, popupCases].forEach(popup => {
     if (!popup) return;
     popup.addEventListener('click', (e) => {
       if (e.target === popup || e.target.classList.contains('popup-backdrop')) {
@@ -809,6 +830,7 @@
     if (e.key === 'Escape') {
       closeServiceDetailPopup();
       closePopup(popupServices);
+      closePopup(popupGrowth);
       closePopup(popupProjects);
       closePopup(popupCases);
     }
@@ -861,12 +883,56 @@
     });
   }
 
+  // ── MOBILE CENTER BUTTON REVEAL ──
+  let centerButtonRevealObserver = null;
+
+  function initCenterButtonReveal() {
+    const centerButtons = document.getElementById('center-buttons');
+    if (!centerButtons) return;
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canAnimate = isMobile && !prefersReducedMotion && 'IntersectionObserver' in window;
+
+    if (centerButtonRevealObserver) {
+      centerButtonRevealObserver.disconnect();
+      centerButtonRevealObserver = null;
+    }
+
+    centerButtons.classList.toggle('mobile-scroll-reveal', canAnimate);
+
+    if (!canAnimate) {
+      centerButtons.classList.add('is-revealed');
+      return;
+    }
+
+    if (centerButtons.dataset.revealed === 'true') {
+      centerButtons.classList.add('is-revealed');
+      return;
+    }
+
+    centerButtons.classList.remove('is-revealed');
+    centerButtonRevealObserver = new IntersectionObserver((entries, observer) => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      centerButtons.dataset.revealed = 'true';
+      centerButtons.classList.add('is-revealed');
+      observer.disconnect();
+      centerButtonRevealObserver = null;
+    }, {
+      rootMargin: '0px 0px -18% 0px',
+      threshold: 0.18,
+    });
+
+    centerButtonRevealObserver.observe(centerButtons);
+  }
+
   // ── INIT ──
   document.addEventListener('DOMContentLoaded', () => {
     applyLanguage(currentLang);
     initVideos();
     initProjectCards();
     initServiceCards();
+    initCenterButtonReveal();
   });
 
   // Also run init if DOM is already loaded
@@ -875,6 +941,9 @@
     initVideos();
     initProjectCards();
     initServiceCards();
+    initCenterButtonReveal();
   }
+
+  window.addEventListener('resize', initCenterButtonReveal);
 
 })();

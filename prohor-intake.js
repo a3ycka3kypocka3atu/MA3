@@ -11,7 +11,7 @@
   // Paste the deployed Google Apps Script Web App URL here.
   const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz-gi4dPRrWjKZGyDwJvzGY0UP4Vl-v0zKraZSptiSQJ62739PIFq8bpL8j-Vjy_RSDOw/exec';
 
-  const STORAGE_KEY = `ma3:intake:${CLIENT.slug}:v2`;
+  const STORAGE_KEY = `34forfree7:intake:${CLIENT.slug}:v2`;
   const SAVE_DELAY = 450;
 
   const sections = [

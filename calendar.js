@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   MA3 STUDIO — CALENDAR ENGINE
+   34ForFree7 STUDIO — CALENDAR ENGINE
    Supabase Integration · Role-based Views · Event Management
    ═══════════════════════════════════════════════════════════ */
 
@@ -19,9 +19,9 @@
 
   // ── USER STATE ──
   let currentUser = {
-    role: localStorage.getItem('ma3-user-role') || 'guest',
-    id: localStorage.getItem('ma3-user-id') || null,
-    name: localStorage.getItem('ma3-user-name') || null,
+    role: localStorage.getItem('34forfree7-user-role') || 'guest',
+    id: localStorage.getItem('34forfree7-user-id') || null,
+    name: localStorage.getItem('34forfree7-user-name') || null,
   };
 
   // ── CALENDAR STATE ──
@@ -32,7 +32,7 @@
   let eventsCache = [];
 
   // ── i18n ──
-  const STORAGE_KEY = 'ma3-lang';
+  const STORAGE_KEY = '34forfree7-lang';
   const DEFAULT_LANG = 'en';
   const SUPPORTED = ['en', 'cz', 'ru', 'ua'];
 
@@ -52,8 +52,8 @@
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
-      if (typeof MA3_TRANSLATIONS !== 'undefined' && MA3_TRANSLATIONS[key] && MA3_TRANSLATIONS[key][lang]) {
-        el.textContent = MA3_TRANSLATIONS[key][lang];
+      if (typeof AGENCY_TRANSLATIONS !== 'undefined' && AGENCY_TRANSLATIONS[key] && AGENCY_TRANSLATIONS[key][lang]) {
+        el.textContent = AGENCY_TRANSLATIONS[key][lang];
       }
     });
 
