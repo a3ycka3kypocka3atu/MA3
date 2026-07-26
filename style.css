@@ -826,6 +826,27 @@ video::-webkit-media-controls-play-button {
     0 0 132px rgba(16, 185, 129, 0.16);
 }
 
+.section-btn--cabinet .section-btn__glass {
+  border-color: rgba(201, 242, 107, 0.58);
+  background:
+    linear-gradient(160deg, rgba(201, 242, 107, 0.16) 0%, transparent 42%),
+    rgba(8, 22, 16, 0.94);
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(201, 242, 107, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.section-btn--cabinet::before {
+  box-shadow:
+    0 0 30px rgba(201, 242, 107, 0.32),
+    0 0 66px rgba(201, 242, 107, 0.14);
+}
+
+.section-btn--cabinet .section-btn__text {
+  color: #eaffb9;
+}
+
 /* Section buttons intentionally use only neutral white light. */
 
 /* ═══════════════════════════════════════════════════════════
@@ -2018,6 +2039,10 @@ video::-webkit-media-controls-play-button {
 
   #center-buttons.mobile-scroll-reveal.is-revealed .section-btn:nth-child(5) {
     transition-delay: 480ms;
+  }
+
+  #center-buttons.mobile-scroll-reveal.is-revealed .section-btn:nth-child(6) {
+    transition-delay: 600ms;
   }
 
   #center-buttons.mobile-scroll-reveal.is-revealed .section-btn:active {

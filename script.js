@@ -62,6 +62,7 @@
         services: 'Our Services',
         growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
+        cabinet: 'Login to Client Cabinet',
         projects: 'Our Projects',
         cases: 'Our Cases',
       },
@@ -176,6 +177,7 @@
         services: 'Naše služby',
         growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
+        cabinet: 'Přihlásit se do klientské zóny',
         projects: 'Naše projekty',
         cases: 'Reference',
       },
@@ -290,6 +292,7 @@
         services: 'Наші послуги',
         growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
+        cabinet: 'Увійти до кабінету',
         projects: 'Наші проєкти',
         cases: 'Кейси',
       },
@@ -404,6 +407,7 @@
         services: 'Наши услуги',
         growth: 'Personal Growth & Creator System',
         bot: 'Agency Bot',
+        cabinet: 'Войти в кабинет',
         projects: 'Наши проекты',
         cases: 'Кейсы',
       },
@@ -709,6 +713,7 @@
     setText('#btn-services .section-btn__text', t.sections.services);
     setText('#btn-growth .section-btn__text', t.sections.growth);
     setText('#btn-bot .section-btn__text', t.sections.bot);
+    setText('#btn-cabinet .section-btn__text', t.sections.cabinet);
     setText('#btn-projects .section-btn__text', t.sections.projects);
     setText('#btn-cases .section-btn__text', t.sections.cases);
     setText('.brand-tagline', t.footer);
