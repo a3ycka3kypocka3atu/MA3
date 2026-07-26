@@ -23,12 +23,19 @@
 
   <!-- ═══ MAIN CONTENT ═══ -->
   <main id="main-content">
-    <nav id="language-switcher" aria-label="Language">
-      <button class="lang-btn active" type="button" data-lang="en">EN</button>
-      <button class="lang-btn" type="button" data-lang="cs">CZ</button>
-      <button class="lang-btn" type="button" data-lang="uk">UA</button>
-      <button class="lang-btn" type="button" data-lang="ru">RU</button>
-    </nav>
+    <div id="top-actions">
+      <a href="client-space.html" class="cabinet-login" id="btn-cabinet">
+        <span class="cabinet-login__dot" aria-hidden="true"></span>
+        <span class="cabinet-login__text">Client Login</span>
+        <span aria-hidden="true">→</span>
+      </a>
+      <nav id="language-switcher" aria-label="Language">
+        <button class="lang-btn active" type="button" data-lang="en">EN</button>
+        <button class="lang-btn" type="button" data-lang="cs">CZ</button>
+        <button class="lang-btn" type="button" data-lang="uk">UA</button>
+        <button class="lang-btn" type="button" data-lang="ru">RU</button>
+      </nav>
+    </div>
 
     <!-- TOP: Agency Buttons -->
     <section id="agency-buttons" aria-label="Choose Agency">
@@ -125,11 +132,6 @@
       <a href="https://t.me/34ForFree7Agencybot" target="_blank" class="section-btn" id="btn-bot" style="text-decoration: none;">
         <span class="section-btn__glass"></span>
         <span class="section-btn__text">Agency Bot</span>
-      </a>
-
-      <a href="client-space.html" class="section-btn section-btn--cabinet" id="btn-cabinet" style="text-decoration: none;">
-        <span class="section-btn__glass"></span>
-        <span class="section-btn__text">Login to Client Cabinet</span>
       </a>
 
       <button class="section-btn section-btn--featured" id="btn-growth" type="button">
