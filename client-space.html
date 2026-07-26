@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="34ForFree7 Client Space — project progress, tasks, shared materials, knowledge and communication in one place."
+  >
+  <meta name="robots" content="noindex, nofollow">
+  <title>Client Space — 34ForFree7</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="client-space.css">
+</head>
+<body>
+  <div class="ambient ambient--one" aria-hidden="true"></div>
+  <div class="ambient ambient--two" aria-hidden="true"></div>
+
+  <div class="portal-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-lockup">
+        <a class="brand-mark" href="client-space.html" aria-label="34ForFree7 Client Space home">34</a>
+        <div>
+          <strong>34ForFree7</strong>
+          <span>Client Space</span>
+        </div>
+      </div>
+
+      <div class="client-switcher" aria-label="Current client">
+        <div class="client-avatar" data-client-initials>PM</div>
+        <div class="client-switcher__copy">
+          <span>Current workspace</span>
+          <strong data-client-name>Prohor Music</strong>
+        </div>
+        <span class="private-dot" title="Private workspace"></span>
+      </div>
+
+      <nav class="portal-nav" aria-label="Client workspace">
+        <button class="nav-item is-active" type="button" data-view-target="overview">
+          <span class="nav-symbol">01</span>
+          <span>Overview</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="progress">
+          <span class="nav-symbol">02</span>
+          <span>Progress</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="tasks">
+          <span class="nav-symbol">03</span>
+          <span>My tasks</span>
+          <span class="nav-count" id="sidebar-task-count">0</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="materials">
+          <span class="nav-symbol">04</span>
+          <span>Materials</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="knowledge">
+          <span class="nav-symbol">05</span>
+          <span>Knowledge</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="questions">
+          <span class="nav-symbol">06</span>
+          <span>Questions</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="forms">
+          <span class="nav-symbol">07</span>
+          <span>Forms</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-support">
+        <span>Need help?</span>
+        <p>Your project team is one message away.</p>
+        <button type="button" class="text-button" data-view-link="questions">Ask the team <span>→</span></button>
+      </div>
+
+      <div class="sidebar-user">
+        <div class="user-avatar">P</div>
+        <div>
+          <strong data-client-contact>Prohor</strong>
+          <span>Client access</span>
+        </div>
+        <span class="access-badge">Link</span>
+      </div>
+    </aside>
+
+    <main class="portal-main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span>
+          <span></span>
+        </button>
+        <div class="topbar__context">
+          <span class="eyebrow">Client workspace</span>
+          <strong id="current-view-label">Overview</strong>
+        </div>
+        <div class="topbar__actions">
+          <span class="sync-note"><i></i> Prototype space</span>
+          <button class="avatar-button" type="button" title="Login will be added later">P</button>
+        </div>
+      </header>
+
+      <div class="view-stack">
+        <section class="portal-view is-active" data-view="overview" aria-labelledby="overview-title">
+          <div class="welcome-panel">
+            <div class="welcome-copy">
+              <span class="section-kicker">Your project, in one place</span>
+              <h1 id="overview-title">Good <span id="day-period">day</span>, <span data-client-contact>Prohor</span>.</h1>
+              <p>See what is moving, what needs your attention, and what the team has prepared for you.</p>
+              <div class="welcome-actions">
+                <button class="primary-button" type="button" data-view-link="tasks">
+                  Continue your tasks <span>→</span>
+                </button>
+                <button class="secondary-button" type="button" data-view-link="progress">View project plan</button>
+              </div>
+            </div>
+            <div class="project-pulse">
+              <div class="pulse-orbit" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="pulse-copy">
+                <span>Project pulse</span>
+                <strong id="project-progress-value">42%</strong>
+                <small>Strategy in progress</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="metrics-grid" aria-label="Project summary">
+            <article class="metric-card metric-card--accent">
+              <span>Current phase</span>
+              <strong data-current-phase>Research & foundation</strong>
+              <small><i></i> Active now</small>
+            </article>
+            <article class="metric-card">
+              <span>Your open tasks</span>
+              <strong id="overview-open-tasks">0</strong>
+              <small>Small steps keep momentum</small>
+            </article>
+            <article class="metric-card">
+              <span>Shared materials</span>
+              <strong id="overview-material-count">0</strong>
+              <small>Files, links and references</small>
+            </article>
+            <article class="metric-card">
+              <span>Next check-in</span>
+              <strong data-next-checkin>To be scheduled</strong>
+              <small>We will confirm it together</small>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <article class="panel focus-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">Focus now</span>
+                  <h2>Your next best actions</h2>
+                </div>
+                <button class="text-button" type="button" data-view-link="tasks">All tasks <span>→</span></button>
+              </div>
+              <div id="overview-task-list" class="compact-task-list"></div>
+            </article>
+
+            <article class="panel update-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">From the team</span>
+                  <h2>Latest update</h2>
+                </div>
+                <span class="new-badge">New</span>
+              </div>
+              <div class="update-copy">
+                <span class="update-date" data-latest-update-date>26 July 2026</span>
+                <h3 data-latest-update-title>We are organizing the strategy foundation</h3>
+                <p data-latest-update-copy>Your intake structure is ready. The next step is collecting the strongest proof, story, and content inputs before we shape the positioning.</p>
+              </div>
+              <button class="secondary-button secondary-button--full" type="button" data-view-link="progress">
+                Read all project updates
+              </button>
+            </article>
+          </div>
+
+          <article class="panel knowledge-strip">
+            <div class="knowledge-strip__intro">
+              <span class="section-kicker">Recommended for you</span>
+              <h2>Learn while we build</h2>
+              <p>Short, practical materials connected to the work happening in your project.</p>
+            </div>
+            <div id="overview-knowledge-list" class="knowledge-strip__items"></div>
+          </article>
+        </section>
+
+        <section class="portal-view" data-view="progress" aria-labelledby="progress-title">
+          <div class="page-heading">
+            <div>
+              <span class="section-kicker">Project roadmap</span>
+              <h1 id="progress-title">Follow the work, without chasing updates.</h1>
+              <p>Every phase has a clear purpose, visible status, and the next decision we need to make together.</p>
+            </div>
+            <div class="heading-status">
+              <span>Overall progress</span>
+              <strong id="roadmap-progress-value">42%</strong>
+            </div>
+          </div>
+
+          <div class="roadmap-layout">
+            <div id="roadmap-list" class="roadmap-list"></div>
+            <aside class="panel activity-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">Activity</span>
+                  <h2>Project updates</h2>
+                </div>
+              </div>
+              <div id="activity-timeline" class="activity-timeline"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="portal-view" data-view="tasks" aria-labelledby="tasks-title">
+          <div class="page-heading">
+            <div>
+              <span class="section-kicker">Your action list</span>
+              <h1 id="tasks-title">Clear tasks. Visible momentum.</h1>
+              <p>Complete the inputs that help us move your project forward. Your checks are saved on this device.</p>
+            </div>
+            <div class="heading-status">
+              <span>Completed</span>
+              <strong id="task-completion-ratio">0 / 0</strong>
+            </div>
+          </div>
+
+          <div class="task-toolbar">
+            <div class="filter-group" aria-label="Filter tasks">
+              <button class="filter-button is-active" type="button" data-task-filter="all">All</button>
+              <button class="filter-button" type="button" data-task-filter="open">Open</button>
+              <button class="filter-button" type="button" data-task-filter="done">Completed</button>
+            </div>
+            <span class="local-save-note"><i></i> Saved on this device</span>
+          </div>
+          <div id="full-task-list" class="full-task-list"></div>
+        </section>
+
+        <section class="portal-view" data-view="materials" aria-labelledby="materials-title">
+          <div class="page-heading">
+            <div>
+              <span class="section-kicker">Shared library</span>
+              <h1 id="materials-title">Everything we are working with.</h1>
+              <p>Strategy documents, references, client inputs, and deliverables will live here as the project grows.</p>
+            </div>
+            <button class="secondary-button" type="button" data-view-link="questions">Request a material</button>
+          </div>
+
+          <div class="material-summary">
+            <div><strong id="material-total-count">0</strong><span>Total items</span></div>
+            <div><strong id="material-ready-count">0</strong><span>Ready to view</span></div>
+            <div><strong id="material-waiting-count">0</strong><span>Waiting for input</span></div>
+          </div>
+          <div id="material-grid" class="material-grid"></div>
+        </section>
+
+        <section class="portal-view" data-view="knowledge" aria-labelledby="knowledge-title">
+          <div class="page-heading">
+            <div>
+              <span class="section-kicker">Knowledge base</span>
+              <h1 id="knowledge-title">Understand the strategy behind the work.</h1>
+              <p>Useful, focused explanations—not a generic course. Start with what is relevant to your project now.</p>
+            </div>
+          </div>
+
+          <div class="featured-learning panel">
+            <div>
+              <span class="section-kicker">Start here · 6 min</span>
+              <h2>From attention to booking: your simple marketing system</h2>
+              <p>See how positioning, proof, content, and calls to action connect into one client journey.</p>
+              <button class="primary-button" type="button" data-article-open="marketing-system">Open guide <span>→</span></button>
+            </div>
+            <div class="learning-map" aria-hidden="true">
+              <span>Attention</span><i>→</i><span>Trust</span><i>→</i><span>Action</span>
+            </div>
+          </div>
+          <div id="knowledge-grid" class="knowledge-grid"></div>
+        </section>
+
+        <section class="portal-view" data-view="questions" aria-labelledby="questions-title">
+          <div class="page-heading">
+            <div>
+              <span class="section-kicker">Communication</span>
+              <h1 id="questions-title">Keep every question connected to the project.</h1>
+              <p>Use this prototype to prepare questions and notes. They stay on this device until team messaging is connected.</p>
+            </div>
+          </div>
+
+          <div class="questions-layout">
+            <form class="panel question-composer" id="question-form">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">New message</span>
+                  <h2>Ask the project team</h2>
+                </div>
+              </div>
+              <label for="question-topic">Topic</label>
+              <select id="question-topic" name="topic">
+                <option value="Strategy">Strategy</option>
+                <option value="Task">A task</option>
+                <option value="Material">A material or file</option>
+                <option value="Timeline">Timeline or progress</option>
+                <option value="Other">Something else</option>
+              </select>
+              <label for="question-message">Your question or note</label>
+              <textarea
+                id="question-message"
+                name="message"
+                rows="7"
+                placeholder="Write the context, decision, or question you want to discuss..."
+                required
+              ></textarea>
+              <div class="composer-footer">
+                <span>Prototype: saved locally, not sent yet.</span>
+                <button class="primary-button" type="submit">Save question</button>
+              </div>
+            </form>
+
+            <aside class="panel saved-questions">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">On this device</span>
+                  <h2>Saved questions</h2>
+                </div>
+                <span class="nav-count" id="saved-question-count">0</span>
+              </div>
+              <div id="saved-question-list" class="saved-question-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="portal-view" data-view="forms" aria-labelledby="forms-title">
+          <div class="page-heading">
+            <div>
+              <span class="section-kicker">Project inputs</span>
+              <h1 id="forms-title">Forms that help us make better decisions.</h1>
+              <p>Each client can have different questionnaires here. Completed answers become part of the wider project workspace.</p>
+            </div>
+          </div>
+
+          <div id="forms-grid" class="forms-grid"></div>
+
+          <article class="future-panel">
+            <span class="future-panel__index">Next</span>
+            <div>
+              <span class="section-kicker">Designed to grow</span>
+              <h2>New forms will appear when your project needs them.</h2>
+              <p>Content reviews, approvals, feedback rounds, launch checklists, and custom research forms can all become part of this space.</p>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="mobile-backdrop" id="mobile-backdrop"></div>
+
+  <dialog class="article-dialog" id="article-dialog">
+    <button class="dialog-close" id="dialog-close" type="button" aria-label="Close guide">×</button>
+    <div id="article-dialog-content"></div>
+  </dialog>
+
+  <div class="toast" id="portal-toast" role="status" aria-live="polite"></div>
+
+  <script src="client-space.js"></script>
+</body>
+</html>
