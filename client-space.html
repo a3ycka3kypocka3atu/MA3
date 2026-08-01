@@ -45,29 +45,33 @@
           <span class="nav-symbol">01</span>
           <span>Overview</span>
         </button>
-        <button class="nav-item" type="button" data-view-target="progress">
+        <button class="nav-item" type="button" data-view-target="strategy">
           <span class="nav-symbol">02</span>
+          <span>Strategy</span>
+        </button>
+        <button class="nav-item" type="button" data-view-target="progress">
+          <span class="nav-symbol">03</span>
           <span>Progress</span>
         </button>
         <button class="nav-item" type="button" data-view-target="tasks">
-          <span class="nav-symbol">03</span>
+          <span class="nav-symbol">04</span>
           <span>My tasks</span>
           <span class="nav-count" id="sidebar-task-count">0</span>
         </button>
         <button class="nav-item" type="button" data-view-target="materials">
-          <span class="nav-symbol">04</span>
+          <span class="nav-symbol">05</span>
           <span>Materials</span>
         </button>
         <button class="nav-item" type="button" data-view-target="knowledge">
-          <span class="nav-symbol">05</span>
+          <span class="nav-symbol">06</span>
           <span>Knowledge</span>
         </button>
         <button class="nav-item" type="button" data-view-target="questions">
-          <span class="nav-symbol">06</span>
+          <span class="nav-symbol">07</span>
           <span>Questions</span>
         </button>
         <button class="nav-item" type="button" data-view-target="forms">
-          <span class="nav-symbol">07</span>
+          <span class="nav-symbol">08</span>
           <span>Forms</span>
         </button>
       </nav>
@@ -193,6 +197,128 @@
               <p>Short, practical materials connected to the work happening in your project.</p>
             </div>
             <div id="overview-knowledge-list" class="knowledge-strip__items"></div>
+          </article>
+        </section>
+
+        <section class="portal-view" data-view="strategy" aria-labelledby="strategy-title">
+          <div class="page-heading strategy-page-heading">
+            <div>
+              <span class="section-kicker">Your working strategy</span>
+              <h1 id="strategy-title">Turn project knowledge into clear decisions.</h1>
+              <p>This page connects what we know about your project with the marketing system we are building. Facts, hypotheses, and missing inputs stay visibly separate.</p>
+            </div>
+            <button class="secondary-button" type="button" data-view-link="forms">Validate the inputs</button>
+          </div>
+
+          <div class="strategy-source-bar">
+            <div>
+              <span class="strategy-live-dot"></span>
+              <strong id="strategy-version">Working strategy</strong>
+            </div>
+            <span id="strategy-source">Source details</span>
+          </div>
+
+          <article class="strategy-hero panel">
+            <div class="strategy-hero__copy">
+              <span class="section-kicker">Strategic direction</span>
+              <h2 id="strategy-positioning">Positioning direction</h2>
+              <p id="strategy-direction">Direction summary</p>
+            </div>
+            <div class="north-star-card">
+              <span>North-star outcome</span>
+              <strong id="strategy-north-star">Confirmed bookings</strong>
+              <small>The result that connects marketing activity to the business.</small>
+            </div>
+          </article>
+
+          <div id="strategy-evidence-grid" class="strategy-evidence-grid" aria-label="Current project evidence"></div>
+
+          <section class="strategy-section">
+            <div class="strategy-section__heading">
+              <div>
+                <span class="section-kicker">Brand compass</span>
+                <h2>A recognizable identity without becoming a character.</h2>
+              </div>
+              <p>The useful ideas from the positioning board are translated into roles and boundaries that can guide content, visuals, and decisions.</p>
+            </div>
+            <div id="strategy-brand-compass" class="strategy-brand-compass"></div>
+          </section>
+
+          <section class="strategy-section strategy-audience-layout">
+            <div>
+              <div class="strategy-section__heading strategy-section__heading--stacked">
+                <div>
+                  <span class="section-kicker">Two connected audiences</span>
+                  <h2>Listeners create demand. Buyers confirm bookings.</h2>
+                </div>
+                <p>We keep the listener community separate from the people who make commercial booking decisions, because they need different messages and proof.</p>
+              </div>
+              <div id="strategy-audiences" class="strategy-audiences"></div>
+            </div>
+
+            <aside class="panel strategy-guardrails-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">Expression guardrails</span>
+                  <h2>What belongs in the brand</h2>
+                </div>
+              </div>
+              <div id="strategy-guardrails" class="strategy-guardrails"></div>
+            </aside>
+          </section>
+
+          <section class="strategy-section">
+            <div class="strategy-section__heading">
+              <div>
+                <span class="section-kicker">Confidence map</span>
+                <h2>What is known—and what still needs validation</h2>
+              </div>
+              <p>We never present an assumption as a client fact. This keeps the strategy useful while discovery is still in progress.</p>
+            </div>
+            <div id="strategy-truth-grid" class="strategy-truth-grid"></div>
+          </section>
+
+          <section class="strategy-section">
+            <div class="strategy-section__heading">
+              <div>
+                <span class="section-kicker">Customer journey</span>
+                <h2>The booking system we are building</h2>
+              </div>
+              <p>Every channel has a role. Attention should eventually lead to a qualified booking conversation—not just more views.</p>
+            </div>
+            <div class="strategy-funnel panel" id="strategy-funnel"></div>
+          </section>
+
+          <section class="strategy-section strategy-two-column">
+            <div>
+              <div class="strategy-section__heading strategy-section__heading--stacked">
+                <div>
+                  <span class="section-kicker">Content architecture</span>
+                  <h2>Five repeatable pillars</h2>
+                </div>
+                <p>Each pillar has a job in the funnel, so content is easier to plan and evaluate.</p>
+              </div>
+              <div id="strategy-content-pillars" class="strategy-content-pillars"></div>
+            </div>
+
+            <aside class="panel strategy-gates-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="section-kicker">Decision gates</span>
+                  <h2>What happens next</h2>
+                </div>
+              </div>
+              <div id="strategy-decision-gates" class="strategy-decision-gates"></div>
+            </aside>
+          </section>
+
+          <article class="strategy-method-note">
+            <span class="future-panel__index">How</span>
+            <div>
+              <span class="section-kicker">Reusable for every client</span>
+              <h2>Brief → evidence → hypotheses → decisions → tasks → measurement</h2>
+              <p>The cabinet turns internal agency research into a client-facing decision layer. When we add another client, we replace the client record—not the interface.</p>
+            </div>
           </article>
         </section>
 

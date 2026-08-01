@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  // Reusable client records: add one keyed object per client and open it with
+  // client-space.html?client=their-slug. The cabinet interface stays unchanged.
+  // Every section can be adapted or omitted as the client project requires.
   const CLIENTS = {
     prohor: {
       id: 'prohor',
@@ -11,9 +14,146 @@
       progress: 42,
       nextCheckin: 'To be scheduled',
       latestUpdate: {
-        date: '26 July 2026',
-        title: 'We are organizing the strategy foundation',
-        copy: 'Your intake structure is ready. The next step is collecting the strongest proof, story, and content inputs before we shape the positioning.',
+        date: '1 August 2026',
+        title: 'Your brand compass and working strategy are now visible',
+        copy: 'The positioning board and agency research are translated into a practical brand system, audience choices, open questions, and next decisions.',
+      },
+      strategy: {
+        version: 'Working strategy v0.5',
+        source: 'Miro positioning draft · 1 Aug 2026 + agency research snapshot · 24 Jun 2026',
+        positioning: 'A Prague-based electronic artist blending disciplined growth, original musical worlds, and playful human energy into premium live experiences.',
+        direction: 'Move gradually from general corporate and club work toward premium events, festivals, villas, yachts, and international opportunities—without losing the warmth, playfulness, and personal values that make Prohor recognizable.',
+        northStar: 'Confirmed premium bookings generated through the EPK funnel',
+        evidence: [
+          { value: '1,403', label: 'Instagram audience', note: '~8.5% engagement rate' },
+          { value: '1,845', label: 'Caladan plays', note: 'Organic SoundCloud baseline' },
+          { value: '6 tracks', label: 'Kaitain EP', note: 'Released through CDj' },
+          { value: '0', label: 'Email subscribers', note: 'A clear retention opportunity' },
+        ],
+        brandCompass: [
+          {
+            key: 'architecture',
+            label: 'Brand architecture',
+            title: 'Hero at the core. Creator in the form. Jester in the energy.',
+            detail: 'Growth and discipline create trust; original musical worlds create distinction; warmth and play keep the artist human.',
+          },
+          {
+            key: 'tension',
+            label: 'Creative tension',
+            title: 'Discipline ↔ freedom. Serious path ↔ joy and play.',
+            detail: 'The brand becomes interesting at the point where professional demands meet a personal, authorial voice.',
+          },
+          {
+            key: 'promise',
+            label: 'Audience promise',
+            title: 'A distinctive moment that helps people feel inspired and true to themselves.',
+            detail: 'This is the emotional outcome to prove through music, live atmosphere, story, and recognizable rituals.',
+          },
+          {
+            key: 'expression',
+            label: 'Expression system',
+            title: 'A disciplined base with one surprising, expressive accent.',
+            detail: 'Light structure and premium clarity can hold eclectic styling, tea ritual, playful detail, and intentional imperfection.',
+          },
+        ],
+        audiences: [
+          {
+            label: 'Listener community · client draft',
+            status: 'Validate with analytics',
+            title: 'People seeking balance, inspiration, and a distinctive experience',
+            detail: 'Working profile: adults in creative and technology fields with disposable income, interested in health, travel, self-development, and music as escape or meditation.',
+            role: 'They listen, follow, share, attend, and strengthen cultural demand.',
+          },
+          {
+            label: 'Booking buyers · agency hypothesis',
+            status: 'Validate with interviews',
+            title: 'People responsible for premium events and artist bookings',
+            detail: 'Working profile: event planners, promoters, club and festival teams, hospitality concepts, and booking agents who need event fit, proof, reliability, and a simple inquiry path.',
+            role: 'They evaluate, shortlist, inquire, negotiate, and confirm the booking.',
+          },
+        ],
+        guardrails: [
+          {
+            key: 'use',
+            label: 'Bring forward',
+            items: ['Artist journey and disciplined progress', 'Music-making process and creative decisions', 'Live reactions, atmosphere, and professional proof', 'Tea, travel, humor, and moments without pretence'],
+          },
+          {
+            key: 'protect',
+            label: 'Protect',
+            items: ['Family and private relationships', 'Politics and commentary about other people', 'Unconfirmed future plans', 'Personal material that does not serve the audience'],
+          },
+          {
+            key: 'avoid',
+            label: 'Avoid',
+            items: ['Clowning or memes for their own sake', 'Infantile humor in the core identity', 'Chaotic lifestyle content', 'Using the Jester voice in release statements or formal artist copy'],
+          },
+        ],
+        truthGroups: [
+          {
+            key: 'known',
+            label: 'Known',
+            description: 'Supported by the client brief or existing channels.',
+            items: [
+              'Prohor is an individual DJ and producer based in Prague, originally from Kyiv.',
+              'The sound spans Tech House, Melodic Techno, and Progressive House.',
+              'Instagram is the strongest current audience hub; YouTube, SoundCloud, Beatport, Spotify, Facebook, and Telegram already exist.',
+              'The positioning draft defines Hero as the core, Creator as the form, and Jester as the energy.',
+              'The stated mission is to inspire people through music and a personal view of the world.',
+              'The communication boundary keeps family, politics, other people, and unconfirmed future plans private.',
+              'The 12-month direction prioritizes personal-brand growth and more premium international opportunities.',
+            ],
+          },
+          {
+            key: 'hypothesis',
+            label: 'Working hypotheses',
+            description: 'Useful directions that need client and market validation.',
+            items: [
+              'Primary buyers may be premium event planners, festival promoters, clubs, and booking agents across Europe.',
+              'The listener profile may center on established adults in creative and technology fields who use music for balance, inspiration, and escape.',
+              '“Cosmic Set Architecture” can turn the sound and set progression into a memorable booking mechanism.',
+              'A three-level offer—Atmospheric, Cosmic, and Universe—may make different event formats easier to understand and sell.',
+              'Instagram should remain the hub while YouTube builds authority, SoundCloud builds music proof, and TikTok supports discovery.',
+              'Organic distribution should be measured before introducing paid promotion.',
+            ],
+          },
+          {
+            key: 'validate',
+            label: 'Needs validation',
+            description: 'Inputs required before commercial decisions become final.',
+            items: [
+              'Current bookings per month, revenue mix, and fees by event type.',
+              'Real premium-event precedents, testimonials, audience reactions, and strongest performance footage.',
+              'Technical rider, preferred set lengths, travel limits, and backup process.',
+              'Minimum acceptable fee, package pricing, and 12-month numerical targets.',
+              'Resolve the listener age range: the positioning board says 30–60 while the canonical brief says 30–40.',
+              'Confirm the final archetype hierarchy because one board marker names only Hero and Jester while the detailed framework also includes Creator.',
+              'Content boundaries, upcoming events, available raw material, and the real filming workflow.',
+            ],
+          },
+        ],
+        funnel: [
+          { title: 'Discover', detail: 'Instagram, YouTube, SoundCloud, TikTok, Facebook', signal: 'Attention' },
+          { title: 'Build trust', detail: 'Story, live proof, artist identity, useful content', signal: 'Interest' },
+          { title: 'Explore EPK', detail: 'Positioning, sound, proof, event fit, offer clarity', signal: 'Intent' },
+          { title: 'Send inquiry', detail: 'Short form with date, venue, budget, and event type', signal: 'Lead' },
+          { title: 'Qualify & book', detail: 'Right conversation, proposal, contract, and deposit', signal: 'Revenue' },
+          { title: 'Retain', detail: 'Post-event proof, email relationship, and repeat booking', signal: 'LTV' },
+        ],
+        contentPillars: [
+          { number: '01', title: 'The artist’s path', role: 'Hero · authority', detail: 'Progress, discipline, training, difficult moments, milestones, and the work behind the next level.' },
+          { number: '02', title: 'Behind the set', role: 'Creator · trust', detail: 'Music-making, track choices, studio process, unusual locations, and the craft behind the atmosphere.' },
+          { number: '03', title: 'Tea, travel & life', role: 'Jester · recognition', detail: 'Tea ritual, humor, reactions, travel, and human moments—kept mainly in Stories, backstage, and live formats.' },
+          { number: '04', title: 'Live moments', role: 'Proof · credibility', detail: 'Venues, reactions, crowd energy, event context, and moments that reduce booking uncertainty.' },
+          { number: '05', title: 'From scene to booking', role: 'Bridge · conversion', detail: 'Content that explains event fit, booking process, professional standards, and the next action.' },
+        ],
+        gates: [
+          { label: 'Now', title: 'Validate the missing inputs', detail: 'Complete the intake, booking examples, proof, assets, and commercial numbers.', status: 'active' },
+          { label: 'Review', title: 'Approve positioning and offer', detail: 'Confirm audience priorities, the named mechanism, packages, and boundaries.', status: 'review' },
+          { label: 'Next', title: 'Build the EPK booking path', detail: 'Create the destination page, inquiry form, response process, and measurement.', status: 'planned' },
+          { label: 'Test', title: 'Run an organic learning cycle', detail: 'Connect content to the funnel and measure inquiries—not only reach.', status: 'planned' },
+          { label: 'Later', title: 'Scale what proves itself', detail: 'Optimize the winning system and only then reconsider paid distribution.', status: 'later' },
+        ],
       },
       roadmap: [
         {
@@ -49,6 +189,11 @@
       ],
       updates: [
         {
+          date: '1 Aug 2026',
+          title: 'Strategy knowledge layer added',
+          copy: 'Internal research is now organized into client-facing facts, hypotheses, priorities, and learning.',
+        },
+        {
           date: '26 Jul 2026',
           title: 'Client workspace prototype created',
           copy: 'The project can now grow into one shared home for tasks, materials, forms, and progress.',
@@ -71,6 +216,15 @@
           description: 'Answer each block so we can build the strategy from real context instead of assumptions.',
           category: 'Questionnaire',
           effort: '20–30 min',
+          priority: 'High priority',
+          featured: true,
+        },
+        {
+          id: 'review-strategy-map',
+          title: 'Review the working strategy map',
+          description: 'Check what we marked as known, hypothetical, and still missing. Save questions wherever something feels inaccurate.',
+          category: 'Strategy review',
+          effort: '15 min',
           priority: 'High priority',
           featured: true,
         },
@@ -110,6 +264,16 @@
         },
       ],
       materials: [
+        {
+          type: 'MAP',
+          style: 'document',
+          title: 'Working strategy map',
+          description: 'Client-facing synthesis of the brief, research, offer, funnel, content system, and open decisions.',
+          status: 'ready',
+          meta: 'Strategy layer',
+          action: 'Open Strategy',
+          targetView: 'strategy',
+        },
         {
           type: 'DOC',
           style: 'document',
@@ -167,6 +331,45 @@
         },
       ],
       knowledge: [
+        {
+          id: 'brand-compass',
+          category: 'Your brand',
+          duration: '6 min',
+          title: 'How Hero, Creator, and Jester work as one brand',
+          description: 'A practical guide to using each archetype without making the artist feel fragmented.',
+          intro: 'The three archetypes do not need equal volume everywhere. The clearest system gives each one a job: Hero builds belief, Creator makes the work distinctive, and Jester creates warmth and recognition.',
+          steps: [
+            ['Hero sets the direction', 'Use the journey, discipline, ambition, and honest progress to establish meaning and professional credibility.'],
+            ['Creator shows the difference', 'Use music-making, set design, visual ideas, and unusual environments to prove an original point of view.'],
+            ['Jester adds energy', 'Use humor and spontaneity in Stories, backstage, and live moments—without letting it dominate release language or the core identity.'],
+          ],
+        },
+        {
+          id: 'booking-north-star',
+          category: 'Your strategy',
+          duration: '5 min',
+          title: 'Why bookings—not followers—are the north star',
+          description: 'How we connect content and audience growth to qualified premium booking conversations.',
+          intro: 'Followers, views, and plays matter only when they strengthen recognition, proof, or demand. For this project, the clearest business outcome is a confirmed premium booking that can be traced back to the marketing system.',
+          steps: [
+            ['Measure the journey', 'Track which content and channels bring people to the EPK, start an inquiry, and create a qualified conversation.'],
+            ['Separate signals from outcomes', 'Reach and engagement are diagnostic signals; inquiries, proposals, confirmed bookings, and repeat bookings are business outcomes.'],
+            ['Improve the weakest step', 'If attention is strong but inquiries are low, fix proof, offer clarity, or the booking path before producing more volume.'],
+          ],
+        },
+        {
+          id: 'cosmic-mechanism',
+          category: 'Your offer',
+          duration: '4 min',
+          title: 'How Cosmic Set Architecture can make the offer memorable',
+          description: 'A working hypothesis that turns an abstract DJ set into a clear, ownable experience.',
+          intro: '“Great atmosphere” is hard to evaluate before an event. A named mechanism can explain how Prohor designs an emotional arc across opening, peak, and closing—making the experience easier to picture and discuss.',
+          steps: [
+            ['Name the process', 'Describe the set as an intentional three-phase journey instead of a collection of tracks.'],
+            ['Show the proof', 'Use real clips and event examples to demonstrate each phase and the audience response.'],
+            ['Validate before locking', 'Test the language with Prohor and real buyers; keep it only if it feels authentic and improves understanding.'],
+          ],
+        },
         {
           id: 'positioning',
           category: 'Strategy',
@@ -269,6 +472,19 @@
     overviewTaskList: document.getElementById('overview-task-list'),
     fullTaskList: document.getElementById('full-task-list'),
     taskCompletionRatio: document.getElementById('task-completion-ratio'),
+    strategyVersion: document.getElementById('strategy-version'),
+    strategySource: document.getElementById('strategy-source'),
+    strategyPositioning: document.getElementById('strategy-positioning'),
+    strategyDirection: document.getElementById('strategy-direction'),
+    strategyNorthStar: document.getElementById('strategy-north-star'),
+    strategyEvidenceGrid: document.getElementById('strategy-evidence-grid'),
+    strategyBrandCompass: document.getElementById('strategy-brand-compass'),
+    strategyAudiences: document.getElementById('strategy-audiences'),
+    strategyGuardrails: document.getElementById('strategy-guardrails'),
+    strategyTruthGrid: document.getElementById('strategy-truth-grid'),
+    strategyFunnel: document.getElementById('strategy-funnel'),
+    strategyContentPillars: document.getElementById('strategy-content-pillars'),
+    strategyDecisionGates: document.getElementById('strategy-decision-gates'),
     roadmapList: document.getElementById('roadmap-list'),
     activityTimeline: document.getElementById('activity-timeline'),
     materialGrid: document.getElementById('material-grid'),
@@ -446,6 +662,106 @@
     document.querySelectorAll('[data-task-checkbox]').forEach((checkbox) => {
       checkbox.addEventListener('change', () => toggleTask(checkbox.dataset.taskCheckbox, checkbox.checked));
     });
+  }
+
+  function renderStrategy() {
+    const strategy = client.strategy;
+    const strategyNav = document.querySelector('[data-view-target="strategy"]');
+
+    if (!strategy) {
+      if (strategyNav) strategyNav.hidden = true;
+      return;
+    }
+
+    dom.strategyVersion.textContent = strategy.version;
+    dom.strategySource.textContent = strategy.source;
+    dom.strategyPositioning.textContent = strategy.positioning;
+    dom.strategyDirection.textContent = strategy.direction;
+    dom.strategyNorthStar.textContent = strategy.northStar;
+
+    dom.strategyEvidenceGrid.innerHTML = strategy.evidence.map((item) => `
+      <article class="strategy-evidence-card">
+        <strong>${escapeHtml(item.value)}</strong>
+        <span>${escapeHtml(item.label)}</span>
+        <small>${escapeHtml(item.note)}</small>
+      </article>
+    `).join('');
+
+    dom.strategyBrandCompass.innerHTML = strategy.brandCompass.map((item) => `
+      <article class="brand-compass-card brand-compass-card--${escapeHtml(item.key)}">
+        <span>${escapeHtml(item.label)}</span>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.detail)}</p>
+      </article>
+    `).join('');
+
+    dom.strategyAudiences.innerHTML = strategy.audiences.map((audience) => `
+      <article class="strategy-audience-card">
+        <div class="strategy-audience-card__top">
+          <span>${escapeHtml(audience.label)}</span>
+          <small>${escapeHtml(audience.status)}</small>
+        </div>
+        <h3>${escapeHtml(audience.title)}</h3>
+        <p>${escapeHtml(audience.detail)}</p>
+        <strong>${escapeHtml(audience.role)}</strong>
+      </article>
+    `).join('');
+
+    dom.strategyGuardrails.innerHTML = strategy.guardrails.map((group) => `
+      <section class="brand-guardrail brand-guardrail--${escapeHtml(group.key)}">
+        <span>${escapeHtml(group.label)}</span>
+        <ul>
+          ${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+        </ul>
+      </section>
+    `).join('');
+
+    dom.strategyTruthGrid.innerHTML = strategy.truthGroups.map((group) => `
+      <article class="strategy-truth-card strategy-truth-card--${escapeHtml(group.key)}">
+        <div class="strategy-truth-card__heading">
+          <span class="truth-status-dot"></span>
+          <div>
+            <h3>${escapeHtml(group.label)}</h3>
+            <p>${escapeHtml(group.description)}</p>
+          </div>
+        </div>
+        <ul>
+          ${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+        </ul>
+      </article>
+    `).join('');
+
+    dom.strategyFunnel.innerHTML = strategy.funnel.map((step, index) => `
+      <article class="funnel-step">
+        <div class="funnel-step__top">
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <small>${escapeHtml(step.signal)}</small>
+        </div>
+        <h3>${escapeHtml(step.title)}</h3>
+        <p>${escapeHtml(step.detail)}</p>
+      </article>
+    `).join('');
+
+    dom.strategyContentPillars.innerHTML = strategy.contentPillars.map((pillar) => `
+      <article class="strategy-pillar">
+        <span class="strategy-pillar__number">${escapeHtml(pillar.number)}</span>
+        <div>
+          <span class="strategy-pillar__role">${escapeHtml(pillar.role)}</span>
+          <h3>${escapeHtml(pillar.title)}</h3>
+          <p>${escapeHtml(pillar.detail)}</p>
+        </div>
+      </article>
+    `).join('');
+
+    dom.strategyDecisionGates.innerHTML = strategy.gates.map((gate) => `
+      <article class="strategy-gate strategy-gate--${escapeHtml(gate.status)}">
+        <span>${escapeHtml(gate.label)}</span>
+        <div>
+          <h3>${escapeHtml(gate.title)}</h3>
+          <p>${escapeHtml(gate.detail)}</p>
+        </div>
+      </article>
+    `).join('');
   }
 
   function renderRoadmap() {
@@ -665,6 +981,7 @@
   function init() {
     applyClientContent();
     renderTasks();
+    renderStrategy();
     renderRoadmap();
     renderMaterials();
     renderKnowledge();
