@@ -14,6 +14,7 @@ This repository includes `render.yaml` at the repo root. It defines a Render wor
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `ADMIN_CHAT_IDS`
+   - `ADMIN_USERNAMES` (defaults to `andrisav,hirchak`)
    - `PROHOR_TELEGRAM_USERNAME` (defaults to `prohormusic`)
    - `CABINET_URL` (optional; defaults to the production cabinet URL)
 

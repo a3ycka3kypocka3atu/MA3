@@ -77,6 +77,10 @@
       </div>
 
       <nav class="portal-nav" aria-label="Client workspace">
+        <button class="nav-item nav-item--admin" id="admin-nav" type="button" data-view-target="admin" hidden>
+          <span class="nav-symbol">A</span>
+          <span>Admin home</span>
+        </button>
         <button class="nav-item is-active" type="button" data-view-target="overview">
           <span class="nav-symbol">01</span>
           <span>Overview</span>
@@ -122,7 +126,7 @@
         <div class="user-avatar">P</div>
         <div>
           <strong data-client-contact>Prohor</strong>
-          <span>Client access</span>
+          <span id="sidebar-access-role">Client access</span>
         </div>
         <span class="access-badge">Link</span>
       </div>
@@ -139,6 +143,7 @@
           <strong id="current-view-label">Overview</strong>
         </div>
         <div class="topbar__actions">
+          <button class="admin-home-button" id="admin-home-button" type="button" hidden>Admin home</button>
           <span class="sync-note"><i></i> Prototype space</span>
           <div class="language-toggle" role="group" aria-label="Language / Язык">
             <button type="button" data-language="ru" aria-pressed="true">RU</button>
@@ -155,6 +160,31 @@
       </header>
 
       <div class="view-stack">
+        <section class="portal-view" data-view="admin" aria-labelledby="admin-title">
+          <div class="page-heading admin-page-heading">
+            <div>
+              <span class="section-kicker">Agency administration</span>
+              <h1 id="admin-title">Choose a cabinet to review.</h1>
+              <p>Open any existing client workspace or the clean new-client template. New registered client records will appear here automatically.</p>
+            </div>
+            <div class="heading-status">
+              <span>Admin access</span>
+              <strong id="admin-cabinet-count">0</strong>
+            </div>
+          </div>
+
+          <div class="admin-cabinet-grid" id="admin-cabinet-grid"></div>
+
+          <article class="strategy-method-note admin-workflow-note">
+            <span class="future-panel__index">How</span>
+            <div>
+              <span class="section-kicker">Reusable client workflow</span>
+              <h2>Client folder → cabinet record → admin review → client access</h2>
+              <p>Add the next client record from their own source folder. The admin page discovers it automatically, while the client receives only the cabinet assigned to their authenticated identity.</p>
+            </div>
+          </article>
+        </section>
+
         <section class="portal-view is-active" data-view="overview" aria-labelledby="overview-title">
           <div class="welcome-panel">
             <div class="welcome-copy">

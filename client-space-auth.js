@@ -6,6 +6,7 @@
   const SUPABASE_PUBLISHABLE_KEY = config.supabasePublishableKey || '';
   const SESSION_KEY = '34forfree7:cabinet-auth:v1';
   const LANGUAGE_KEY = '34forfree7:client-space:language:v1';
+  const ADMIN_EMAILS = (config.adminEmails || []).map((email) => String(email).trim().toLowerCase());
   const hasAuthConfig = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
   const translations = window.CLIENT_SPACE_I18N?.ru || {};
   const language = localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'ru';
@@ -40,8 +41,8 @@
     dom.status.classList.toggle('is-error', isError);
   }
 
-  function publishAuthContext(user, clientId) {
-    const context = { user, clientId };
+  function publishAuthContext(user, clientId, isAdmin) {
+    const context = { user, clientId, isAdmin };
     window.CLIENT_SPACE_AUTH_CONTEXT = context;
     if (!authReadyResolved) {
       authReadyResolved = true;
@@ -136,8 +137,14 @@
     return provider ? `${provider[0].toUpperCase()}${provider.slice(1)} ${translate('access')}` : translate('Secure access');
   }
 
+  function isAdminUser(user) {
+    const verifiedEmail = user.email_confirmed_at ? String(user.email || '').trim().toLowerCase() : '';
+    return user.app_metadata?.role === 'admin' || Boolean(verifiedEmail && ADMIN_EMAILS.includes(verifiedEmail));
+  }
+
   function showCabinet(user) {
     const name = displayName(user);
+    const isAdmin = isAdminUser(user);
     const assignedClientId = String(user.app_metadata?.client_id || 'starter').trim().toLowerCase();
     const clientId = assignedClientId || 'starter';
     dom.body.classList.remove('auth-loading');
@@ -147,7 +154,7 @@
     dom.accountProvider.textContent = providerName(user);
     dom.accountButton.textContent = name.trim().charAt(0).toUpperCase() || 'C';
     dom.accountButton.title = name;
-    publishAuthContext(user, clientId);
+    publishAuthContext(user, clientId, isAdmin);
   }
 
   function showLogin(message = 'Choose a secure sign-in method.') {
@@ -158,14 +165,21 @@
 
   async function initializeAuth() {
     const localPreviewClient = new URLSearchParams(window.location.search).get('preview');
+    const localAdminPreview = ['admin', 'admin-email', 'admin-telegram'].includes(localPreviewClient);
     const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname)
-      && ['starter', 'prohor'].includes(localPreviewClient);
+      && (['starter', 'prohor'].includes(localPreviewClient) || localAdminPreview);
 
     if (isLocalPreview) {
       showCabinet({
         id: `local-${localPreviewClient}`,
-        user_metadata: { full_name: localPreviewClient === 'prohor' ? 'Prohor' : 'New Client' },
-        app_metadata: { provider: 'prototype', client_id: localPreviewClient },
+        email: ['admin', 'admin-email'].includes(localPreviewClient) ? 'andrijpycha@gmail.com' : '',
+        email_confirmed_at: ['admin', 'admin-email'].includes(localPreviewClient) ? new Date().toISOString() : null,
+        user_metadata: { full_name: localPreviewClient === 'prohor' ? 'Prohor' : localAdminPreview ? 'Andrij' : 'New Client' },
+        app_metadata: {
+          provider: 'prototype',
+          client_id: localAdminPreview ? 'starter' : localPreviewClient,
+          role: ['admin', 'admin-telegram'].includes(localPreviewClient) ? 'admin' : 'client',
+        },
       });
       return;
     }

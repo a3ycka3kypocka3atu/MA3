@@ -37,7 +37,10 @@ const MAIN_WEBSITE = 'https://ma-3-rose.vercel.app';
 const CABINET_URL = process.env.CABINET_URL || `${MAIN_WEBSITE}/client-space.html`;
 const OFFER_BRIEF_PATH = path.join(__dirname, '34ForFree7_offer_brief.md');
 const ADMIN_STORE_PATH = path.join(__dirname, 'admin_chats.json');
-const ADMIN_USERNAMES = ['andrisav', 'hirchak'];
+const ADMIN_USERNAMES = (process.env.ADMIN_USERNAMES || 'andrisav,hirchak')
+  .split(',')
+  .map(username => username.replace(/^@/, '').trim().toLowerCase())
+  .filter(Boolean);
 const ADMIN_CONTACTS = [
   {
     label: 'Admin 1: @andrisav',
@@ -133,6 +136,7 @@ function mainMenuKeyboard(ctx) {
 }
 
 function clientIdForTelegram(ctx) {
+  if (isAdmin(ctx)) return 'admin';
   const username = String(ctx.from?.username || '').trim().toLowerCase();
   return username === PROHOR_TELEGRAM_USERNAME ? 'prohor' : 'starter';
 }
@@ -144,6 +148,7 @@ async function sendCabinetLogin(ctx) {
 
   const fullName = [ctx.from?.first_name, ctx.from?.last_name].filter(Boolean).join(' ') || 'Client';
   const clientId = clientIdForTelegram(ctx);
+  const role = clientId === 'admin' ? 'admin' : 'client';
   const email = `telegram-${ctx.from.id}@clients.34forfree7.com`;
   const { data, error } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
@@ -168,6 +173,7 @@ async function sendCabinetLogin(ctx) {
     app_metadata: {
       ...(data.user.app_metadata || {}),
       client_id: clientId,
+      role,
       auth_source: 'telegram',
       telegram_id: String(ctx.from.id),
       telegram_username: ctx.from?.username || ''
@@ -179,9 +185,11 @@ async function sendCabinetLogin(ctx) {
     return ctx.reply('The cabinet could not be assigned securely. Please try again in a moment.');
   }
 
-  const cabinetMessage = clientId === 'prohor'
-    ? 'Your Prohor Music cabinet link is ready. It can be used once and expires shortly.'
-    : 'Your new client workspace is ready. It starts with a clean structure that we will fill together. The link can be used once and expires shortly.';
+  const cabinetMessage = clientId === 'admin'
+    ? 'Your admin cabinet is ready. Choose any existing client cabinet or preview the clean new-client template.'
+    : clientId === 'prohor'
+      ? 'Your Prohor Music cabinet link is ready. It can be used once and expires shortly.'
+      : 'Your new client workspace is ready. It starts with a clean structure that we will fill together. The link can be used once and expires shortly.';
 
   return ctx.reply(
     cabinetMessage,

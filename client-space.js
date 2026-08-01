@@ -459,6 +459,8 @@
   let questionStorageKey = '';
   let completedTasks = [];
   let savedQuestions = [];
+  let activeAuthContext = null;
+  let isAdminMode = false;
   let activeTaskFilter = 'all';
   let toastTimer = null;
 
@@ -470,6 +472,11 @@
     currentViewLabel: document.getElementById('current-view-label'),
     greeting: document.getElementById('greeting'),
     languageButtons: document.querySelectorAll('[data-language]'),
+    adminNav: document.getElementById('admin-nav'),
+    adminHomeButton: document.getElementById('admin-home-button'),
+    adminCabinetGrid: document.getElementById('admin-cabinet-grid'),
+    adminCabinetCount: document.getElementById('admin-cabinet-count'),
+    sidebarAccessRole: document.getElementById('sidebar-access-role'),
     projectProgressValue: document.getElementById('project-progress-value'),
     roadmapProgressValue: document.getElementById('roadmap-progress-value'),
     overviewOpenTasks: document.getElementById('overview-open-tasks'),
@@ -652,13 +659,88 @@
     };
   }
 
-  function activateClient(authContext) {
-    const assignedClientId = String(authContext?.clientId || 'starter').trim().toLowerCase();
+  function activateClient(authContext, selectedClientId = authContext?.clientId, isAdminPreview = false) {
+    const assignedClientId = String(selectedClientId || 'starter').trim().toLowerCase();
     client = CLIENTS[assignedClientId] || createStarterClient(authContext?.user);
-    taskStorageKey = `34forfree7:client-space:${client.id}:tasks:v1`;
-    questionStorageKey = `34forfree7:client-space:${client.id}:questions:v1`;
+    const storageOwner = isAdminPreview
+      ? `admin-preview:${authContext?.user?.id || 'admin'}:${client.id}`
+      : client.id;
+    taskStorageKey = `34forfree7:client-space:${storageOwner}:tasks:v1`;
+    questionStorageKey = `34forfree7:client-space:${storageOwner}:questions:v1`;
     completedTasks = readJson(taskStorageKey, []);
     savedQuestions = readJson(questionStorageKey, []);
+  }
+
+  function renderAdminCabinets() {
+    if (!isAdminMode) return;
+
+    const cabinets = [
+      ...Object.entries(CLIENTS).map(([id, record]) => ({
+        id,
+        name: record.name,
+        initials: record.initials,
+        phase: record.currentPhase,
+        progress: record.progress,
+        kind: 'Existing client',
+        description: 'Open the current client-facing workspace with its strategy, tasks, materials, and forms.',
+      })),
+      {
+        id: 'starter',
+        name: 'New client preview',
+        initials: 'NC',
+        phase: 'Clean template',
+        progress: 5,
+        kind: 'Template',
+        description: 'See exactly what a newly authenticated client receives before their own project information is added.',
+      },
+    ];
+
+    dom.adminCabinetCount.textContent = cabinets.length;
+    dom.adminCabinetGrid.innerHTML = cabinets.map((cabinet) => `
+      <article class="admin-cabinet-card ${cabinet.id === 'starter' ? 'is-template' : ''}">
+        <div class="admin-cabinet-card__top">
+          <span class="admin-cabinet-avatar">${escapeHtml(cabinet.initials)}</span>
+          <span class="admin-cabinet-kind">${escapeHtml(cabinet.kind)}</span>
+        </div>
+        <div>
+          <h2>${escapeHtml(cabinet.name)}</h2>
+          <p>${escapeHtml(cabinet.description)}</p>
+        </div>
+        <div class="admin-cabinet-card__meta">
+          <span>${escapeHtml(cabinet.phase)}</span>
+          <strong>${escapeHtml(cabinet.progress)}%</strong>
+        </div>
+        <button class="primary-button" type="button" data-admin-client="${escapeHtml(cabinet.id)}">
+          ${cabinet.id === 'starter' ? 'Preview new client' : 'Open cabinet'} <span>→</span>
+        </button>
+      </article>
+    `).join('');
+  }
+
+  function showAdminHome() {
+    if (!isAdminMode) return;
+    renderAdminCabinets();
+    document.querySelectorAll('[data-client-name]').forEach((element) => {
+      element.textContent = 'Agency Admin';
+    });
+    document.querySelectorAll('[data-client-initials]').forEach((element) => {
+      element.textContent = 'A';
+    });
+    document.querySelectorAll('[data-client-contact]').forEach((element) => {
+      element.textContent = clientDisplayName(activeAuthContext?.user);
+    });
+    dom.sidebarAccessRole.textContent = 'Admin access';
+    switchView('admin');
+    translateDocument();
+  }
+
+  function openAdminCabinet(clientId) {
+    if (!isAdminMode) return;
+    activateClient(activeAuthContext, clientId, true);
+    dom.sidebarAccessRole.textContent = 'Admin preview';
+    renderAllContent();
+    switchView('overview');
+    showToast(clientId === 'starter' ? 'New client preview opened.' : 'Client cabinet opened.');
   }
 
   function escapeHtml(value) {
@@ -758,6 +840,9 @@
       // The language still changes for this session when storage is unavailable.
     }
     renderAllContent();
+    if (isAdminMode && document.querySelector('[data-view="admin"]')?.classList.contains('is-active')) {
+      showAdminHome();
+    }
   }
 
   function getGreeting() {
@@ -803,6 +888,7 @@
   }
 
   function switchView(viewName) {
+    if (viewName === 'admin' && !isAdminMode) return;
     const targetView = document.querySelector(`[data-view="${viewName}"]`);
     if (!targetView) return;
 
@@ -1207,6 +1293,12 @@
     });
 
     document.addEventListener('click', (event) => {
+      const adminClient = event.target.closest('[data-admin-client]');
+      if (adminClient) {
+        openAdminCabinet(adminClient.dataset.adminClient);
+        return;
+      }
+
       const viewControl = event.target.closest('[data-view-target], [data-view-link]');
       if (viewControl) switchView(viewControl.dataset.viewTarget || viewControl.dataset.viewLink);
 
@@ -1233,6 +1325,7 @@
       if (event.target === dom.articleDialog) dom.articleDialog.close();
     });
     dom.questionForm.addEventListener('submit', saveQuestion);
+    dom.adminHomeButton.addEventListener('click', showAdminHome);
   }
 
   function renderAllContent() {
@@ -1250,9 +1343,18 @@
   async function init() {
     translateDocument();
     const authContext = await (window.CLIENT_SPACE_AUTH_READY || Promise.resolve({ clientId: 'starter', user: null }));
-    activateClient(authContext);
+    activeAuthContext = authContext;
+    isAdminMode = Boolean(authContext.isAdmin);
+    dom.adminNav.hidden = !isAdminMode;
+    dom.adminHomeButton.hidden = !isAdminMode;
+    activateClient(authContext, authContext.clientId === 'admin' ? 'starter' : authContext.clientId, isAdminMode);
     renderAllContent();
     bindEvents();
+
+    if (isAdminMode) {
+      showAdminHome();
+      return;
+    }
 
     const initialView = window.location.hash.replace('#', '');
     if (initialView && document.querySelector(`[data-view="${initialView}"]`)) {

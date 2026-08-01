@@ -17,6 +17,8 @@ services:
         sync: false
       - key: ADMIN_CHAT_IDS
         sync: false
+      - key: ADMIN_USERNAMES
+        value: andrisav,hirchak
       - key: PROHOR_TELEGRAM_USERNAME
         value: prohormusic
       - key: CABINET_URL

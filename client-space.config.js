@@ -2,4 +2,8 @@
 window.CLIENT_SPACE_CONFIG = {
   supabaseUrl: 'https://mnqrblzdpdttdynlpqey.supabase.co',
   supabasePublishableKey: 'sb_publishable_8-a0MZscMktjlzVckFE_sg_cflra1Qe',
+  adminEmails: [
+    'yura.hirchak@gmail.com',
+    'andrijpycha@gmail.com',
+  ],
 };

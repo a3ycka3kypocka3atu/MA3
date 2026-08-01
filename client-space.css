@@ -427,6 +427,16 @@ textarea:focus-visible {
   transition: color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
+.nav-item[hidden] {
+  display: none;
+}
+
+.nav-item--admin {
+  margin-bottom: 7px;
+  color: var(--lime);
+  border: 1px solid rgba(201, 242, 107, 0.22);
+}
+
 .nav-item:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.06);
@@ -597,6 +607,119 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.admin-home-button {
+  min-height: 32px;
+  padding: 0 12px;
+  color: var(--green);
+  background: rgba(201, 242, 107, 0.36);
+  border: 1px solid rgba(140, 175, 54, 0.34);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.admin-home-button[hidden] {
+  display: none;
+}
+
+.admin-cabinet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
+  gap: 18px;
+}
+
+.admin-cabinet-card {
+  display: flex;
+  min-height: 370px;
+  padding: 26px;
+  flex-direction: column;
+  gap: 26px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 36px rgba(23, 33, 27, 0.06);
+}
+
+.admin-cabinet-card.is-template {
+  background: linear-gradient(145deg, rgba(200, 192, 247, 0.2), rgba(255, 255, 252, 0.86));
+  border-style: dashed;
+  border-color: rgba(105, 89, 186, 0.28);
+}
+
+.admin-cabinet-card__top,
+.admin-cabinet-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.admin-cabinet-avatar {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  color: var(--green);
+  background: var(--lime);
+  border-radius: 16px;
+  font-family: "Manrope", sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.is-template .admin-cabinet-avatar {
+  background: var(--lavender);
+}
+
+.admin-cabinet-kind {
+  padding: 7px 10px;
+  color: var(--green-light);
+  background: rgba(23, 63, 44, 0.06);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-cabinet-card h2 {
+  margin: 0 0 9px;
+  font-family: "Manrope", sans-serif;
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.admin-cabinet-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.admin-cabinet-card__meta {
+  padding-top: 15px;
+  margin-top: auto;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+
+.admin-cabinet-card__meta strong {
+  color: var(--green);
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+}
+
+.admin-cabinet-card .primary-button {
+  width: 100%;
+}
+
+.admin-workflow-note {
+  margin-top: 20px;
 }
 
 .account-menu {
@@ -3057,6 +3180,18 @@ textarea:focus-visible {
 
   .topbar__actions {
     gap: 7px;
+  }
+
+  .admin-home-button {
+    width: 32px;
+    padding: 0;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .admin-home-button::after {
+    content: "A";
+    font-size: 11px;
   }
 
   .language-toggle {
