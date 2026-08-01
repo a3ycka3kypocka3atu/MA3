@@ -17,9 +17,38 @@
   >
   <link rel="stylesheet" href="client-space.css">
 </head>
-<body>
+<body class="auth-loading">
   <div class="ambient ambient--one" aria-hidden="true"></div>
   <div class="ambient ambient--two" aria-hidden="true"></div>
+
+  <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
+    <div class="auth-card">
+      <a class="auth-brand" href="index.html" aria-label="34ForFree7 home">
+        <span class="brand-mark">34</span>
+        <span><strong>34ForFree7</strong><small>Client Space</small></span>
+      </a>
+      <div class="auth-card__copy">
+        <span class="section-kicker">Private client cabinet</span>
+        <h1 id="auth-title">Welcome back.</h1>
+        <p>Sign in with the account connected to your project workspace.</p>
+      </div>
+      <div class="auth-options">
+        <a class="auth-button auth-button--telegram" id="telegram-login" href="https://t.me/34ForFree7Agencybot?start=cabinet" target="_blank" rel="noreferrer">
+          <span class="auth-provider-icon" aria-hidden="true">↗</span>
+          Continue with Telegram
+        </a>
+        <button class="auth-button auth-button--google" id="google-login" type="button">
+          <span class="google-mark" aria-hidden="true">G</span>
+          Continue with Google
+        </button>
+        <button class="auth-button auth-button--preview" id="preview-login" type="button" hidden>
+          Open prototype cabinet
+        </button>
+      </div>
+      <p class="auth-status" id="auth-status" role="status" aria-live="polite">Checking your session…</p>
+      <p class="auth-note">Access is limited to invited clients. Need help? <a href="https://t.me/Hirchak" target="_blank" rel="noreferrer">Contact the team</a>.</p>
+    </div>
+  </section>
 
   <div class="portal-shell">
     <aside class="sidebar" id="sidebar">
@@ -109,7 +138,12 @@
             <span></span>
             <button type="button" data-language="en" aria-pressed="false">EN</button>
           </div>
-          <button class="avatar-button" type="button" title="Login will be added later">P</button>
+          <button class="avatar-button" id="account-button" type="button" title="Account" aria-haspopup="true" aria-expanded="false">P</button>
+          <div class="account-menu" id="account-menu" hidden>
+            <strong id="account-name">Client</strong>
+            <span id="account-provider">Secure access</span>
+            <button id="logout-button" type="button">Sign out</button>
+          </div>
         </div>
       </header>
 
@@ -504,6 +538,8 @@
 
   <div class="toast" id="portal-toast" role="status" aria-live="polite"></div>
 
+  <script src="client-space.config.js"></script>
+  <script src="client-space-auth.js"></script>
   <script src="client-space.i18n.js"></script>
   <script src="client-space.js"></script>
 </body>

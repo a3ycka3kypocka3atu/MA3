@@ -14,6 +14,8 @@ This repository includes `render.yaml` at the repo root. It defines a Render wor
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `ADMIN_CHAT_IDS`
+   - `CABINET_TELEGRAM_IDS`
+   - `CABINET_URL` (optional; defaults to the production cabinet URL)
 
 `ADMIN_CHAT_IDS` must contain numeric Telegram chat IDs, separated by commas.
 
@@ -24,6 +26,12 @@ ADMIN_CHAT_IDS=123456789,987654321
 ```
 
 Each admin must open the bot and press `/start` once before the bot can send them direct notifications.
+
+`CABINET_TELEGRAM_IDS` is the allow-list for Telegram cabinet login. Add each client's numeric Telegram ID, separated by commas. The bot creates a short-lived, one-use Supabase login link only for these IDs and admins.
+
+In Supabase Auth URL Configuration, add `https://34forfree7-rose.vercel.app/client-space.html` to the redirect allow list. To activate Google login, enable the Google provider in Supabase Auth and add its Google OAuth client ID and secret. In Google Auth Platform, use `https://mnqrblzdpdttdynlpqey.supabase.co/auth/v1/callback` as the authorized redirect URI.
+
+Copy an active `sb_publishable_...` key from Supabase Project Settings > API Keys into `client-space.config.js`. This key is designed for browser use. Never copy `SUPABASE_SERVICE_ROLE_KEY` into a frontend file.
 
 ## Why Not Just GitHub?
 

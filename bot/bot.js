@@ -13,6 +13,10 @@ const ADMIN_CHAT_IDS = (process.env.ADMIN_CHAT_IDS || ADMIN_CHAT_ID || '')
   .split(',')
   .map(id => id.trim())
   .filter(Boolean);
+const CABINET_TELEGRAM_IDS = (process.env.CABINET_TELEGRAM_IDS || '')
+  .split(',')
+  .map(id => id.trim())
+  .filter(Boolean);
 
 if (!BOT_TOKEN || !SUPABASE_URL || !SUPABASE_KEY) {
   console.error("Missing required environment variables.");
@@ -30,6 +34,7 @@ bot.use((ctx, next) => {
 
 // ── CONSTANTS ──
 const MAIN_WEBSITE = 'https://34forfree7-rose.vercel.app';
+const CABINET_URL = process.env.CABINET_URL || `${MAIN_WEBSITE}/client-space.html`;
 const OFFER_BRIEF_PATH = path.join(__dirname, '34ForFree7_offer_brief.md');
 const ADMIN_STORE_PATH = path.join(__dirname, 'admin_chats.json');
 const ADMIN_USERNAMES = ['andrisav', 'hirchak'];
@@ -111,6 +116,7 @@ const SERVICES = [
 
 function mainMenuKeyboard(ctx) {
   const rows = [
+    [Markup.button.callback('🔐 Client cabinet', 'cabinet_login')],
     [Markup.button.callback('🧩 Choose a Service', 'services_menu')],
     [Markup.button.callback('🔍 Free Product & Market Analysis', 'free_audit')],
     [Markup.button.callback('📄 Get Offer Brief', 'offer_brief')],
@@ -124,6 +130,53 @@ function mainMenuKeyboard(ctx) {
   }
 
   return Markup.inlineKeyboard(rows);
+}
+
+function canAccessCabinet(ctx) {
+  const telegramId = ctx.from?.id ? String(ctx.from.id) : '';
+  return Boolean(telegramId && (CABINET_TELEGRAM_IDS.includes(telegramId) || isAdmin(ctx)));
+}
+
+async function sendCabinetLogin(ctx) {
+  if (ctx.chat?.type !== 'private') {
+    return ctx.reply('For security, open the bot in a private chat to access the client cabinet.');
+  }
+
+  if (!canAccessCabinet(ctx)) {
+    return ctx.reply(
+      'This Telegram account is not connected to a client workspace yet. Please contact the 34ForFree7 team to request access.',
+      contactKeyboard()
+    );
+  }
+
+  const fullName = [ctx.from?.first_name, ctx.from?.last_name].filter(Boolean).join(' ') || 'Client';
+  const email = `telegram-${ctx.from.id}@clients.34forfree7.com`;
+  const { data, error } = await supabase.auth.admin.generateLink({
+    type: 'magiclink',
+    email,
+    options: {
+      redirectTo: CABINET_URL,
+      data: {
+        auth_source: 'telegram',
+        telegram_id: String(ctx.from.id),
+        username: ctx.from?.username || '',
+        full_name: fullName
+      }
+    }
+  });
+
+  if (error || !data?.properties?.action_link) {
+    console.error('Could not generate cabinet login link.', error?.message || error);
+    return ctx.reply('The secure login link could not be created. Please try again in a moment.');
+  }
+
+  return ctx.reply(
+    'Your private cabinet link is ready. It can be used once and expires shortly.',
+    Markup.inlineKeyboard([
+      [Markup.button.url('Open client cabinet →', data.properties.action_link)],
+      [Markup.button.callback('⬅️ Main menu', 'main_menu')]
+    ])
+  );
 }
 
 function serviceKeyboard() {
@@ -246,7 +299,11 @@ async function saveInquiry(ctx, type, content) {
 }
 
 // ── START COMMAND ──
-bot.start((ctx) => {
+bot.start(async (ctx) => {
+  if (ctx.startPayload === 'cabinet') {
+    return sendCabinetLogin(ctx);
+  }
+
   const welcomeText = `
 <b>Welcome to 34ForFree7.</b>
 
@@ -266,6 +323,11 @@ You can choose a service, ask a question, send your project directly, or request
     welcomeText,
     { parse_mode: 'HTML', ...mainMenuKeyboard(ctx) }
   );
+});
+
+bot.action('cabinet_login', async (ctx) => {
+  await safeAnswer(ctx);
+  return sendCabinetLogin(ctx);
 });
 
 bot.command('myid', (ctx) => {

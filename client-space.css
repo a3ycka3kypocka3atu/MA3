@@ -40,6 +40,169 @@ body {
   font-size: 16px;
 }
 
+.auth-loading .portal-shell,
+body:not(.is-authenticated) .portal-shell {
+  visibility: hidden;
+}
+
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  min-height: 100vh;
+  padding: 24px;
+  place-items: center;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(201, 242, 107, 0.2), transparent 28%),
+    radial-gradient(circle at 82% 76%, rgba(200, 192, 247, 0.24), transparent 30%),
+    var(--paper);
+}
+
+.auth-gate[aria-hidden="true"] {
+  display: none;
+}
+
+.auth-card {
+  width: min(100%, 470px);
+  padding: 34px;
+  background: rgba(255, 255, 252, 0.9);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.auth-brand > span:last-child {
+  display: grid;
+}
+
+.auth-brand strong {
+  font-family: "Manrope", sans-serif;
+  font-size: 15px;
+}
+
+.auth-brand small {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.auth-card__copy {
+  margin: 42px 0 28px;
+}
+
+.auth-card__copy h1 {
+  margin: 8px 0 10px;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(35px, 7vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.auth-card__copy p,
+.auth-note {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.auth-options {
+  display: grid;
+  gap: 11px;
+}
+
+.auth-button {
+  display: flex;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 18px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(23, 33, 27, 0.1);
+}
+
+.auth-button--telegram {
+  color: white;
+  background: #229ed9;
+  border-color: #229ed9;
+}
+
+.auth-button--google {
+  color: var(--ink);
+  background: white;
+}
+
+.auth-button--preview {
+  color: var(--green);
+  background: rgba(201, 242, 107, 0.3);
+  border-color: rgba(140, 175, 54, 0.45);
+}
+
+.auth-provider-icon,
+.google-mark {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.auth-provider-icon {
+  color: #229ed9;
+  background: white;
+}
+
+.google-mark {
+  color: #4285f4;
+  border: 1px solid rgba(66, 133, 244, 0.25);
+}
+
+.auth-status {
+  min-height: 20px;
+  margin: 18px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  text-align: center;
+}
+
+.auth-status.is-error {
+  color: #a23c34;
+}
+
+.auth-note {
+  padding-top: 18px;
+  margin-top: 2px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  text-align: center;
+}
+
+.auth-note a {
+  color: var(--green-light);
+  font-weight: 700;
+}
+
 button,
 select,
 textarea {
@@ -385,9 +548,51 @@ textarea:focus-visible {
 }
 
 .topbar__actions {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  width: 210px;
+  padding: 15px;
+  background: var(--paper-light);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+}
+
+.account-menu strong,
+.account-menu span {
+  display: block;
+}
+
+.account-menu strong {
+  font-size: 13px;
+}
+
+.account-menu span {
+  margin-top: 2px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.account-menu button {
+  width: 100%;
+  padding: 9px 10px;
+  margin-top: 13px;
+  color: #9a372f;
+  background: rgba(154, 55, 47, 0.07);
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .language-toggle {
@@ -2789,6 +2994,18 @@ textarea:focus-visible {
 }
 
 @media (max-width: 430px) {
+  .auth-gate {
+    padding: 14px;
+  }
+
+  .auth-card {
+    padding: 26px 20px;
+  }
+
+  .auth-card__copy {
+    margin: 34px 0 24px;
+  }
+
   .topbar__context .eyebrow {
     display: none;
   }
@@ -2799,10 +3016,6 @@ textarea:focus-visible {
 
   .language-toggle {
     height: 32px;
-  }
-
-  .avatar-button {
-    display: none;
   }
 
   .metrics-grid {
