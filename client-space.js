@@ -7,8 +7,8 @@
   const attributeSources = new WeakMap();
   let currentLanguage = readLanguagePreference();
 
-  // Reusable client records: add one keyed object per client and open it with
-  // client-space.html?client=their-slug. The cabinet interface stays unchanged.
+  // Reusable client records. Authentication assigns a server-controlled
+  // app_metadata.client_id; unknown identities always receive a starter space.
   // Every section can be adapted or omitted as the client project requires.
   const CLIENTS = {
     prohor: {
@@ -454,13 +454,11 @@
     },
   };
 
-  const queryClient = new URLSearchParams(window.location.search).get('client');
-  const client = CLIENTS[queryClient] || CLIENTS.prohor;
-  const taskStorageKey = `34forfree7:client-space:${client.id}:tasks:v1`;
-  const questionStorageKey = `34forfree7:client-space:${client.id}:questions:v1`;
-
-  let completedTasks = readJson(taskStorageKey, []);
-  let savedQuestions = readJson(questionStorageKey, []);
+  let client = null;
+  let taskStorageKey = '';
+  let questionStorageKey = '';
+  let completedTasks = [];
+  let savedQuestions = [];
   let activeTaskFilter = 'all';
   let toastTimer = null;
 
@@ -480,6 +478,8 @@
     overviewTaskList: document.getElementById('overview-task-list'),
     fullTaskList: document.getElementById('full-task-list'),
     taskCompletionRatio: document.getElementById('task-completion-ratio'),
+    strategyEmptyState: document.getElementById('strategy-empty-state'),
+    strategyContent: document.getElementById('strategy-content'),
     strategyVersion: document.getElementById('strategy-version'),
     strategySource: document.getElementById('strategy-source'),
     strategyPositioning: document.getElementById('strategy-positioning'),
@@ -527,6 +527,138 @@
     } catch (error) {
       return 'ru';
     }
+  }
+
+  function clientDisplayName(user) {
+    const metadata = user?.user_metadata || {};
+    return metadata.full_name || metadata.name || metadata.username || 'Client';
+  }
+
+  function clientInitials(name) {
+    return String(name)
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase() || 'NC';
+  }
+
+  function createStarterClient(user) {
+    const contactName = clientDisplayName(user);
+    const storageIdentity = String(user?.id || 'prototype').replace(/[^a-zA-Z0-9_-]/g, '');
+    const generalKnowledge = CLIENTS.prohor.knowledge.filter((article) =>
+      ['positioning', 'proof', 'content-system', 'marketing-system'].includes(article.id)
+    );
+
+    return {
+      id: `starter-${storageIdentity || 'client'}`,
+      name: 'New Client Workspace',
+      contactName,
+      initials: clientInitials(contactName),
+      currentPhase: 'Getting started',
+      progress: 5,
+      nextCheckin: 'To be scheduled',
+      latestUpdate: {
+        date: 'Today',
+        title: 'Your client workspace is ready',
+        copy: 'This clean structure is ready for your brief, source materials, project decisions, tasks, and agency updates.',
+      },
+      strategy: null,
+      roadmap: [
+        {
+          title: 'Workspace access',
+          description: 'Your private cabinet structure is created and ready for the project.',
+          status: 'done',
+          timing: 'Completed',
+        },
+        {
+          title: 'First brief & materials',
+          description: 'We collect your goals, context, links, documents, proof, and open questions.',
+          status: 'active',
+          timing: 'Next step',
+        },
+        {
+          title: 'Agency review',
+          description: 'The team organizes the inputs, identifies gaps, and prepares the first working direction.',
+          status: 'upcoming',
+          timing: 'After the brief',
+        },
+        {
+          title: 'Strategy & delivery system',
+          description: 'Approved knowledge becomes visible decisions, materials, tasks, and progress inside this cabinet.',
+          status: 'upcoming',
+          timing: 'Planned',
+        },
+      ],
+      updates: [
+        {
+          date: 'Today',
+          title: 'A clean client cabinet was created',
+          copy: 'Nothing from another client is shown here. We will fill this workspace from your own brief and project folder.',
+        },
+      ],
+      tasks: [
+        {
+          id: 'prepare-first-brief',
+          title: 'Prepare your first project brief',
+          description: 'Write down the main goal, current situation, desired result, and the questions you want us to solve.',
+          category: 'Getting started',
+          effort: '10–15 min',
+          priority: 'Next step',
+          featured: true,
+        },
+        {
+          id: 'collect-project-links',
+          title: 'Collect useful project links and files',
+          description: 'Prepare the website, social profiles, documents, brand files, examples, and existing research in one folder.',
+          category: 'Materials',
+          effort: '15–30 min',
+          priority: 'Next step',
+          featured: true,
+        },
+        {
+          id: 'send-first-question',
+          title: 'Save your first question for the team',
+          description: 'Use the Questions page to record anything we should discuss during the first project conversation.',
+          category: 'Communication',
+          effort: '5 min',
+          priority: 'Optional',
+        },
+      ],
+      materials: [],
+      knowledge: generalKnowledge,
+      forms: [
+        {
+          title: 'Project starting brief',
+          description: 'A reusable first questionnaire for goals, context, materials, decision makers, and project priorities.',
+          status: 'draft',
+          timing: 'Coming next',
+          featured: true,
+        },
+        {
+          title: 'Materials and links',
+          description: 'A structured place to share the source files and references we will use for your project.',
+          status: 'draft',
+          timing: 'Coming next',
+        },
+        {
+          title: 'Strategy feedback',
+          description: 'A future review form for decisions, comments, questions, and approvals.',
+          status: 'draft',
+          timing: 'Coming later',
+        },
+      ],
+    };
+  }
+
+  function activateClient(authContext) {
+    const assignedClientId = String(authContext?.clientId || 'starter').trim().toLowerCase();
+    client = CLIENTS[assignedClientId] || createStarterClient(authContext?.user);
+    taskStorageKey = `34forfree7:client-space:${client.id}:tasks:v1`;
+    questionStorageKey = `34forfree7:client-space:${client.id}:questions:v1`;
+    completedTasks = readJson(taskStorageKey, []);
+    savedQuestions = readJson(questionStorageKey, []);
   }
 
   function escapeHtml(value) {
@@ -781,12 +913,15 @@
 
   function renderStrategy() {
     const strategy = client.strategy;
-    const strategyNav = document.querySelector('[data-view-target="strategy"]');
 
     if (!strategy) {
-      if (strategyNav) strategyNav.hidden = true;
+      dom.strategyEmptyState.hidden = false;
+      dom.strategyContent.hidden = true;
       return;
     }
+
+    dom.strategyEmptyState.hidden = true;
+    dom.strategyContent.hidden = false;
 
     dom.strategyVersion.textContent = strategy.version;
     dom.strategySource.textContent = strategy.source;
@@ -911,7 +1046,7 @@
     dom.materialReadyCount.textContent = readyCount;
     dom.materialWaitingCount.textContent = waitingCount;
 
-    dom.materialGrid.innerHTML = client.materials.map((material) => `
+    dom.materialGrid.innerHTML = client.materials.length ? client.materials.map((material) => `
       <article class="material-card">
         <div class="material-card__top">
           <span class="file-type file-type--${escapeHtml(material.style)}">${escapeHtml(material.type)}</span>
@@ -927,7 +1062,7 @@
           }
         </div>
       </article>
-    `).join('');
+    `).join('') : '<div class="empty-state">No project materials yet. Your team will add files, links, and references here.</div>';
   }
 
   function renderKnowledge() {
@@ -1112,7 +1247,10 @@
     translateDocument();
   }
 
-  function init() {
+  async function init() {
+    translateDocument();
+    const authContext = await (window.CLIENT_SPACE_AUTH_READY || Promise.resolve({ clientId: 'starter', user: null }));
+    activateClient(authContext);
     renderAllContent();
     bindEvents();
 

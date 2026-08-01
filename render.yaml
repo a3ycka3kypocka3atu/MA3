@@ -17,7 +17,7 @@ services:
         sync: false
       - key: ADMIN_CHAT_IDS
         sync: false
-      - key: CABINET_TELEGRAM_IDS
-        sync: false
+      - key: PROHOR_TELEGRAM_USERNAME
+        value: prohormusic
       - key: CABINET_URL
-        value: https://34forfree7-rose.vercel.app/client-space.html
+        value: https://ma-3-rose.vercel.app/client-space.html

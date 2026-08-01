@@ -5,7 +5,16 @@
   const SUPABASE_URL = config.supabaseUrl || '';
   const SUPABASE_PUBLISHABLE_KEY = config.supabasePublishableKey || '';
   const SESSION_KEY = '34forfree7:cabinet-auth:v1';
+  const LANGUAGE_KEY = '34forfree7:client-space:language:v1';
   const hasAuthConfig = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+  const translations = window.CLIENT_SPACE_I18N?.ru || {};
+  const language = localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'ru';
+  let authReadyResolved = false;
+  let resolveAuthReady;
+
+  window.CLIENT_SPACE_AUTH_READY = new Promise((resolve) => {
+    resolveAuthReady = resolve;
+  });
 
   const dom = {
     body: document.body,
@@ -19,11 +28,25 @@
     accountName: document.getElementById('account-name'),
     accountProvider: document.getElementById('account-provider'),
     logoutButton: document.getElementById('logout-button'),
+    languageButtons: document.querySelectorAll('[data-auth-language]'),
   };
 
+  function translate(message) {
+    return language === 'ru' ? (translations[message] || message) : message;
+  }
+
   function setStatus(message, isError = false) {
-    dom.status.textContent = message;
+    dom.status.textContent = translate(message);
     dom.status.classList.toggle('is-error', isError);
+  }
+
+  function publishAuthContext(user, clientId) {
+    const context = { user, clientId };
+    window.CLIENT_SPACE_AUTH_CONTEXT = context;
+    if (!authReadyResolved) {
+      authReadyResolved = true;
+      resolveAuthReady(context);
+    }
   }
 
   function readSession() {
@@ -108,13 +131,15 @@
   }
 
   function providerName(user) {
-    if (user.user_metadata?.auth_source === 'telegram') return 'Telegram access';
+    if (user.app_metadata?.auth_source === 'telegram') return translate('Telegram access');
     const provider = user.app_metadata?.provider;
-    return provider ? `${provider[0].toUpperCase()}${provider.slice(1)} access` : 'Secure access';
+    return provider ? `${provider[0].toUpperCase()}${provider.slice(1)} ${translate('access')}` : translate('Secure access');
   }
 
   function showCabinet(user) {
     const name = displayName(user);
+    const assignedClientId = String(user.app_metadata?.client_id || 'starter').trim().toLowerCase();
+    const clientId = assignedClientId || 'starter';
     dom.body.classList.remove('auth-loading');
     dom.body.classList.add('is-authenticated');
     dom.gate.setAttribute('aria-hidden', 'true');
@@ -122,6 +147,7 @@
     dom.accountProvider.textContent = providerName(user);
     dom.accountButton.textContent = name.trim().charAt(0).toUpperCase() || 'C';
     dom.accountButton.title = name;
+    publishAuthContext(user, clientId);
   }
 
   function showLogin(message = 'Choose a secure sign-in method.') {
@@ -131,6 +157,19 @@
   }
 
   async function initializeAuth() {
+    const localPreviewClient = new URLSearchParams(window.location.search).get('preview');
+    const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+      && ['starter', 'prohor'].includes(localPreviewClient);
+
+    if (isLocalPreview) {
+      showCabinet({
+        id: `local-${localPreviewClient}`,
+        user_metadata: { full_name: localPreviewClient === 'prohor' ? 'Prohor' : 'New Client' },
+        app_metadata: { provider: 'prototype', client_id: localPreviewClient },
+      });
+      return;
+    }
+
     if (!hasAuthConfig) {
       dom.previewLogin.hidden = false;
       showLogin('Secure login is being activated. You can continue to the prototype for now.');
@@ -184,8 +223,19 @@
 
   dom.previewLogin.addEventListener('click', () => {
     showCabinet({
+      id: 'prototype',
       user_metadata: { full_name: 'Prototype client' },
-      app_metadata: { provider: 'prototype' },
+      app_metadata: { provider: 'prototype', client_id: 'starter' },
+    });
+  });
+
+  dom.languageButtons.forEach((button) => {
+    const isActive = button.dataset.authLanguage === language;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+    button.addEventListener('click', () => {
+      localStorage.setItem(LANGUAGE_KEY, button.dataset.authLanguage);
+      window.location.reload();
     });
   });
 

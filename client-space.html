@@ -23,14 +23,21 @@
 
   <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
     <div class="auth-card">
+      <div class="auth-card__top">
       <a class="auth-brand" href="index.html" aria-label="34ForFree7 home">
         <span class="brand-mark">34</span>
         <span><strong>34ForFree7</strong><small>Client Space</small></span>
       </a>
+        <div class="language-toggle auth-language-toggle" aria-label="Language">
+          <button type="button" data-auth-language="ru" aria-pressed="true">RU</button>
+          <span aria-hidden="true"></span>
+          <button type="button" data-auth-language="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
       <div class="auth-card__copy">
         <span class="section-kicker">Private client cabinet</span>
         <h1 id="auth-title">Welcome back.</h1>
-        <p>Sign in with the account connected to your project workspace.</p>
+        <p>Sign in to open the workspace connected to your account.</p>
       </div>
       <div class="auth-options">
         <a class="auth-button auth-button--telegram" id="telegram-login" href="https://t.me/34ForFree7Agencybot?start=cabinet" target="_blank" rel="noreferrer">
@@ -46,7 +53,7 @@
         </button>
       </div>
       <p class="auth-status" id="auth-status" role="status" aria-live="polite">Checking your session…</p>
-      <p class="auth-note">Access is limited to invited clients. Need help? <a href="https://t.me/Hirchak" target="_blank" rel="noreferrer">Contact the team</a>.</p>
+      <p class="auth-note">New here? We will create a clean starter workspace and fill it together. <a href="https://t.me/Hirchak" target="_blank" rel="noreferrer">Contact the team</a>.</p>
     </div>
   </section>
 
@@ -249,6 +256,17 @@
             <button class="secondary-button" type="button" data-view-link="forms">Validate the inputs</button>
           </div>
 
+          <article class="panel strategy-empty-state" id="strategy-empty-state" hidden>
+            <span class="future-panel__index">01</span>
+            <div>
+              <span class="section-kicker">Your strategy space is ready</span>
+              <h2>Your strategy will appear here after the first project brief.</h2>
+              <p>We will turn your information, source files, research, and decisions into the same working system—without mixing it with another client’s project.</p>
+              <button class="secondary-button" type="button" data-view-link="forms">Start with the project brief</button>
+            </div>
+          </article>
+
+          <div id="strategy-content">
           <div class="strategy-source-bar">
             <div>
               <span class="strategy-live-dot"></span>
@@ -359,6 +377,7 @@
               <p>The cabinet turns internal agency research into a client-facing decision layer. When we add another client, we replace the client record—not the interface.</p>
             </div>
           </article>
+          </div>
         </section>
 
         <section class="portal-view" data-view="progress" aria-labelledby="progress-title">
@@ -539,8 +558,8 @@
   <div class="toast" id="portal-toast" role="status" aria-live="polite"></div>
 
   <script src="client-space.config.js"></script>
-  <script src="client-space-auth.js"></script>
   <script src="client-space.i18n.js"></script>
+  <script src="client-space-auth.js"></script>
   <script src="client-space.js"></script>
 </body>
 </html>
