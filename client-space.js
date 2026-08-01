@@ -1,6 +1,12 @@
 (function () {
   'use strict';
 
+  const TRANSLATIONS = window.CLIENT_SPACE_I18N || {};
+  const languageStorageKey = '34forfree7:client-space:language:v1';
+  const staticTextSources = new WeakMap();
+  const attributeSources = new WeakMap();
+  let currentLanguage = readLanguagePreference();
+
   // Reusable client records: add one keyed object per client and open it with
   // client-space.html?client=their-slug. The cabinet interface stays unchanged.
   // Every section can be adapted or omitted as the client project requires.
@@ -464,6 +470,8 @@
     mobileMenu: document.getElementById('mobile-menu'),
     mobileBackdrop: document.getElementById('mobile-backdrop'),
     currentViewLabel: document.getElementById('current-view-label'),
+    greeting: document.getElementById('greeting'),
+    languageButtons: document.querySelectorAll('[data-language]'),
     projectProgressValue: document.getElementById('project-progress-value'),
     roadmapProgressValue: document.getElementById('roadmap-progress-value'),
     overviewOpenTasks: document.getElementById('overview-open-tasks'),
@@ -512,6 +520,15 @@
     }
   }
 
+  function readLanguagePreference() {
+    try {
+      const saved = localStorage.getItem(languageStorageKey);
+      return saved === 'en' || saved === 'ru' ? saved : 'ru';
+    } catch (error) {
+      return 'ru';
+    }
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, '&amp;')
@@ -519,6 +536,103 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  function translate(value) {
+    const source = String(value);
+    if (currentLanguage !== 'ru') return source;
+
+    const dictionary = TRANSLATIONS.ru || {};
+    if (dictionary[source]) return dictionary[source];
+
+    if (source.includes(' · ')) {
+      return source.split(' · ').map((part) => translate(part)).join(' · ');
+    }
+
+    if (source.endsWith(' →')) {
+      return `${translate(source.slice(0, -2))} →`;
+    }
+
+    const minutes = source.match(/^(\d+(?:–\d+)?) min$/);
+    if (minutes) return `${minutes[1]} мин`;
+
+    const readingTime = source.match(/^(\d+(?:–\d+)?) min read$/);
+    if (readingTime) return `${readingTime[1]} мин чтения`;
+
+    const date = source.match(/^(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|June|July|August|September|October|November|December) (\d{4})$/);
+    if (date) {
+      const months = {
+        Jan: 'янв', January: 'января', Feb: 'фев', February: 'февраля', Mar: 'мар', March: 'марта',
+        Apr: 'апр', April: 'апреля', May: 'мая', Jun: 'июн', June: 'июня', Jul: 'июл', July: 'июля',
+        Aug: 'авг', August: 'августа', Sep: 'сен', September: 'сентября', Oct: 'окт', October: 'октября',
+        Nov: 'ноя', November: 'ноября', Dec: 'дек', December: 'декабря',
+      };
+      return `${date[1]} ${months[date[2]]} ${date[3]}`;
+    }
+
+    return source;
+  }
+
+  function translateDocument() {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    let node = walker.nextNode();
+
+    while (node) {
+      const parent = node.parentElement;
+      if (parent && !parent.closest('script, style, [data-no-translate]') && node.nodeValue.trim()) {
+        textNodes.push(node);
+      }
+      node = walker.nextNode();
+    }
+
+    textNodes.forEach((textNode) => {
+      if (!staticTextSources.has(textNode)) staticTextSources.set(textNode, textNode.nodeValue);
+      const source = staticTextSources.get(textNode);
+      const match = source.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      textNode.nodeValue = `${match[1]}${translate(match[2])}${match[3]}`;
+    });
+
+    document.querySelectorAll('[placeholder], [title], [aria-label]').forEach((element) => {
+      if (!attributeSources.has(element)) attributeSources.set(element, {});
+      const sources = attributeSources.get(element);
+
+      ['placeholder', 'title', 'aria-label'].forEach((attribute) => {
+        if (!element.hasAttribute(attribute)) return;
+        if (!Object.prototype.hasOwnProperty.call(sources, attribute)) {
+          sources[attribute] = element.getAttribute(attribute);
+        }
+        element.setAttribute(attribute, translate(sources[attribute]));
+      });
+    });
+
+    document.documentElement.lang = currentLanguage;
+    dom.languageButtons.forEach((button) => {
+      const isActive = button.dataset.language === currentLanguage;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+
+    const activeNav = document.querySelector('[data-view-target].is-active span:nth-child(2)');
+    if (activeNav) dom.currentViewLabel.textContent = activeNav.textContent;
+  }
+
+  function setLanguage(language) {
+    if (language !== 'ru' && language !== 'en') return;
+    currentLanguage = language;
+    try {
+      localStorage.setItem(languageStorageKey, currentLanguage);
+    } catch (error) {
+      // The language still changes for this session when storage is unavailable.
+    }
+    renderAllContent();
+  }
+
+  function getGreeting() {
+    const hour = new Date().getHours();
+    if (hour < 12) return translate('Good morning');
+    if (hour < 18) return translate('Good afternoon');
+    return translate('Good evening');
   }
 
   function applyClientContent() {
@@ -550,10 +664,10 @@
     dom.projectProgressValue.textContent = `${client.progress}%`;
     dom.roadmapProgressValue.textContent = `${client.progress}%`;
 
-    const hour = new Date().getHours();
-    const period = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
-    document.getElementById('day-period').textContent = period;
-    document.title = `${client.name} Client Space — 34ForFree7`;
+    dom.greeting.textContent = getGreeting();
+    document.title = currentLanguage === 'ru'
+      ? `${client.name} — кабинет клиента 34ForFree7`
+      : `${client.name} Client Space — 34ForFree7`;
   }
 
   function switchView(viewName) {
@@ -601,6 +715,7 @@
     }
     localStorage.setItem(taskStorageKey, JSON.stringify(completedTasks));
     renderTasks();
+    translateDocument();
     showToast(isDone ? 'Task completed. Nice progress.' : 'Task moved back to open.');
   }
 
@@ -610,7 +725,7 @@
         class="task-checkbox"
         type="checkbox"
         data-task-checkbox="${escapeHtml(task.id)}"
-        aria-label="Mark ${escapeHtml(task.title)} as completed"
+        aria-label="${escapeHtml(translate('Mark task as completed'))}: ${escapeHtml(translate(task.title))}"
         ${isTaskDone(task.id) ? 'checked' : ''}
       >
     `;
@@ -858,6 +973,7 @@
         </div>
       </article>
     `;
+    translateDocument();
     dom.articleDialog.showModal();
   }
 
@@ -901,6 +1017,7 @@
         savedQuestions = savedQuestions.filter((question) => question.id !== button.dataset.deleteQuestion);
         localStorage.setItem(questionStorageKey, JSON.stringify(savedQuestions));
         renderQuestions();
+        translateDocument();
       });
     });
   }
@@ -915,16 +1032,17 @@
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
       topic: String(formData.get('topic') || 'Other'),
       message,
-      date: new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
+      date: new Intl.DateTimeFormat(currentLanguage === 'ru' ? 'ru-RU' : 'en', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
     });
     localStorage.setItem(questionStorageKey, JSON.stringify(savedQuestions));
     dom.questionForm.reset();
     renderQuestions();
+    translateDocument();
     showToast('Question saved on this device.');
   }
 
   function showToast(message) {
-    dom.toast.textContent = message;
+    dom.toast.textContent = translate(message);
     dom.toast.classList.add('is-visible');
     clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => {
@@ -933,8 +1051,8 @@
   }
 
   function bindEvents() {
-    document.querySelectorAll('[data-view-target], [data-view-link]').forEach((control) => {
-      control.addEventListener('click', () => switchView(control.dataset.viewTarget || control.dataset.viewLink));
+    dom.languageButtons.forEach((button) => {
+      button.addEventListener('click', () => setLanguage(button.dataset.language));
     });
 
     dom.mobileMenu.addEventListener('click', () => {
@@ -949,10 +1067,14 @@
           filterButton.classList.toggle('is-active', filterButton === button);
         });
         renderTasks();
+        translateDocument();
       });
     });
 
     document.addEventListener('click', (event) => {
+      const viewControl = event.target.closest('[data-view-target], [data-view-link]');
+      if (viewControl) switchView(viewControl.dataset.viewTarget || viewControl.dataset.viewLink);
+
       const articleTrigger = event.target.closest('[data-article-open]');
       if (articleTrigger) openArticle(articleTrigger.dataset.articleOpen);
 
@@ -978,7 +1100,7 @@
     dom.questionForm.addEventListener('submit', saveQuestion);
   }
 
-  function init() {
+  function renderAllContent() {
     applyClientContent();
     renderTasks();
     renderStrategy();
@@ -987,6 +1109,11 @@
     renderKnowledge();
     renderForms();
     renderQuestions();
+    translateDocument();
+  }
+
+  function init() {
+    renderAllContent();
     bindEvents();
 
     const initialView = window.location.hash.replace('#', '');

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,6 +104,11 @@
         </div>
         <div class="topbar__actions">
           <span class="sync-note"><i></i> Prototype space</span>
+          <div class="language-toggle" role="group" aria-label="Language / Язык">
+            <button type="button" data-language="ru" aria-pressed="true">RU</button>
+            <span></span>
+            <button type="button" data-language="en" aria-pressed="false">EN</button>
+          </div>
           <button class="avatar-button" type="button" title="Login will be added later">P</button>
         </div>
       </header>
@@ -113,7 +118,7 @@
           <div class="welcome-panel">
             <div class="welcome-copy">
               <span class="section-kicker">Your project, in one place</span>
-              <h1 id="overview-title">Good <span id="day-period">day</span>, <span data-client-contact>Prohor</span>.</h1>
+              <h1 id="overview-title"><span id="greeting">Good day</span>, <span data-client-contact>Prohor</span>.</h1>
               <p>See what is moving, what needs your attention, and what the team has prepared for you.</p>
               <div class="welcome-actions">
                 <button class="primary-button" type="button" data-view-link="tasks">
@@ -499,6 +504,7 @@
 
   <div class="toast" id="portal-toast" role="status" aria-live="polite"></div>
 
+  <script src="client-space.i18n.js"></script>
   <script src="client-space.js"></script>
 </body>
 </html>
