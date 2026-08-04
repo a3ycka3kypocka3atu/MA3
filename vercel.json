@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/client-space.html",
+      "permanent": false
+    }
+  ]
+}
