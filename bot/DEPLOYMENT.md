@@ -7,7 +7,7 @@ The bot must run as a persistent Node.js process. GitHub stores the code, but it
 This repository includes `render.yaml` at the repo root. It defines a Render worker service for the `bot/` folder.
 
 1. Open Render and create a new Blueprint from the GitHub repository.
-2. Select the repository `a3ycka3kypocka3atu/MA3`.
+2. Select the repository `a3ycka3kypocka3atu/Cabinet`.
 3. Render will read `render.yaml` and create `34forfree7-telegram-bot`.
 4. Add these environment variables in Render:
    - `BOT_TOKEN`
