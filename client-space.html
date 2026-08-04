@@ -16,6 +16,7 @@
     rel="stylesheet"
   >
   <link rel="stylesheet" href="client-space.css">
+  <link rel="stylesheet" href="agency-os.css">
 </head>
 <body class="auth-loading">
   <div class="ambient ambient--one" aria-hidden="true"></div>
@@ -161,28 +162,49 @@
 
       <div class="view-stack">
         <section class="portal-view" data-view="admin" aria-labelledby="admin-title">
-          <div class="page-heading admin-page-heading">
+          <div class="agency-os-hero">
             <div>
-              <span class="section-kicker">Agency administration</span>
-              <h1 id="admin-title">Choose a cabinet to review.</h1>
-              <p>Open any existing client workspace or the clean new-client template. New registered client records will appear here automatically.</p>
+              <span class="section-kicker">Internal agency operating system</span>
+              <h1 id="admin-title">Run every client through one clear system.</h1>
+              <p>Workspaces, methodology, pipelines, decisions, deliverables, client actions, and AI work stay connected from first brief to measurable growth.</p>
             </div>
-            <div class="heading-status">
-              <span>Admin access</span>
-              <strong id="admin-cabinet-count">0</strong>
+            <div class="agency-os-hero__status" aria-label="Operating system status">
+              <span>Foundation mode</span>
+              <strong>Manual + AI-ready</strong>
+              <small>Designed to move to shared database storage</small>
             </div>
           </div>
 
-          <div class="admin-cabinet-grid" id="admin-cabinet-grid"></div>
-
-          <article class="strategy-method-note admin-workflow-note">
-            <span class="future-panel__index">How</span>
-            <div>
-              <span class="section-kicker">Reusable client workflow</span>
-              <h2>Client folder → cabinet record → admin review → client access</h2>
-              <p>Add the next client record from their own source folder. The admin page discovers it automatically, while the client receives only the cabinet assigned to their authenticated identity.</p>
+          <div class="agency-os-controls">
+            <nav class="agency-os-tabs" aria-label="Agency operating system sections">
+              <button class="is-active" type="button" data-os-tab="command">Command center</button>
+              <button type="button" data-os-tab="workspaces">Workspaces</button>
+              <button type="button" data-os-tab="pipelines">Pipelines</button>
+              <button type="button" data-os-tab="skills">Skills</button>
+              <button type="button" data-os-tab="tasks">Work queue</button>
+              <button type="button" data-os-tab="artifacts">Artifacts</button>
+              <button type="button" data-os-tab="decisions">Decisions</button>
+              <button type="button" data-os-tab="agents">AI queue</button>
+            </nav>
+            <div class="agency-os-actions">
+              <label class="agency-os-workspace-filter" for="agency-os-workspace">
+                <span>Workspace</span>
+                <select id="agency-os-workspace" data-os-workspace-filter>
+                  <option value="all">All workspaces</option>
+                  <option value="prohor">Prohor Music</option>
+                  <option value="agency">Agency growth</option>
+                </select>
+              </label>
+              <button class="primary-button" type="button" data-os-new-task>New task <span>+</span></button>
             </div>
-          </article>
+          </div>
+
+          <div class="agency-os-root" id="agency-os-root" aria-live="polite">
+            <div class="agency-os-loading">Preparing the operating system…</div>
+          </div>
+
+          <div class="admin-cabinet-grid" id="admin-cabinet-grid" hidden></div>
+          <strong id="admin-cabinet-count" hidden>0</strong>
         </section>
 
         <section class="portal-view is-active" data-view="overview" aria-labelledby="overview-title">
@@ -591,5 +613,6 @@
   <script src="client-space.i18n.js"></script>
   <script src="client-space-auth.js"></script>
   <script src="client-space.js"></script>
+  <script src="agency-os.js"></script>
 </body>
 </html>
