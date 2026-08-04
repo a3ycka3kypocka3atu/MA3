@@ -22,4 +22,4 @@ services:
       - key: PROHOR_TELEGRAM_USERNAME
         value: prohormusic
       - key: CABINET_URL
-        value: https://ma-3-rose.vercel.app/client-space.html
+        value: https://client-cabinet.vercel.app

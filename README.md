@@ -8,4 +8,4 @@ The separate 34ForFree7 public agency website lives at:
 
 Production cabinet:
 
-<https://ma-3-rose.vercel.app/client-space.html>
+<https://client-cabinet.vercel.app>

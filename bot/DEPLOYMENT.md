@@ -30,7 +30,7 @@ Each admin must open the bot and press `/start` once before the bot can send the
 
 `PROHOR_TELEGRAM_USERNAME` identifies the existing Prohor Music cabinet. The bot stores the resulting client assignment in protected Supabase `app_metadata`. Every other Telegram account receives a clean starter cabinet, ready to be filled with that client's own brief and project files.
 
-In Supabase Auth URL Configuration, add `https://ma-3-rose.vercel.app/client-space.html` to the redirect allow list. To activate Google login, enable the Google provider in Supabase Auth and add its Google OAuth client ID and secret. In Google Auth Platform, use `https://mnqrblzdpdttdynlpqey.supabase.co/auth/v1/callback` as the authorized redirect URI.
+In Supabase Auth URL Configuration, add `https://client-cabinet.vercel.app` and `https://client-cabinet.vercel.app/client-space.html` to the redirect allow list. To activate Google login, enable the Google provider in Supabase Auth and add its Google OAuth client ID and secret. In Google Auth Platform, use `https://mnqrblzdpdttdynlpqey.supabase.co/auth/v1/callback` as the authorized redirect URI.
 
 Copy an active `sb_publishable_...` key from Supabase Project Settings > API Keys into `client-space.config.js`. This key is designed for browser use. Never copy `SUPABASE_SERVICE_ROLE_KEY` into a frontend file.
 

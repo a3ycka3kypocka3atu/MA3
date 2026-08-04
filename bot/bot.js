@@ -33,8 +33,8 @@ bot.use((ctx, next) => {
 });
 
 // ── CONSTANTS ──
-const MAIN_WEBSITE = 'https://ma-3-rose.vercel.app';
-const CABINET_URL = process.env.CABINET_URL || `${MAIN_WEBSITE}/client-space.html`;
+const MAIN_WEBSITE = 'https://34-for-free7.vercel.app';
+const CABINET_URL = process.env.CABINET_URL || 'https://client-cabinet.vercel.app';
 const OFFER_BRIEF_PATH = path.join(__dirname, '34ForFree7_offer_brief.md');
 const ADMIN_STORE_PATH = path.join(__dirname, 'admin_chats.json');
 const ADMIN_USERNAMES = (process.env.ADMIN_USERNAMES || 'andrisav,hirchak')
