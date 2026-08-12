@@ -1,7 +1,8 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'cabinet:agency-os:prototype:v1';
+  const STORAGE_KEY = 'client-cabinet:agency-os:v1';
+  const LEGACY_STORAGE_KEY = 'cabinet:agency-os:prototype:v1';
   const STATE_VERSION = 1;
   const TASK_STATUSES = ['ready', 'in_progress', 'review', 'waiting_client', 'blocked', 'done'];
 
@@ -22,7 +23,7 @@
       {
         id: 'agency',
         cabinetId: null,
-        name: 'Agency growth',
+        name: 'Internal operations',
         initials: 'AG',
         kind: 'Internal workspace',
         phase: 'Operating foundation',
@@ -132,7 +133,7 @@
       { id: 't-106', workspaceId: 'prohor', domainId: 'marketing', skillId: 'competitor-analysis', title: 'Normalize competitor evidence', description: 'Make sources, dates, categories, and confidence consistent across the comparison.', assigneeType: 'human', assignee: 'Researcher', status: 'done', priority: 'medium', due: 'Completed', clientVisible: false },
       { id: 't-201', workspaceId: 'agency', domainId: 'marketing', skillId: null, title: 'Inventory the 15 current marketing skills', description: 'Find the latest source for each method and nominate an owner for version 0.1.', assigneeType: 'human', assignee: 'Methodology owner', status: 'in_progress', priority: 'high', due: 'This week', clientVisible: false },
       { id: 't-202', workspaceId: 'agency', domainId: 'product', skillId: null, title: 'Approve canonical task and artifact statuses', description: 'Use one state language across team, clients, and agents.', assigneeType: 'human', assignee: 'Agency team', status: 'review', priority: 'high', due: 'Next decision', clientVisible: false },
-      { id: 't-203', workspaceId: 'agency', domainId: 'product', skillId: null, title: 'Create shared Supabase workspace model', description: 'Move operational state from device-local storage to RLS-protected workspace records.', assigneeType: 'human', assignee: 'Platform', status: 'blocked', priority: 'high', due: 'After schema approval', clientVisible: false },
+      { id: 't-203', workspaceId: 'agency', domainId: 'product', skillId: null, title: 'Deploy shared Supabase workspace model', description: 'Connect the correct project, apply the prepared RLS migration, and verify it with the security advisors.', assigneeType: 'human', assignee: 'Platform', status: 'blocked', priority: 'high', due: 'When project access is connected', clientVisible: false },
       { id: 't-204', workspaceId: 'agency', domainId: 'growth', skillId: 'performance-analysis', title: 'Define agency learning review', description: 'Decide how findings become decisions, skill improvements, and new experiments.', assigneeType: 'agent', assignee: 'Any approved model', status: 'ready', priority: 'medium', due: 'Ready now', clientVisible: false },
     ],
     artifacts: [
@@ -172,6 +173,7 @@
   let activeWorkspace = 'all';
   let searchTerm = '';
   let toastTimer = null;
+  let activeAuthContext = null;
   let state = hydrateState();
 
   function clone(value) {
@@ -180,7 +182,7 @@
 
   function readSavedState() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY));
       return parsed?.version === STATE_VERSION ? parsed : null;
     } catch (error) {
       return null;
@@ -197,8 +199,8 @@
     return merged;
   }
 
-  function hydrateState() {
-    const saved = readSavedState();
+  function hydrateState(savedState = readSavedState()) {
+    const saved = savedState;
     if (!saved) return clone(SEED);
     return {
       ...clone(SEED),
@@ -209,12 +211,15 @@
   }
 
   function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    const savedState = {
       version: STATE_VERSION,
       tasks: state.tasks,
       artifacts: state.artifacts,
       agentJobs: state.agentJobs,
-    }));
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+    window.CABINET_DATA?.save('agency-os', activeAuthContext, savedState, { workspaceKey: 'agency' });
   }
 
   function escapeHtml(value) {
@@ -694,7 +699,7 @@
     document.getElementById('agency-os-task-dialog').close();
     activeTab = 'tasks';
     render();
-    showToast('Task created in the local Agency OS prototype.');
+    showToast('Task created.');
   }
 
   function updateTaskStatus(taskId, status) {
@@ -833,6 +838,14 @@
     if (!root) return;
     const authContext = await (window.CLIENT_SPACE_AUTH_READY || Promise.resolve({ isAdmin: false }));
     if (!authContext?.isAdmin) return;
+    activeAuthContext = authContext;
+    if (window.CABINET_DATA) {
+      const result = await window.CABINET_DATA.load('agency-os', authContext, {
+        workspaceKey: 'agency',
+        fallback: readSavedState(),
+      });
+      state = hydrateState(result.value);
+    }
     createTaskDialog();
     bindEvents();
     if (workspaceFilter) workspaceFilter.value = activeWorkspace;

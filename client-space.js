@@ -2,10 +2,12 @@
   'use strict';
 
   const TRANSLATIONS = window.CLIENT_SPACE_I18N || {};
-  const languageStorageKey = '34forfree7:client-space:language:v1';
+  const languageStorageKey = 'client-cabinet:language:v1';
+  const legacyLanguageStorageKey = '34forfree7:client-space:language:v1';
   const staticTextSources = new WeakMap();
   const attributeSources = new WeakMap();
   let currentLanguage = readLanguagePreference();
+  let activeDataWorkspace = null;
 
   // Reusable client records. Authentication assigns a server-controlled
   // app_metadata.client_id; unknown identities always receive a starter space.
@@ -529,7 +531,7 @@
 
   function readLanguagePreference() {
     try {
-      const saved = localStorage.getItem(languageStorageKey);
+      const saved = localStorage.getItem(languageStorageKey) || localStorage.getItem(legacyLanguageStorageKey);
       return saved === 'en' || saved === 'ru' ? saved : 'ru';
     } catch (error) {
       return 'ru';
@@ -665,10 +667,33 @@
     const storageOwner = isAdminPreview
       ? `admin-preview:${authContext?.user?.id || 'admin'}:${client.id}`
       : client.id;
-    taskStorageKey = `34forfree7:client-space:${storageOwner}:tasks:v1`;
-    questionStorageKey = `34forfree7:client-space:${storageOwner}:questions:v1`;
-    completedTasks = readJson(taskStorageKey, []);
-    savedQuestions = readJson(questionStorageKey, []);
+    const legacyTaskStorageKey = `34forfree7:client-space:${storageOwner}:tasks:v1`;
+    const legacyQuestionStorageKey = `34forfree7:client-space:${storageOwner}:questions:v1`;
+    taskStorageKey = `client-cabinet:${storageOwner}:tasks:v1`;
+    questionStorageKey = `client-cabinet:${storageOwner}:questions:v1`;
+    completedTasks = readJson(taskStorageKey, readJson(legacyTaskStorageKey, []));
+    savedQuestions = readJson(questionStorageKey, readJson(legacyQuestionStorageKey, []));
+    activeDataWorkspace = assignedClientId === 'starter'
+      ? (isAdminPreview ? 'template' : null)
+      : assignedClientId;
+  }
+
+  async function hydrateClientState() {
+    if (!window.CABINET_DATA) return;
+    const result = await window.CABINET_DATA.load('client-space', activeAuthContext, {
+      workspaceKey: activeDataWorkspace,
+      fallback: { completedTasks, savedQuestions },
+    });
+    if (Array.isArray(result.value?.completedTasks)) completedTasks = result.value.completedTasks;
+    if (Array.isArray(result.value?.savedQuestions)) savedQuestions = result.value.savedQuestions;
+  }
+
+  function persistClientState() {
+    if (!window.CABINET_DATA) return Promise.resolve({ mode: 'local' });
+    return window.CABINET_DATA.save('client-space', activeAuthContext, {
+      completedTasks,
+      savedQuestions,
+    }, { workspaceKey: activeDataWorkspace });
   }
 
   function renderAdminCabinets() {
@@ -721,7 +746,7 @@
     if (!isAdminMode) return;
     renderAdminCabinets();
     document.querySelectorAll('[data-client-name]').forEach((element) => {
-      element.textContent = 'Agency Admin';
+      element.textContent = 'Platform Admin';
     });
     document.querySelectorAll('[data-client-initials]').forEach((element) => {
       element.textContent = 'A';
@@ -734,9 +759,10 @@
     translateDocument();
   }
 
-  function openAdminCabinet(clientId) {
+  async function openAdminCabinet(clientId) {
     if (!isAdminMode) return;
     activateClient(activeAuthContext, clientId, true);
+    await hydrateClientState();
     dom.sidebarAccessRole.textContent = 'Admin preview';
     renderAllContent();
     switchView('overview');
@@ -836,6 +862,7 @@
     currentLanguage = language;
     try {
       localStorage.setItem(languageStorageKey, currentLanguage);
+      localStorage.removeItem(legacyLanguageStorageKey);
     } catch (error) {
       // The language still changes for this session when storage is unavailable.
     }
@@ -883,8 +910,8 @@
 
     dom.greeting.textContent = getGreeting();
     document.title = currentLanguage === 'ru'
-      ? `${client.name} — кабинет клиента 34ForFree7`
-      : `${client.name} Client Space — 34ForFree7`;
+      ? `${client.name} — кабинет клиента`
+      : `${client.name} — Client Cabinet`;
   }
 
   function switchView(viewName) {
@@ -932,6 +959,7 @@
       completedTasks = completedTasks.filter((taskId) => taskId !== id);
     }
     localStorage.setItem(taskStorageKey, JSON.stringify(completedTasks));
+    persistClientState();
     renderTasks();
     translateDocument();
     showToast(isDone ? 'Task completed. Nice progress.' : 'Task moved back to open.');
@@ -1237,6 +1265,7 @@
       button.addEventListener('click', () => {
         savedQuestions = savedQuestions.filter((question) => question.id !== button.dataset.deleteQuestion);
         localStorage.setItem(questionStorageKey, JSON.stringify(savedQuestions));
+        persistClientState();
         renderQuestions();
         translateDocument();
       });
@@ -1256,10 +1285,11 @@
       date: new Intl.DateTimeFormat(currentLanguage === 'ru' ? 'ru-RU' : 'en', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date()),
     });
     localStorage.setItem(questionStorageKey, JSON.stringify(savedQuestions));
+    persistClientState();
     dom.questionForm.reset();
     renderQuestions();
     translateDocument();
-    showToast('Question saved on this device.');
+    showToast('Question saved.');
   }
 
   function showToast(message) {
@@ -1348,6 +1378,7 @@
     dom.adminNav.hidden = !isAdminMode;
     dom.adminHomeButton.hidden = !isAdminMode;
     activateClient(authContext, authContext.clientId === 'admin' ? 'starter' : authContext.clientId, isAdminMode);
+    await hydrateClientState();
     renderAllContent();
     bindEvents();
 

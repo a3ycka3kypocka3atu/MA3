@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta
     name="description"
-    content="34ForFree7 Client Space — project progress, tasks, shared materials, knowledge and communication in one place."
+    content="Private Client Cabinet for project progress, tasks, shared materials, knowledge, and communication."
   >
   <meta name="robots" content="noindex, nofollow">
-  <title>Client Space — 34ForFree7</title>
+  <title>Client Cabinet</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23173f2c'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial,sans-serif' font-size='24' font-weight='700' fill='%23c9f26b'%3ECC%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -25,9 +26,9 @@
   <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
     <div class="auth-card">
       <div class="auth-card__top">
-      <a class="auth-brand" href="index.html" aria-label="34ForFree7 home">
-        <span class="brand-mark">34</span>
-        <span><strong>34ForFree7</strong><small>Client Space</small></span>
+      <a class="auth-brand" href="index.html" aria-label="Client Cabinet home">
+        <span class="brand-mark" data-cabinet-brand-mark>CC</span>
+        <span><strong data-cabinet-brand-name>Client Cabinet</strong><small>Private Workspace</small></span>
       </a>
         <div class="language-toggle auth-language-toggle" aria-label="Language">
           <button type="button" data-auth-language="ru" aria-pressed="true">RU</button>
@@ -41,30 +42,37 @@
         <p>Sign in to open the workspace connected to your account.</p>
       </div>
       <div class="auth-options">
-        <a class="auth-button auth-button--telegram" id="telegram-login" href="https://t.me/34ForFree7Agencybot?start=cabinet" target="_blank" rel="noreferrer">
+        <a class="auth-button auth-button--telegram" id="telegram-login" href="#" target="_blank" rel="noreferrer" hidden>
           <span class="auth-provider-icon" aria-hidden="true">↗</span>
           Continue with Telegram
         </a>
-        <button class="auth-button auth-button--google" id="google-login" type="button">
+        <button class="auth-button auth-button--google" id="google-login" type="button" hidden>
           <span class="google-mark" aria-hidden="true">G</span>
           Continue with Google
         </button>
+        <form class="auth-email" id="email-login-form" hidden>
+          <label for="email-login">Or continue by email</label>
+          <div class="auth-email__row">
+            <input id="email-login" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+            <button type="submit">Send secure link</button>
+          </div>
+        </form>
         <button class="auth-button auth-button--preview" id="preview-login" type="button" hidden>
           Open prototype cabinet
         </button>
       </div>
       <p class="auth-status" id="auth-status" role="status" aria-live="polite">Checking your session…</p>
-      <p class="auth-note">New here? We will create a clean starter workspace and fill it together. <a href="https://t.me/Hirchak" target="_blank" rel="noreferrer">Contact the team</a>.</p>
+      <p class="auth-note">New here? We will create a clean starter workspace and fill it together. <a id="support-link" href="#" target="_blank" rel="noreferrer" hidden>Contact the team</a>.</p>
     </div>
   </section>
 
   <div class="portal-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand-lockup">
-        <a class="brand-mark" href="client-space.html" aria-label="34ForFree7 Client Space home">34</a>
+        <a class="brand-mark" href="client-space.html" aria-label="Client Cabinet home" data-cabinet-brand-mark>CC</a>
         <div>
-          <strong>34ForFree7</strong>
-          <span>Client Space</span>
+          <strong data-cabinet-brand-name>Client Cabinet</strong>
+          <span>Private Workspace</span>
         </div>
       </div>
 
@@ -145,7 +153,7 @@
         </div>
         <div class="topbar__actions">
           <button class="admin-home-button" id="admin-home-button" type="button" hidden>Admin home</button>
-          <span class="sync-note"><i></i> Prototype space</span>
+          <span class="sync-note" id="sync-note" data-no-translate><i></i> Checking sync…</span>
           <div class="language-toggle" role="group" aria-label="Language / Язык">
             <button type="button" data-language="ru" aria-pressed="true">RU</button>
             <span></span>
@@ -164,14 +172,14 @@
         <section class="portal-view" data-view="admin" aria-labelledby="admin-title">
           <div class="agency-os-hero">
             <div>
-              <span class="section-kicker">Internal agency operating system</span>
+              <span class="section-kicker">Internal operating system</span>
               <h1 id="admin-title">Run every client through one clear system.</h1>
               <p>Workspaces, methodology, pipelines, decisions, deliverables, client actions, and AI work stay connected from first brief to measurable growth.</p>
             </div>
             <div class="agency-os-hero__status" aria-label="Operating system status">
-              <span>Foundation mode</span>
-              <strong>Manual + AI-ready</strong>
-              <small>Designed to move to shared database storage</small>
+              <span>Workspace operations</span>
+              <strong>Shared-state ready</strong>
+              <small>RLS sync with explicit local fallback</small>
             </div>
           </div>
 
@@ -192,7 +200,7 @@
                 <select id="agency-os-workspace" data-os-workspace-filter>
                   <option value="all">All workspaces</option>
                   <option value="prohor">Prohor Music</option>
-                  <option value="agency">Agency growth</option>
+                <option value="agency">Internal operations</option>
                 </select>
               </label>
               <button class="primary-button" type="button" data-os-new-task>New task <span>+</span></button>
@@ -612,6 +620,7 @@
   <script src="client-space.config.js"></script>
   <script src="client-space.i18n.js"></script>
   <script src="client-space-auth.js"></script>
+  <script src="cabinet-data.js"></script>
   <script src="client-space.js"></script>
   <script src="agency-os.js"></script>
 </body>

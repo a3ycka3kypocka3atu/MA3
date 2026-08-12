@@ -4,12 +4,14 @@
   const config = window.CLIENT_SPACE_CONFIG || {};
   const SUPABASE_URL = config.supabaseUrl || '';
   const SUPABASE_PUBLISHABLE_KEY = config.supabasePublishableKey || '';
-  const SESSION_KEY = '34forfree7:cabinet-auth:v1';
-  const LANGUAGE_KEY = '34forfree7:client-space:language:v1';
-  const ADMIN_EMAILS = (config.adminEmails || []).map((email) => String(email).trim().toLowerCase());
+  const SESSION_KEY = 'client-cabinet:auth:v1';
+  const LEGACY_SESSION_KEY = '34forfree7:cabinet-auth:v1';
+  const LANGUAGE_KEY = 'client-cabinet:language:v1';
+  const LEGACY_LANGUAGE_KEY = '34forfree7:client-space:language:v1';
   const hasAuthConfig = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
   const translations = window.CLIENT_SPACE_I18N?.ru || {};
-  const language = localStorage.getItem(LANGUAGE_KEY) === 'en' ? 'en' : 'ru';
+  const savedLanguage = localStorage.getItem(LANGUAGE_KEY) || localStorage.getItem(LEGACY_LANGUAGE_KEY);
+  const language = savedLanguage === 'en' ? 'en' : 'ru';
   let authReadyResolved = false;
   let resolveAuthReady;
 
@@ -23,7 +25,10 @@
     status: document.getElementById('auth-status'),
     telegramLogin: document.getElementById('telegram-login'),
     googleLogin: document.getElementById('google-login'),
+    emailForm: document.getElementById('email-login-form'),
+    emailInput: document.getElementById('email-login'),
     previewLogin: document.getElementById('preview-login'),
+    supportLink: document.getElementById('support-link'),
     accountButton: document.getElementById('account-button'),
     accountMenu: document.getElementById('account-menu'),
     accountName: document.getElementById('account-name'),
@@ -31,6 +36,26 @@
     logoutButton: document.getElementById('logout-button'),
     languageButtons: document.querySelectorAll('[data-auth-language]'),
   };
+
+  function applyConfiguration() {
+    const brandName = String(config.brandName || 'Client Cabinet');
+    const brandMark = String(config.brandMark || 'CC').slice(0, 3);
+    document.querySelectorAll('[data-cabinet-brand-name]').forEach((element) => {
+      element.textContent = brandName;
+    });
+    document.querySelectorAll('[data-cabinet-brand-mark]').forEach((element) => {
+      element.textContent = brandMark;
+    });
+
+    if (config.telegramLoginUrl) {
+      dom.telegramLogin.href = config.telegramLoginUrl;
+      dom.telegramLogin.hidden = false;
+    }
+    if (config.supportUrl) {
+      dom.supportLink.href = config.supportUrl;
+      dom.supportLink.hidden = false;
+    }
+  }
 
   function translate(message) {
     return language === 'ru' ? (translations[message] || message) : message;
@@ -41,8 +66,14 @@
     dom.status.classList.toggle('is-error', isError);
   }
 
-  function publishAuthContext(user, clientId, isAdmin) {
-    const context = { user, clientId, isAdmin };
+  function publishAuthContext(user, clientId, isAdmin, session = null) {
+    const context = {
+      user,
+      clientId,
+      isAdmin,
+      accessToken: session?.accessToken || null,
+      isLocalPreview: !session,
+    };
     window.CLIENT_SPACE_AUTH_CONTEXT = context;
     if (!authReadyResolved) {
       authReadyResolved = true;
@@ -52,7 +83,8 @@
 
   function readSession() {
     try {
-      return JSON.parse(localStorage.getItem(SESSION_KEY));
+      const stored = localStorage.getItem(SESSION_KEY) || localStorage.getItem(LEGACY_SESSION_KEY);
+      return JSON.parse(stored);
     } catch (error) {
       return null;
     }
@@ -66,11 +98,13 @@
       expiresAt: Date.now() + (expiresIn * 1000),
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    localStorage.removeItem(LEGACY_SESSION_KEY);
     return session;
   }
 
   function clearSession() {
     localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(LEGACY_SESSION_KEY);
   }
 
   function authHeaders(extra = {}) {
@@ -126,6 +160,21 @@
     return response.ok ? response.json() : null;
   }
 
+  async function getAuthSettings() {
+    if (!hasAuthConfig) return null;
+    const response = await fetch(`${SUPABASE_URL}/auth/v1/settings`, {
+      headers: authHeaders(),
+    });
+    if (!response.ok) throw new Error('Could not read authentication settings.');
+    return response.json();
+  }
+
+  function configureProviders(settings) {
+    const external = settings?.external || {};
+    dom.googleLogin.hidden = !external.google;
+    dom.emailForm.hidden = !external.email;
+  }
+
   function displayName(user) {
     const metadata = user.user_metadata || {};
     return metadata.full_name || metadata.name || metadata.username || user.email?.split('@')[0] || 'Client';
@@ -138,11 +187,10 @@
   }
 
   function isAdminUser(user) {
-    const verifiedEmail = user.email_confirmed_at ? String(user.email || '').trim().toLowerCase() : '';
-    return user.app_metadata?.role === 'admin' || Boolean(verifiedEmail && ADMIN_EMAILS.includes(verifiedEmail));
+    return user.app_metadata?.role === 'admin';
   }
 
-  function showCabinet(user) {
+  function showCabinet(user, session = null) {
     const name = displayName(user);
     const isAdmin = isAdminUser(user);
     const assignedClientId = String(user.app_metadata?.client_id || 'starter').trim().toLowerCase();
@@ -154,7 +202,7 @@
     dom.accountProvider.textContent = providerName(user);
     dom.accountButton.textContent = name.trim().charAt(0).toUpperCase() || 'C';
     dom.accountButton.title = name;
-    publishAuthContext(user, clientId, isAdmin);
+    publishAuthContext(user, clientId, isAdmin, session);
   }
 
   function showLogin(message = 'Choose a secure sign-in method.') {
@@ -178,7 +226,7 @@
         app_metadata: {
           provider: 'prototype',
           client_id: localAdminPreview ? 'starter' : localPreviewClient,
-          role: ['admin', 'admin-telegram'].includes(localPreviewClient) ? 'admin' : 'client',
+          role: localAdminPreview ? 'admin' : 'client',
         },
       });
       return;
@@ -188,6 +236,13 @@
       dom.previewLogin.hidden = false;
       showLogin('Secure login is being activated. You can continue to the prototype for now.');
       return;
+    }
+
+    try {
+      configureProviders(await getAuthSettings());
+    } catch (error) {
+      console.warn('Cabinet provider settings could not be checked.', error);
+      dom.emailForm.hidden = false;
     }
 
     let session = consumeAuthRedirect() || readSession();
@@ -204,7 +259,7 @@
       }
 
       if (user) {
-        showCabinet(user);
+        showCabinet(user, session);
         return;
       }
     } catch (error) {
@@ -229,6 +284,38 @@
     window.location.assign(authUrl.toString());
   });
 
+  dom.emailForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!hasAuthConfig) {
+      setStatus('Email login needs the final secure project setting.', true);
+      return;
+    }
+
+    const email = String(new FormData(dom.emailForm).get('email') || '').trim().toLowerCase();
+    if (!email) return;
+    const redirectTo = `${window.location.origin}${window.location.pathname}`;
+    setStatus('Sending your secure sign-in link…');
+    dom.emailInput.disabled = true;
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/auth/v1/otp?redirect_to=${encodeURIComponent(redirectTo)}`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ email, create_user: false }),
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.msg || payload.message || 'The sign-in link could not be sent.');
+      }
+      dom.emailForm.reset();
+      setStatus('Check your email for a secure sign-in link.');
+    } catch (error) {
+      setStatus(error.message || 'The sign-in link could not be sent.', true);
+    } finally {
+      dom.emailInput.disabled = false;
+    }
+  });
+
   dom.telegramLogin.addEventListener('click', (event) => {
     if (hasAuthConfig) return;
     event.preventDefault();
@@ -249,6 +336,7 @@
     button.setAttribute('aria-pressed', String(isActive));
     button.addEventListener('click', () => {
       localStorage.setItem(LANGUAGE_KEY, button.dataset.authLanguage);
+      localStorage.removeItem(LEGACY_LANGUAGE_KEY);
       window.location.reload();
     });
   });
@@ -282,5 +370,6 @@
     }
   });
 
+  applyConfiguration();
   initializeAuth();
 })();
