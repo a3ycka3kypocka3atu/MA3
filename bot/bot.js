@@ -3,20 +3,29 @@ const path = require('path');
 const fs = require('fs');
 const { Telegraf, Markup, session } = require('telegraf');
 const { createClient } = require('@supabase/supabase-js');
+const {
+  createTelegramAccessControl,
+  normalizeTelegramUserId
+} = require('./access-control');
 
 // ── ENV CONFIG ──
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
-const ADMIN_CHAT_IDS = (process.env.ADMIN_CHAT_IDS || ADMIN_CHAT_ID || '')
-  .split(',')
-  .map(id => id.trim())
-  .filter(Boolean);
-const PROHOR_TELEGRAM_USERNAME = (process.env.PROHOR_TELEGRAM_USERNAME || 'prohormusic')
-  .replace(/^@/, '')
-  .trim()
-  .toLowerCase();
+
+let ADMIN_CHAT_IDS;
+let telegramAccess;
+
+try {
+  ADMIN_CHAT_IDS = parseNotificationChatIds(process.env.ADMIN_CHAT_IDS);
+  telegramAccess = createTelegramAccessControl({
+    adminUserIds: process.env.ADMIN_TELEGRAM_USER_IDS,
+    workspaceAssignments: process.env.TELEGRAM_WORKSPACE_ASSIGNMENTS
+  });
+} catch (error) {
+  console.error('Invalid Telegram access configuration.', error.message);
+  process.exit(1);
+}
 
 if (!BOT_TOKEN || !SUPABASE_URL || !SUPABASE_KEY) {
   console.error("Missing required environment variables.");
@@ -37,10 +46,7 @@ const MAIN_WEBSITE = 'https://34-for-free7.vercel.app';
 const CABINET_URL = process.env.CABINET_URL || 'https://client-cabinet.vercel.app';
 const OFFER_BRIEF_PATH = path.join(__dirname, '34ForFree7_offer_brief.md');
 const ADMIN_STORE_PATH = path.join(__dirname, 'admin_chats.json');
-const ADMIN_USERNAMES = (process.env.ADMIN_USERNAMES || 'andrisav,hirchak')
-  .split(',')
-  .map(username => username.replace(/^@/, '').trim().toLowerCase())
-  .filter(Boolean);
+const MAX_INQUIRY_LENGTH = 3000;
 const ADMIN_CONTACTS = [
   {
     label: 'Admin 1: @andrisav',
@@ -128,17 +134,11 @@ function mainMenuKeyboard(ctx) {
     [Markup.button.url('🌐 Visit Website', MAIN_WEBSITE)]
   ];
 
-  if (isAdmin(ctx)) {
+  if (ctx.chat?.type === 'private' && isAdmin(ctx)) {
     rows.unshift([Markup.button.callback('🏢 34ForFree7 Office', '34forfree7_office')]);
   }
 
   return Markup.inlineKeyboard(rows);
-}
-
-function clientIdForTelegram(ctx) {
-  if (isAdmin(ctx)) return 'admin';
-  const username = String(ctx.from?.username || '').trim().toLowerCase();
-  return username === PROHOR_TELEGRAM_USERNAME ? 'prohor' : 'starter';
 }
 
 async function sendCabinetLogin(ctx) {
@@ -146,10 +146,17 @@ async function sendCabinetLogin(ctx) {
     return ctx.reply('For security, open the bot in a private chat to access the client cabinet.');
   }
 
+  const access = telegramAccess.resolveAccess(ctx.from?.id);
+  if (!access) {
+    return ctx.reply(
+      'No Platum workspace is assigned to this Telegram user ID. Contact the team to request access.'
+    );
+  }
+
   const fullName = [ctx.from?.first_name, ctx.from?.last_name].filter(Boolean).join(' ') || 'Client';
-  const clientId = clientIdForTelegram(ctx);
-  const role = clientId === 'admin' ? 'admin' : 'client';
-  const email = `telegram-${ctx.from.id}@clients.34forfree7.com`;
+  const clientId = access.workspaceKey;
+  const role = access.role;
+  const email = `telegram-${access.telegramUserId}@clients.34forfree7.com`;
   const { data, error } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
     email,
@@ -157,7 +164,7 @@ async function sendCabinetLogin(ctx) {
       redirectTo: CABINET_URL,
       data: {
         auth_source: 'telegram',
-        telegram_id: String(ctx.from.id),
+        telegram_id: access.telegramUserId,
         username: ctx.from?.username || '',
         full_name: fullName
       }
@@ -175,7 +182,7 @@ async function sendCabinetLogin(ctx) {
       client_id: clientId,
       role,
       auth_source: 'telegram',
-      telegram_id: String(ctx.from.id),
+      telegram_id: access.telegramUserId,
       telegram_username: ctx.from?.username || ''
     }
   });
@@ -187,9 +194,7 @@ async function sendCabinetLogin(ctx) {
 
   const cabinetMessage = clientId === 'admin'
     ? 'Your admin cabinet is ready. Choose any existing client cabinet or preview the clean new-client template.'
-    : clientId === 'prohor'
-      ? 'Your Prohor Music cabinet link is ready. It can be used once and expires shortly.'
-      : 'Your new client workspace is ready. It starts with a clean structure that we will fill together. The link can be used once and expires shortly.';
+    : 'Your assigned client workspace link is ready. It can be used once and expires shortly.';
 
   return ctx.reply(
     cabinetMessage,
@@ -226,19 +231,46 @@ function escapeHtml(value = '') {
     .replace(/>/g, '&gt;');
 }
 
+function parseNotificationChatIds(value = '') {
+  if (value === undefined || value === null || String(value).trim() === '') return [];
+  if (typeof value !== 'string') {
+    throw new TypeError('ADMIN_CHAT_IDS must be a comma-separated string.');
+  }
+
+  const chatIds = value.split(',').map(id => id.trim());
+  if (chatIds.some(id => !/^-?[1-9]\d*$/.test(id))) {
+    throw new Error('ADMIN_CHAT_IDS must contain only numeric Telegram chat IDs.');
+  }
+
+  return [...new Set(chatIds)];
+}
+
 function getUserLabel(ctx) {
   const name = [ctx.from?.first_name, ctx.from?.last_name].filter(Boolean).join(' ') || 'Telegram user';
   const username = ctx.from?.username ? `@${ctx.from.username}` : 'no username';
   return `${name} (${username}, ID: ${ctx.from?.id})`;
 }
 
-function readRegisteredAdminIds() {
+function readRegisteredAdminChatIds() {
   try {
     if (!fs.existsSync(ADMIN_STORE_PATH)) return [];
     const data = JSON.parse(fs.readFileSync(ADMIN_STORE_PATH, 'utf8'));
-    return Object.values(data)
-      .map(id => String(id).trim())
-      .filter(Boolean);
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return [];
+
+    return Object.entries(data).flatMap(([userId, chatId]) => {
+      const normalizedUserId = normalizeTelegramUserId(userId);
+      const normalizedChatId = normalizeTelegramUserId(chatId);
+
+      if (
+        !normalizedUserId ||
+        normalizedChatId !== normalizedUserId ||
+        !telegramAccess.isAdmin(normalizedUserId)
+      ) {
+        return [];
+      }
+
+      return [normalizedChatId];
+    });
   } catch (err) {
     console.warn('Could not read registered admin chat IDs.');
     return [];
@@ -246,32 +278,36 @@ function readRegisteredAdminIds() {
 }
 
 function registerAdminIfNeeded(ctx) {
-  const username = ctx.from?.username?.toLowerCase();
-  if (!username || !ADMIN_USERNAMES.includes(username)) return;
+  const userId = normalizeTelegramUserId(ctx.from?.id);
+  const chatId = normalizeTelegramUserId(ctx.chat?.id);
+
+  if (
+    !userId ||
+    !telegramAccess.isAdmin(userId) ||
+    ctx.chat?.type !== 'private' ||
+    chatId !== userId
+  ) {
+    return;
+  }
 
   try {
     const data = fs.existsSync(ADMIN_STORE_PATH)
       ? JSON.parse(fs.readFileSync(ADMIN_STORE_PATH, 'utf8'))
       : {};
-    data[username] = ctx.chat.id;
-    fs.writeFileSync(ADMIN_STORE_PATH, JSON.stringify(data, null, 2));
+    const registeredAdmins = data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+    registeredAdmins[userId] = chatId;
+    fs.writeFileSync(ADMIN_STORE_PATH, JSON.stringify(registeredAdmins, null, 2));
   } catch (err) {
     console.warn('Could not register admin chat ID.');
   }
 }
 
 function getAdminChatIds() {
-  return [...new Set([...ADMIN_CHAT_IDS, ...readRegisteredAdminIds()])];
+  return [...new Set([...ADMIN_CHAT_IDS, ...readRegisteredAdminChatIds()])];
 }
 
 function isAdmin(ctx) {
-  const username = ctx.from?.username?.toLowerCase();
-  const chatId = ctx.chat?.id ? String(ctx.chat.id) : '';
-
-  return (
-    Boolean(username && ADMIN_USERNAMES.includes(username)) ||
-    Boolean(chatId && getAdminChatIds().includes(chatId))
-  );
+  return telegramAccess.isAdmin(ctx.from?.id);
 }
 
 function safeAnswer(ctx) {
@@ -282,7 +318,7 @@ async function notifyAdmins(ctx, type, content) {
   const adminChatIds = getAdminChatIds();
 
   if (!adminChatIds.length) {
-    console.warn('No ADMIN_CHAT_ID or ADMIN_CHAT_IDS configured. Inquiry was not forwarded to admins.');
+    console.warn('No ADMIN_CHAT_IDS configured. Inquiry was not forwarded to admins.');
     return false;
   }
 
@@ -305,7 +341,7 @@ ${escapeHtml(content)}
 
 async function saveInquiry(ctx, type, content) {
   try {
-    await supabase.from('inquiries').insert([
+    const { error } = await supabase.from('inquiries').insert([
       {
         telegram_id: ctx.from.id,
         username: ctx.from.username,
@@ -314,8 +350,16 @@ async function saveInquiry(ctx, type, content) {
         created_at: new Date().toISOString()
       }
     ]);
+
+    if (error) {
+      console.warn('Could not save inquiry to Supabase.', error);
+      return false;
+    }
+
+    return true;
   } catch (err) {
-    console.warn('Could not save inquiry to Supabase, but admin notification was attempted.');
+    console.warn('Could not save inquiry to Supabase.', err);
+    return false;
   }
 }
 
@@ -352,8 +396,10 @@ bot.action('cabinet_login', async (ctx) => {
 });
 
 bot.command('myid', (ctx) => {
+  const userId = normalizeTelegramUserId(ctx.from?.id) || 'unavailable';
+  const chatId = ctx.chat?.id === undefined ? 'unavailable' : String(ctx.chat.id);
   ctx.reply(
-    `Your Telegram numeric chat ID is:\n\n${ctx.chat.id}\n\nSend this number to the 34ForFree7 bot admin so it can be added to ADMIN_CHAT_IDS.`
+    `Your Telegram numeric user ID is:\n\n${userId}\n\nYour current chat ID is:\n\n${chatId}\n\nAccess is assigned only by user ID. Chat IDs are used only for notifications.`
   );
 });
 
@@ -439,6 +485,9 @@ bot.action('34forfree7_office', (ctx) => {
   if (!isAdmin(ctx)) {
     return ctx.reply('This office area is available only for 34ForFree7 admins.');
   }
+  if (ctx.chat?.type !== 'private') {
+    return ctx.reply('For security, open the bot in a private chat to access the office area.');
+  }
 
   const workspaceRows = CLIENT_WORKSPACES.map(client => [
     Markup.button.url(client.label, client.url)
@@ -462,6 +511,14 @@ bot.action('34forfree7_office', (ctx) => {
 
 bot.action('34forfree7_office_empty', (ctx) => {
   safeAnswer(ctx);
+
+  if (!isAdmin(ctx)) {
+    return ctx.reply('This office area is available only for 34ForFree7 admins.');
+  }
+  if (ctx.chat?.type !== 'private') {
+    return ctx.reply('For security, open the bot in a private chat to access the office area.');
+  }
+
   ctx.reply('No client folders are connected yet. When we create the first client workspace, we will add it here as a button.');
 });
 
@@ -516,7 +573,16 @@ bot.action('contact_request', (ctx) => {
 bot.on('text', async (ctx, next) => {
   if (!ctx.session || !ctx.session.state) return next();
 
-  const userText = ctx.message.text;
+  const userText = String(ctx.message.text || '').trim();
+  if (!userText) {
+    return ctx.reply('Please send a non-empty message.');
+  }
+  if (userText.length > MAX_INQUIRY_LENGTH) {
+    return ctx.reply(
+      `Please shorten your message to ${MAX_INQUIRY_LENGTH} characters or fewer and send it again.`
+    );
+  }
+
   const state = ctx.session.state;
   const selectedService = ctx.session.selectedService;
   ctx.session.state = null;
@@ -529,12 +595,17 @@ bot.on('text', async (ctx, next) => {
   if (state === 'waiting_service_request') type = `Service Request: ${selectedService}`;
   if (state === 'waiting_contact_request') type = 'Direct Contact Request';
   
-  await saveInquiry(ctx, type, userText);
+  const saved = await saveInquiry(ctx, type, userText);
   const sentToAdmins = await notifyAdmins(ctx, type, userText);
 
-  const confirmation = sentToAdmins
-    ? `Thank you. Your message was sent to the 34ForFree7 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`
-    : `Thank you. Your message was saved, but admin forwarding is not configured yet.\n\nPlease contact the team directly for now, or ask an admin to add numeric Telegram chat IDs to ADMIN_CHAT_IDS.`;
+  let confirmation;
+  if (sentToAdmins) {
+    confirmation = `Thank you. Your message was sent to the 34ForFree7 team.\n\nWe will review it and contact you with the next step, a short analysis, or a practical offer.`;
+  } else if (saved) {
+    confirmation = `Thank you. Your message was saved, but admin forwarding is not configured yet.\n\nPlease contact the team directly for now.`;
+  } else {
+    confirmation = `We could not deliver your message right now. Please contact the team directly.`;
+  }
 
   await ctx.reply(
     confirmation,

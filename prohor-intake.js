@@ -1,224 +1,69 @@
 (function () {
   'use strict';
 
-  const CLIENT = {
-    slug: 'prohor',
-    name: 'Prohor Music',
-    project: 'Анкета стратегии артиста',
-    version: '2026-06-26-clean',
-  };
-
-  // Paste the deployed Google Apps Script Web App URL here.
-  const SHEETS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz-gi4dPRrWjKZGyDwJvzGY0UP4Vl-v0zKraZSptiSQJ62739PIFq8bpL8j-Vjy_RSDOw/exec';
-
-  const STORAGE_KEY = `34forfree7:intake:${CLIENT.slug}:v2`;
+  const STORAGE_KEY = 'platum:artist-strategy-intake:v1';
   const SAVE_DELAY = 450;
 
   const sections = [
     {
-      id: 'operations',
-      code: 'A',
-      title: 'Операционные вопросы',
-      note: 'Для этапов воронки и медиа: логика бронирования, источники заявок, premium proof.',
-      priority: 'важно',
+      id: 'operations', code: 'A', title: 'Booking operations', priority: 'essential',
+      note: 'Booking lead times, inquiry sources, and premium proof for the project funnel.',
       fields: [
-        {
-          id: 'booking_lead_time',
-          type: 'radio',
-          label: 'Сколько сейчас обычно проходит времени от “клиент написал” до “выступление состоялось”?',
-          options: ['До 1 недели', '1-4 недели', '1-3 месяца', '3+ месяца', 'Зависит от типа ивента'],
-        },
-        {
-          id: 'booking_lead_time_context',
-          type: 'textarea',
-          label: 'Добавь реальный контекст по срокам',
-          placeholder: 'Например: приватные ивенты быстрее, фестивали планируются за 2-3 месяца...',
-        },
-        {
-          id: 'booking_sources',
-          type: 'checkboxes',
-          label: 'Откуда сейчас приходят запросы на выступления?',
-          options: ['Instagram DM', 'WhatsApp / Telegram напрямую', 'Через знакомых', 'Промоутеры', 'Email / форма на сайте', 'Другое'],
-        },
-        {
-          id: 'booking_sources_details',
-          type: 'textarea',
-          label: 'Какие каналы реально дают самые качественные запросы?',
-          placeholder: 'Что работает лучше, что почти не работает, где приходят лучшие клиенты...',
-        },
-        {
-          id: 'premium_precedents',
-          type: 'textarea',
-          label: 'Есть ли уже premium-tier выступления или близкие к этому прецеденты?',
-          hint: 'Яхта, вилла, закрытый ивент, разогрев на фестивале, приватный luxury event.',
-          placeholder: '1-2 примера с локацией, форматом и результатом. Если пока не было — напиши “пока нет”.',
-        },
+        { id: 'booking_lead_time', type: 'radio', label: 'How long does it usually take from the first inquiry to the performance?', options: ['Up to 1 week', '1–4 weeks', '1–3 months', '3+ months', 'It depends on the event'] },
+        { id: 'booking_lead_time_context', type: 'textarea', label: 'Add real context about lead times', placeholder: 'For example: private events move faster, while festivals are planned months ahead…' },
+        { id: 'booking_sources', type: 'checkboxes', label: 'Where do performance inquiries currently come from?', options: ['Instagram DM', 'WhatsApp or Telegram', 'Personal referrals', 'Promoters', 'Email or website form', 'Other'] },
+        { id: 'booking_sources_details', type: 'textarea', label: 'Which channels produce the strongest inquiries?', placeholder: 'What works, what does not, and where the best opportunities come from…' },
+        { id: 'premium_precedents', type: 'textarea', label: 'Do you already have premium-tier performances or close precedents?', hint: 'For example: yacht, villa, private event, festival support, or luxury event.', placeholder: 'Give one or two examples with location, format, and result. Write “none yet” if needed.' },
       ],
     },
     {
-      id: 'content-production',
-      code: 'B',
-      title: 'Контент-производство',
-      note: 'Для креативной стратегии: что уже есть в сыром виде и что можно быстро превратить в контент.',
-      priority: 'важно',
+      id: 'content-production', code: 'B', title: 'Content production', priority: 'essential',
+      note: 'Existing raw material and what can realistically become useful content.',
       fields: [
-        {
-          id: 'raw_materials',
-          type: 'checkboxes',
-          label: 'Что ты сейчас снимаешь или уже имеешь в сырых материалах?',
-          options: ['Behind the scenes с сетов', 'Studio sessions', 'Путешествия / lifestyle', 'Рабочие процессы с музыкой', 'Оборудование / setup', 'Ничего системно'],
-        },
-        {
-          id: 'raw_materials_details',
-          type: 'textarea',
-          label: 'Что из этого можно реально найти и передать нам?',
-          placeholder: 'Где лежат файлы, в каком формате, что самое сильное по эмоции...',
-        },
-        {
-          id: 'past_show_footage',
-          type: 'textarea',
-          label: 'Есть ли stock-видео с прошлых выступлений?',
-          hint: 'Даже 3-5 клипов с разных сетов уже очень полезны.',
-          placeholder: 'Сколько клипов, какие локации, качество, вертикальные/горизонтальные...',
-        },
-        {
-          id: 'upcoming_events',
-          type: 'textarea',
-          label: 'Какие события или поездки запланированы на ближайшие 6 месяцев?',
-          placeholder: 'Дата / город / формат / что можно снять до, во время и после события...',
-        },
-        {
-          id: 'ugc_team',
-          type: 'radio',
-          label: 'Есть ли UGC-команда или videographer на локации?',
-          options: ['Да, есть videographer', 'Есть человек с телефоном', 'Иногда есть', 'Все снимаю сам', 'Пока нет'],
-        },
-        {
-          id: 'ugc_team_details',
-          type: 'textarea',
-          label: 'Как сейчас выглядит реальный процесс съемки?',
-          placeholder: 'Кто снимает, когда, на что, можно ли давать shot-list...',
-        },
+        { id: 'raw_materials', type: 'checkboxes', label: 'What do you currently record or already have as raw material?', options: ['Behind the scenes from sets', 'Studio sessions', 'Travel or lifestyle', 'Music work in progress', 'Equipment or setup', 'Nothing systematic yet'] },
+        { id: 'raw_materials_details', type: 'textarea', label: 'What can realistically be found and prepared?', placeholder: 'Where files are stored, their format, and which material carries the strongest emotion…' },
+        { id: 'past_show_footage', type: 'textarea', label: 'Is there footage from previous performances?', hint: 'Even three to five clips from different sets are useful.', placeholder: 'Number of clips, locations, quality, vertical or horizontal format…' },
+        { id: 'upcoming_events', type: 'textarea', label: 'Which events or trips are planned for the next six months?', placeholder: 'Date, city, format, and what could be captured before, during, and after…' },
+        { id: 'ugc_team', type: 'radio', label: 'Is a videographer or content helper available on location?', options: ['Dedicated videographer', 'Someone with a phone', 'Sometimes', 'I record everything myself', 'Not yet'] },
+        { id: 'ugc_team_details', type: 'textarea', label: 'How does the recording process work today?', placeholder: 'Who records, when, with what, and whether a shot list can be used…' },
       ],
     },
     {
-      id: 'story-narrative',
-      code: 'C',
-      title: 'История и нарратив',
-      note: 'Для креатива и оффера: личный слой бренда, который не видно из PDF.',
-      priority: 'средне',
+      id: 'story-narrative', code: 'C', title: 'Story and narrative', priority: 'important',
+      note: 'The personal layer of the brand that is not visible in a press document.',
       fields: [
-        {
-          id: 'personal_music_story',
-          type: 'textarea',
-          label: 'Какая твоя личная история в музыке — коротко, 3-5 предложений?',
-          placeholder: 'Своими словами: с чего начал, почему именно музыка, что изменилось со временем...',
-        },
-        {
-          id: 'why_music_when_hard',
-          type: 'textarea',
-          label: 'Что тебя удерживает в музыке сейчас, когда сложно?',
-          placeholder: 'Лично, честно, без “пресс-релизного” стиля.',
-        },
-        {
-          id: 'career_anchor_moment',
-          type: 'textarea',
-          label: 'Какой один момент карьеры был “тогда я понял, что это мое”?',
-          placeholder: 'Событие, выступление, момент в студии, реакция людей, внутреннее решение...',
-        },
+        { id: 'personal_music_story', type: 'textarea', label: 'What is your personal story in music in three to five sentences?', placeholder: 'In your own words: how you started, why music, and what changed over time…' },
+        { id: 'why_music_when_hard', type: 'textarea', label: 'What keeps you in music when the work is difficult?', placeholder: 'Personal and honest, without press-release language.' },
+        { id: 'career_anchor_moment', type: 'textarea', label: 'Which career moment made you realize this was your path?', placeholder: 'An event, performance, studio moment, audience reaction, or internal decision…' },
       ],
     },
     {
-      id: 'technical',
-      code: 'D',
-      title: 'Технические вопросы',
-      note: 'Для EPK и медиа: райдер, длина сетов, снижение рисков для организатора.',
-      priority: 'средне',
+      id: 'technical', code: 'D', title: 'Technical readiness', priority: 'important',
+      note: 'Technical rider, set length, and risk reduction for organizers.',
       fields: [
-        {
-          id: 'tech_rider_exists',
-          type: 'radio',
-          label: 'Техрайдер существует?',
-          options: ['Да, полный', 'Да, базовый', 'Есть в голове, но не оформлен', 'Пока нет'],
-        },
-        {
-          id: 'tech_rider_details',
-          type: 'textarea',
-          label: 'Что точно должно быть в техрайдере?',
-          placeholder: 'Pioneer, audio interface, monitors, microphone, lighting, back-to-back requirements...',
-        },
-        {
-          id: 'set_lengths',
-          type: 'textarea',
-          label: 'Длина сетов — какой минимальный и комфортный формат?',
-          placeholder: '1.5h / 2h / 4h / B2B / private event / festival format...',
-        },
-        {
-          id: 'backup_dj',
-          type: 'radio',
-          label: 'Нужен ли back-up DJ на случай форс-мажора?',
-          options: ['Есть свой человек', 'Нужно найти', 'Не нужно', 'Не знаю'],
-        },
-        {
-          id: 'backup_dj_details',
-          type: 'textarea',
-          label: 'Как сейчас закрываешь риски форс-мажора?',
-          placeholder: 'Запасное оборудование, люди, travel buffer, контакты организатора...',
-        },
+        { id: 'tech_rider_exists', type: 'radio', label: 'Does a technical rider exist?', options: ['Yes, complete', 'Yes, basic', 'Known but not documented', 'Not yet'] },
+        { id: 'tech_rider_details', type: 'textarea', label: 'What must the technical rider include?', placeholder: 'Players, audio interface, monitors, microphone, lighting, or B2B requirements…' },
+        { id: 'set_lengths', type: 'textarea', label: 'What is the minimum and comfortable set length?', placeholder: '1.5h, 2h, 4h, B2B, private event, festival format…' },
+        { id: 'backup_dj', type: 'radio', label: 'Is a backup performer needed for emergencies?', options: ['A backup is available', 'A backup is needed', 'Not needed', 'Not sure'] },
+        { id: 'backup_dj_details', type: 'textarea', label: 'How are operational risks handled today?', placeholder: 'Backup equipment, people, travel buffer, and organizer contacts…' },
       ],
     },
     {
-      id: 'partnerships',
-      code: 'E',
-      title: 'Партнерства и коллаборации',
-      note: 'Для медиа-стратегии: коллабы, cross-promo, ориентир на 12-24 месяца.',
-      priority: 'дополнительно',
+      id: 'partnerships', code: 'E', title: 'Partnerships and collaborations', priority: 'additional',
+      note: 'Collaboration, cross-promotion, and a realistic 12–24 month direction.',
       fields: [
-        {
-          id: 'artist_network',
-          type: 'textarea',
-          label: 'С кем из артистов дружишь или уже работал?',
-          placeholder: '3-5 имен, даже если не top-tier. Можно добавить формат знакомства/коллабы.',
-        },
-        {
-          id: 'future_partners',
-          type: 'textarea',
-          label: 'Есть ли лейбл, менеджмент или booking agent, с которыми готов сотрудничать в будущем?',
-          placeholder: 'Сейчас / через 12 месяцев / что должно измениться, чтобы это стало актуально...',
-        },
-        {
-          id: 'dream_benchmark_artists',
-          type: 'textarea',
-          label: 'Кто из артистов в твоем жанре — уровень мечты?',
-          placeholder: '1-2 конкретных имени, на кого реально равняться через 12-24 месяца.',
-        },
+        { id: 'artist_network', type: 'textarea', label: 'Which artists do you know or have worked with?', placeholder: 'Three to five names and the type of connection or collaboration.' },
+        { id: 'future_partners', type: 'textarea', label: 'Which label, management, or booking partners could fit in the future?', placeholder: 'Now, in 12 months, and what must change before it becomes relevant…' },
+        { id: 'dream_benchmark_artists', type: 'textarea', label: 'Which artists represent the level you want to reach?', placeholder: 'One or two specific references for the next 12–24 months.' },
       ],
     },
     {
-      id: 'tone-of-voice',
-      code: 'F',
-      title: 'Тон коммуникации',
-      note: 'Для креатива: social proof, контентные углы, anti-positioning.',
-      priority: 'дополнительно',
+      id: 'tone-of-voice', code: 'F', title: 'Communication tone', priority: 'additional',
+      note: 'Social proof, useful content angles, and clear anti-positioning.',
       fields: [
-        {
-          id: 'words_from_friends_fans',
-          type: 'textarea',
-          label: '3-5 слов, которыми тебя описывают друзья или фаны',
-          placeholder: 'Например: глубокий, легкий, честный, энергичный...',
-        },
-        {
-          id: 'industry_frustrations',
-          type: 'textarea',
-          label: 'Что тебя бесит в музыкальной индустрии?',
-          placeholder: 'Мифы, фальшь, поведение, подходы, которые хочется ломать или обходить...',
-        },
-        {
-          id: 'anti_brand_associations',
-          type: 'textarea',
-          label: 'С чем точно НЕ хочешь, чтобы ассоциировался твой бренд?',
-          placeholder: 'Визуально, по тону, по поведению, по аудитории или по типу ивентов...',
-        },
+        { id: 'words_from_friends_fans', type: 'textarea', label: 'Which three to five words do friends or fans use to describe you?', placeholder: 'For example: thoughtful, light, honest, energetic…' },
+        { id: 'industry_frustrations', type: 'textarea', label: 'What frustrates you about the music industry?', placeholder: 'Myths, false behavior, or approaches you want to challenge or avoid…' },
+        { id: 'anti_brand_associations', type: 'textarea', label: 'What should never be associated with your brand?', placeholder: 'Visual style, tone, behavior, audience, or event types…' },
       ],
     },
   ];
@@ -230,7 +75,6 @@
     progressPercent: document.getElementById('progress-percent'),
     progressFill: document.getElementById('progress-fill'),
     saveIndicator: document.getElementById('save-indicator'),
-    syncIndicator: document.getElementById('sync-indicator'),
     toast: document.getElementById('toast'),
   };
 
@@ -242,40 +86,28 @@
   function loadState() {
     const params = new URLSearchParams(window.location.search);
 
-    if (params.get('reset') === '1') {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-
     try {
+      if (params.get('reset') === '1') {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
       return {
-        respondentId: saved.respondentId || createRespondentId(),
         currentSection: saved.currentSection || sections[0].id,
         completedSections: Array.isArray(saved.completedSections) ? saved.completedSections : [],
         editedSections: Array.isArray(saved.editedSections) ? saved.editedSections : [],
         answers: saved.answers || {},
         updatedAt: saved.updatedAt || null,
-        lastSyncedAt: saved.lastSyncedAt || null,
       };
     } catch (error) {
       return {
-        respondentId: createRespondentId(),
         currentSection: sections[0].id,
         completedSections: [],
         editedSections: [],
         answers: {},
         updatedAt: null,
-        lastSyncedAt: null,
       };
     }
-  }
-
-  function createRespondentId() {
-    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-      return window.crypto.randomUUID();
-    }
-
-    return `${CLIENT.slug}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 
   function normalizeState() {
@@ -298,9 +130,25 @@
 
   function saveLocal(message) {
     state.updatedAt = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    if (dom.saveIndicator) {
-      dom.saveIndicator.textContent = message || `Сохранено локально ${formatTime(state.updatedAt)}`;
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+      if (dom.saveIndicator) {
+        dom.saveIndicator.textContent = message
+          ? `${message} ${formatTime(state.updatedAt)}`
+          : `Saved locally ${formatTime(state.updatedAt)}`;
+        dom.saveIndicator.classList.remove('is-error');
+      }
+
+      return true;
+    } catch (error) {
+      if (dom.saveIndicator) {
+        dom.saveIndicator.textContent = 'The draft could not be saved in this browser';
+        dom.saveIndicator.classList.add('is-error');
+      }
+
+      return false;
     }
   }
 
@@ -316,7 +164,12 @@
     renderNav();
     renderSections();
     updateProgress();
-    updateSyncIndicator();
+
+    if (dom.saveIndicator && !dom.saveIndicator.textContent) {
+      dom.saveIndicator.textContent = state.updatedAt
+        ? `Saved locally ${formatTime(state.updatedAt)}`
+        : 'The draft has not been saved yet';
+    }
   }
 
   function renderNav() {
@@ -356,13 +209,13 @@
         <article class="${classes}" data-section-card="${section.id}">
           <div class="section-head is-clickable" data-open-section="${section.id}" role="button" tabindex="0">
             <div>
-              <p class="section-kicker">Блок ${section.code} / ${section.priority}</p>
+              <p class="section-kicker">Section ${section.code} / ${section.priority}</p>
               <h2 class="section-title">${escapeHtml(section.title)}</h2>
               <p class="section-note">${escapeHtml(section.note)}</p>
             </div>
             <div class="section-head-actions">
               <span class="section-state">${getSectionStateLabel(section)}</span>
-              ${showEditButton ? `<button class="section-edit-btn" type="button" data-nav-section="${section.id}">Изменить</button>` : ''}
+              ${showEditButton ? `<button class="section-edit-btn" type="button" data-nav-section="${section.id}">Edit</button>` : ''}
             </div>
           </div>
           <div class="section-body">
@@ -370,11 +223,11 @@
               ${section.fields.map(renderField).join('')}
             </div>
             <div class="actions">
-              <button class="action-btn primary" type="button" data-save-section="${section.id}">Сохранить ответы в этом блоке</button>
+              <button class="action-btn primary" type="button" data-save-section="${section.id}">Save section locally</button>
             </div>
             <div class="completion-panel ${isEverythingComplete() && index === sections.length - 1 ? 'is-visible' : ''}">
-              <strong>Анкета завершена.</strong>
-              Ответы сохранены в этом браузере${SHEETS_WEB_APP_URL ? ' и отправлены в Google Sheets.' : '. После подключения ссылки Google Sheets они также будут отправляться в таблицу.'}
+              <strong>The local draft is complete.</strong>
+              Answers are stored only in this browser and were not automatically sent to the team.
             </div>
           </div>
         </article>
@@ -436,10 +289,10 @@
   }
 
   function getSectionStateLabel(section) {
-    if (isSectionComplete(section)) return 'сохранено';
-    if (state.editedSections.includes(section.id)) return 'изменено';
-    if (state.currentSection === section.id) return 'активно';
-    return 'открыто';
+    if (isSectionComplete(section)) return 'saved';
+    if (state.editedSections.includes(section.id)) return 'edited';
+    if (state.currentSection === section.id) return 'active';
+    return 'open';
   }
 
   function hasAnswer(value) {
@@ -499,7 +352,7 @@
     });
   }
 
-  async function saveSection(sectionId) {
+  function saveSection(sectionId) {
     const index = sections.findIndex((section) => section.id === sectionId);
     const section = sections[index];
     if (!section) return;
@@ -509,7 +362,7 @@
     const buttons = Array.from(document.querySelectorAll(`[data-save-section="${sectionId}"]`));
     buttons.forEach((button) => {
       button.disabled = true;
-      button.textContent = 'Сохраняю...';
+      button.textContent = 'Saving…';
     });
 
     collectAnswers();
@@ -518,109 +371,19 @@
 
     state.currentSection = sectionId;
 
-    saveLocal(`Блок ${section.code} сохранен ${formatTime(state.updatedAt)}`);
+    const saved = saveLocal(`Section ${section.code} saved locally`);
     render();
-    await syncSection(section);
 
-    if (isEverythingComplete()) {
-      await syncAllComplete();
-      showToast('Ответы сохранены. Анкета заполнена полностью.');
-    } else {
-      showToast(`Ответы в блоке ${section.code} сохранены.`);
-    }
-  }
-
-  async function syncSection(section) {
-    if (!SHEETS_WEB_APP_URL) {
-      updateSyncIndicator('Google Sheets не подключен', 'warn');
+    if (!saved) {
+      showToast('The section could not be saved in this browser. Copy important answers before closing the page.');
       return;
     }
 
-    const payload = createPayload('section_saved', section);
-
-    try {
-      updateSyncIndicator('Отправляю в Google Sheets...', 'warn');
-      await sendToSheets(payload);
-      state.lastSyncedAt = new Date().toISOString();
-      saveLocal();
-      updateSyncIndicator(`Отправлено ${formatTime(state.lastSyncedAt)}`, 'live');
-    } catch (error) {
-      updateSyncIndicator('Ошибка отправки в Google Sheets', 'warn');
-      showToast('Локально сохранено. Google Sheets сейчас не ответил.');
+    if (isEverythingComplete()) {
+      showToast('The local draft is complete and saved on this device.');
+    } else {
+      showToast(`Section ${section.code} is saved only on this device.`);
     }
-  }
-
-  async function syncAllComplete() {
-    if (!SHEETS_WEB_APP_URL) return;
-
-    try {
-      await sendToSheets(createPayload('survey_completed'));
-      state.lastSyncedAt = new Date().toISOString();
-      saveLocal();
-      updateSyncIndicator(`Финально отправлено ${formatTime(state.lastSyncedAt)}`, 'live');
-    } catch (error) {
-      showToast('Финальный sync не прошел, но локальная копия сохранена.');
-    }
-  }
-
-  function createPayload(eventType, section) {
-    const sectionAnswers = section
-      ? section.fields.reduce((acc, field) => {
-        acc[field.id] = state.answers[field.id] || (field.type === 'checkboxes' ? [] : '');
-        return acc;
-      }, {})
-      : {};
-    const sectionQuestionAnswers = section ? getQuestionAnswers([section]) : [];
-
-    return {
-      eventType,
-      client: CLIENT,
-      respondentId: state.respondentId,
-      sectionId: section ? section.id : '',
-      sectionCode: section ? section.code : '',
-      sectionTitle: section ? section.title : '',
-      sectionAnswers,
-      sectionQuestionAnswers,
-      allQuestionAnswers: getQuestionAnswers(sections),
-      allAnswers: state.answers,
-      completedSections: state.completedSections,
-      progressPercent: getProgressPercent(),
-      pageUrl: window.location.href,
-      userAgent: navigator.userAgent,
-      submittedAt: new Date().toISOString(),
-    };
-  }
-
-  function getQuestionAnswers(sourceSections) {
-    return sourceSections.flatMap((section) => {
-      return section.fields.map((field) => {
-        const answer = state.answers[field.id] || (field.type === 'checkboxes' ? [] : '');
-
-        return {
-          sectionId: section.id,
-          sectionCode: section.code,
-          sectionTitle: section.title,
-          fieldId: field.id,
-          fieldType: field.type,
-          question: field.label,
-          answer,
-        };
-      });
-    });
-  }
-
-  function sendToSheets(payload) {
-    const form = new URLSearchParams();
-    form.set('payload', JSON.stringify(payload));
-
-    return fetch(SHEETS_WEB_APP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: form.toString(),
-    });
   }
 
   function updateProgress() {
@@ -635,20 +398,6 @@
 
   function isEverythingComplete() {
     return state.completedSections.length === sections.length;
-  }
-
-  function updateSyncIndicator(message, tone) {
-    const hasEndpoint = Boolean(SHEETS_WEB_APP_URL);
-    const text = message || (hasEndpoint
-      ? state.lastSyncedAt
-        ? `Google Sheets синхронизировано ${formatTime(state.lastSyncedAt)}`
-        : 'Google Sheets подключен'
-      : 'Google Sheets не подключен');
-
-    if (!dom.syncIndicator) return;
-    dom.syncIndicator.textContent = text;
-    dom.syncIndicator.classList.toggle('is-live', tone === 'live' || (hasEndpoint && !tone));
-    dom.syncIndicator.classList.toggle('is-warn', tone === 'warn' || (!hasEndpoint && !tone));
   }
 
   function showToast(message) {
@@ -679,7 +428,7 @@
     const card = document.querySelector(`[data-section-card="${sectionId}"]`);
     const badge = card ? card.querySelector('.section-state') : null;
     if (card) card.classList.add('is-edited');
-    if (badge) badge.textContent = 'изменено';
+    if (badge) badge.textContent = 'edited';
   }
 
   dom.form.addEventListener('input', (event) => {
@@ -693,7 +442,7 @@
       collectAnswers();
       renderNav();
       updateProgress();
-      saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
+      saveLocal('Draft saved');
     }, SAVE_DELAY);
   });
 
@@ -720,7 +469,7 @@
     collectAnswers();
     renderNav();
     updateProgress();
-    saveLocal(`Черновик сохранен ${formatTime(new Date().toISOString())}`);
+    saveLocal('Draft saved');
   });
 
   document.addEventListener('click', (event) => {

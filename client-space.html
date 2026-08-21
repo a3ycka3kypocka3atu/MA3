@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta
     name="description"
-    content="Private Client Cabinet for project progress, tasks, shared materials, knowledge, and communication."
+    content="Private Platum workspace for project progress, tasks, shared materials, knowledge, and communication."
   >
   <meta name="robots" content="noindex, nofollow">
-  <title>Client Cabinet</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23173f2c'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial,sans-serif' font-size='24' font-weight='700' fill='%23c9f26b'%3ECC%3C/text%3E%3C/svg%3E">
+  <title>Platum</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23173f2c'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial,sans-serif' font-size='24' font-weight='700' fill='%23c9f26b'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -26,15 +26,10 @@
   <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
     <div class="auth-card">
       <div class="auth-card__top">
-      <a class="auth-brand" href="index.html" aria-label="Client Cabinet home">
-        <span class="brand-mark" data-cabinet-brand-mark>CC</span>
-        <span><strong data-cabinet-brand-name>Client Cabinet</strong><small>Private Workspace</small></span>
+      <a class="auth-brand" href="index.html" aria-label="Platum home">
+        <span class="brand-mark" data-cabinet-brand-mark>P</span>
+        <span><strong data-cabinet-brand-name>Platum</strong><small>Private Workspace</small></span>
       </a>
-        <div class="language-toggle auth-language-toggle" aria-label="Language">
-          <button type="button" data-auth-language="ru" aria-pressed="true">RU</button>
-          <span aria-hidden="true"></span>
-          <button type="button" data-auth-language="en" aria-pressed="false">EN</button>
-        </div>
       </div>
       <div class="auth-card__copy">
         <span class="section-kicker">Private client cabinet</span>
@@ -69,9 +64,9 @@
   <div class="portal-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand-lockup">
-        <a class="brand-mark" href="client-space.html" aria-label="Client Cabinet home" data-cabinet-brand-mark>CC</a>
+        <a class="brand-mark" href="client-space.html" aria-label="Platum home" data-cabinet-brand-mark>P</a>
         <div>
-          <strong data-cabinet-brand-name>Client Cabinet</strong>
+          <strong data-cabinet-brand-name>Platum</strong>
           <span>Private Workspace</span>
         </div>
       </div>
@@ -80,7 +75,7 @@
         <div class="client-avatar" data-client-initials>PM</div>
         <div class="client-switcher__copy">
           <span>Current workspace</span>
-          <strong data-client-name>Prohor Music</strong>
+          <strong data-client-name>Client Workspace</strong>
         </div>
         <span class="private-dot" title="Private workspace"></span>
       </div>
@@ -90,7 +85,7 @@
           <span class="nav-symbol">A</span>
           <span>Admin home</span>
         </button>
-        <button class="nav-item is-active" type="button" data-view-target="overview">
+        <button class="nav-item is-active" type="button" data-view-target="overview" aria-current="page">
           <span class="nav-symbol">01</span>
           <span>Overview</span>
         </button>
@@ -132,9 +127,9 @@
       </div>
 
       <div class="sidebar-user">
-        <div class="user-avatar">P</div>
+        <div class="user-avatar">C</div>
         <div>
-          <strong data-client-contact>Prohor</strong>
+          <strong data-client-contact>Client</strong>
           <span id="sidebar-access-role">Client access</span>
         </div>
         <span class="access-badge">Link</span>
@@ -154,12 +149,7 @@
         <div class="topbar__actions">
           <button class="admin-home-button" id="admin-home-button" type="button" hidden>Admin home</button>
           <span class="sync-note" id="sync-note" data-no-translate><i></i> Checking sync…</span>
-          <div class="language-toggle" role="group" aria-label="Language / Язык">
-            <button type="button" data-language="ru" aria-pressed="true">RU</button>
-            <span></span>
-            <button type="button" data-language="en" aria-pressed="false">EN</button>
-          </div>
-          <button class="avatar-button" id="account-button" type="button" title="Account" aria-haspopup="true" aria-expanded="false">P</button>
+          <button class="avatar-button" id="account-button" type="button" title="Account" aria-haspopup="true" aria-expanded="false">C</button>
           <div class="account-menu" id="account-menu" hidden>
             <strong id="account-name">Client</strong>
             <span id="account-provider">Secure access</span>
@@ -174,33 +164,33 @@
             <div>
               <span class="section-kicker">Internal operating system</span>
               <h1 id="admin-title">Run every client through one clear system.</h1>
-              <p>Workspaces, methodology, pipelines, decisions, deliverables, client actions, and AI work stay connected from first brief to measurable growth.</p>
+              <p>Manage workspace tasks, client requests, responses, decisions, deliverables, and the activity that keeps every project understandable.</p>
             </div>
             <div class="agency-os-hero__status" aria-label="Operating system status">
               <span>Workspace operations</span>
-              <strong>Shared-state ready</strong>
-              <small>RLS sync with explicit local fallback</small>
+              <strong>Shared operations</strong>
+              <small>Membership-scoped records protected by workspace authorization</small>
             </div>
           </div>
 
           <div class="agency-os-controls">
             <nav class="agency-os-tabs" aria-label="Agency operating system sections">
-              <button class="is-active" type="button" data-os-tab="command">Command center</button>
-              <button type="button" data-os-tab="workspaces">Workspaces</button>
-              <button type="button" data-os-tab="pipelines">Pipelines</button>
-              <button type="button" data-os-tab="skills">Skills</button>
-              <button type="button" data-os-tab="tasks">Work queue</button>
-              <button type="button" data-os-tab="artifacts">Artifacts</button>
-              <button type="button" data-os-tab="decisions">Decisions</button>
-              <button type="button" data-os-tab="agents">AI queue</button>
+              <button class="is-active" type="button" data-os-tab="command" aria-pressed="true">Command center</button>
+              <button type="button" data-os-tab="workspaces" aria-pressed="false">Workspaces</button>
+              <button type="button" data-os-tab="pipelines" aria-pressed="false">Pipelines</button>
+              <button type="button" data-os-tab="skills" aria-pressed="false">Skills</button>
+              <button type="button" data-os-tab="tasks" aria-pressed="false">Work queue</button>
+              <button type="button" data-os-tab="requests" aria-pressed="false">Client requests</button>
+              <button type="button" data-os-tab="artifacts" aria-pressed="false">Artifacts</button>
+              <button type="button" data-os-tab="decisions" aria-pressed="false">Decisions</button>
+              <button type="button" data-os-tab="agents" aria-pressed="false">AI queue</button>
             </nav>
             <div class="agency-os-actions">
               <label class="agency-os-workspace-filter" for="agency-os-workspace">
                 <span>Workspace</span>
                 <select id="agency-os-workspace" data-os-workspace-filter>
                   <option value="all">All workspaces</option>
-                  <option value="prohor">Prohor Music</option>
-                <option value="agency">Internal operations</option>
+                  <option value="agency">Internal operations</option>
                 </select>
               </label>
               <button class="primary-button" type="button" data-os-new-task>New task <span>+</span></button>
@@ -219,7 +209,7 @@
           <div class="welcome-panel">
             <div class="welcome-copy">
               <span class="section-kicker">Your project, in one place</span>
-              <h1 id="overview-title"><span id="greeting">Good day</span>, <span data-client-contact>Prohor</span>.</h1>
+              <h1 id="overview-title"><span id="greeting">Good day</span>, <span data-client-contact>Client</span>.</h1>
               <p>See what is moving, what needs your attention, and what the team has prepared for you.</p>
               <div class="welcome-actions">
                 <button class="primary-button" type="button" data-view-link="tasks">
@@ -236,7 +226,7 @@
               </div>
               <div class="pulse-copy">
                 <span>Project pulse</span>
-                <strong id="project-progress-value">42%</strong>
+                <strong id="project-progress-value">0%</strong>
                 <small>Strategy in progress</small>
               </div>
             </div>
@@ -245,7 +235,7 @@
           <div class="metrics-grid" aria-label="Project summary">
             <article class="metric-card metric-card--accent">
               <span>Current phase</span>
-              <strong data-current-phase>Research & foundation</strong>
+              <strong data-current-phase>Getting started</strong>
               <small><i></i> Active now</small>
             </article>
             <article class="metric-card">
@@ -343,8 +333,8 @@
             </div>
             <div class="north-star-card">
               <span>North-star outcome</span>
-              <strong id="strategy-north-star">Confirmed bookings</strong>
-              <small>The result that connects marketing activity to the business.</small>
+              <strong id="strategy-north-star">Validated project outcome</strong>
+              <small>The result that connects project activity to an agreed goal.</small>
             </div>
           </article>
 
@@ -354,7 +344,7 @@
             <div class="strategy-section__heading">
               <div>
                 <span class="section-kicker">Brand compass</span>
-                <h2>A recognizable identity without becoming a character.</h2>
+                <h2>Define a recognizable direction with clear boundaries.</h2>
               </div>
               <p>The useful ideas from the positioning board are translated into roles and boundaries that can guide content, visuals, and decisions.</p>
             </div>
@@ -365,10 +355,10 @@
             <div>
               <div class="strategy-section__heading strategy-section__heading--stacked">
                 <div>
-                  <span class="section-kicker">Two connected audiences</span>
-                  <h2>Listeners create demand. Buyers confirm bookings.</h2>
+                  <span class="section-kicker">Connected audiences</span>
+                  <h2>Separate the people affected from the people deciding.</h2>
                 </div>
-                <p>We keep the listener community separate from the people who make commercial booking decisions, because they need different messages and proof.</p>
+                <p>Different audiences may need different context, evidence, and next steps. The authenticated strategy records the distinctions that matter for this project.</p>
               </div>
               <div id="strategy-audiences" class="strategy-audiences"></div>
             </div>
@@ -399,9 +389,9 @@
             <div class="strategy-section__heading">
               <div>
                 <span class="section-kicker">Customer journey</span>
-                <h2>The booking system we are building</h2>
+                <h2>The project journey we are building</h2>
               </div>
-              <p>Every channel has a role. Attention should eventually lead to a qualified booking conversation—not just more views.</p>
+              <p>Every touchpoint needs a role. Attention should lead toward an agreed project outcome—not activity without purpose.</p>
             </div>
             <div class="strategy-funnel panel" id="strategy-funnel"></div>
           </section>
@@ -411,7 +401,7 @@
               <div class="strategy-section__heading strategy-section__heading--stacked">
                 <div>
                   <span class="section-kicker">Content architecture</span>
-                  <h2>Five repeatable pillars</h2>
+                  <h2>Repeatable communication themes</h2>
                 </div>
                 <p>Each pillar has a job in the funnel, so content is easier to plan and evaluate.</p>
               </div>
@@ -434,7 +424,7 @@
             <div>
               <span class="section-kicker">Reusable for every client</span>
               <h2>Brief → evidence → hypotheses → decisions → tasks → measurement</h2>
-              <p>The cabinet turns internal agency research into a client-facing decision layer. When we add another client, we replace the client record—not the interface.</p>
+              <p>This area presents authenticated project direction once secure workspace records are connected. Client-specific content is never compiled into the public interface.</p>
             </div>
           </article>
           </div>
@@ -449,7 +439,7 @@
             </div>
             <div class="heading-status">
               <span>Overall progress</span>
-              <strong id="roadmap-progress-value">42%</strong>
+              <strong id="roadmap-progress-value">0%</strong>
             </div>
           </div>
 
@@ -472,7 +462,7 @@
             <div>
               <span class="section-kicker">Your action list</span>
               <h1 id="tasks-title">Clear tasks. Visible momentum.</h1>
-              <p>Complete the inputs that help us move your project forward. Your checks are saved on this device.</p>
+              <p>Complete the inputs that help us move your project forward. Your checks are saved to your workspace and synced when available.</p>
             </div>
             <div class="heading-status">
               <span>Completed</span>
@@ -482,11 +472,11 @@
 
           <div class="task-toolbar">
             <div class="filter-group" aria-label="Filter tasks">
-              <button class="filter-button is-active" type="button" data-task-filter="all">All</button>
-              <button class="filter-button" type="button" data-task-filter="open">Open</button>
-              <button class="filter-button" type="button" data-task-filter="done">Completed</button>
+              <button class="filter-button is-active" type="button" data-task-filter="all" aria-pressed="true">All</button>
+              <button class="filter-button" type="button" data-task-filter="open" aria-pressed="false">Open</button>
+              <button class="filter-button" type="button" data-task-filter="done" aria-pressed="false">Completed</button>
             </div>
-            <span class="local-save-note"><i></i> Saved on this device</span>
+            <span class="local-save-note"><i></i> Saved automatically</span>
           </div>
           <div id="full-task-list" class="full-task-list"></div>
         </section>
@@ -537,7 +527,7 @@
             <div>
               <span class="section-kicker">Communication</span>
               <h1 id="questions-title">Keep every question connected to the project.</h1>
-              <p>Use this prototype to prepare questions and notes. They stay on this device until team messaging is connected.</p>
+              <p>Send a structured question or request. It stays connected to this workspace and appears in Agency OS.</p>
             </div>
           </div>
 
@@ -566,16 +556,16 @@
                 required
               ></textarea>
               <div class="composer-footer">
-                <span>Prototype: saved locally, not sent yet.</span>
-                <button class="primary-button" type="submit">Save question</button>
+                <span>Sent securely to the assigned project team.</span>
+                <button class="primary-button" type="submit">Send request</button>
               </div>
             </form>
 
             <aside class="panel saved-questions">
               <div class="panel-heading">
                 <div>
-                  <span class="section-kicker">On this device</span>
-                  <h2>Saved questions</h2>
+                  <span class="section-kicker">Your workspace</span>
+                  <h2>Project requests</h2>
                 </div>
                 <span class="nav-count" id="saved-question-count">0</span>
               </div>
@@ -618,7 +608,6 @@
   <div class="toast" id="portal-toast" role="status" aria-live="polite"></div>
 
   <script src="client-space.config.js"></script>
-  <script src="client-space.i18n.js"></script>
   <script src="client-space-auth.js"></script>
   <script src="cabinet-data.js"></script>
   <script src="client-space.js"></script>

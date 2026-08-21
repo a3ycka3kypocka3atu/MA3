@@ -48,11 +48,10 @@ body::before {
   inset: 0;
   z-index: -2;
   content: "";
-  background-image: url("assets/prohor-profile.jpeg");
-  background-position: center top;
-  background-size: cover;
-  opacity: 0.16;
-  filter: saturate(0.95);
+  background:
+    radial-gradient(circle at 72% 18%, rgba(224, 161, 79, 0.18), transparent 34%),
+    radial-gradient(circle at 20% 34%, rgba(94, 222, 230, 0.13), transparent 38%);
+  opacity: 0.9;
 }
 
 body::after {
@@ -130,13 +129,6 @@ h1 {
   line-height: 1.7;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 26px;
-}
-
 .hero-art {
   position: relative;
   align-self: stretch;
@@ -171,52 +163,37 @@ h1 {
   pointer-events: none;
 }
 
-.hero-art__bg {
-  position: absolute;
-  inset: -26px;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  opacity: 0.16;
-  filter: blur(18px) saturate(1.05);
-  transform: scale(1.08);
-}
-
 .hero-art__frame {
   position: relative;
   z-index: 1;
-  width: min(72%, 260px);
-  aspect-ratio: 1;
+  display: grid;
+  gap: 12px;
+  width: min(78%, 300px);
+  min-height: 210px;
+  align-content: end;
+  padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
+  background:
+    linear-gradient(145deg, rgba(255, 196, 111, 0.14), transparent 44%),
+    rgba(255, 255, 255, 0.06);
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.36);
 }
 
-.hero-art__frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  display: block;
-}
-
-.hero-art figcaption {
+.hero-art__frame::before {
   position: absolute;
-  left: 34px;
-  right: 34px;
-  bottom: 28px;
-  z-index: 1;
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 16px;
-  color: var(--text);
+  top: 28px;
+  right: 28px;
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(94, 222, 230, 0.34);
+  border-radius: 50%;
+  content: "";
+  box-shadow: 0 0 0 14px rgba(94, 222, 230, 0.05);
 }
 
-.hero-art figcaption span {
+.hero-art__frame span {
   color: var(--amber-strong);
   font-size: 0.72rem;
   font-weight: 900;
@@ -224,11 +201,20 @@ h1 {
   text-transform: uppercase;
 }
 
-.hero-art figcaption strong {
+.hero-art__frame strong {
   font-family: var(--display);
-  font-size: clamp(1.8rem, 4vw, 3.1rem);
-  line-height: 0.9;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.92;
   letter-spacing: 0;
+}
+
+.hero-art__frame small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .intake-workspace {
@@ -285,6 +271,44 @@ h1 {
   border-radius: inherit;
   background: linear-gradient(90deg, var(--amber), var(--cyan));
   transition: width 0.28s ease;
+}
+
+.intake-status {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.save-indicator,
+.storage-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 17px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.save-indicator::before,
+.storage-indicator::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--soft);
+}
+
+.storage-indicator::before {
+  background: var(--cyan);
+}
+
+.save-indicator.is-error {
+  color: var(--danger);
+}
+
+.save-indicator.is-error::before {
+  background: var(--danger);
 }
 
 .section-nav {
@@ -665,6 +689,7 @@ input[type="text"]:focus {
 
 .intake-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -678,71 +703,6 @@ input[type="text"]:focus {
   font-weight: 800;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-}
-
-.agency-link-btn {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 0 16px;
-  border: 1px solid rgba(255, 248, 235, 0.16);
-  border-radius: 8px;
-  background:
-    linear-gradient(135deg, rgba(255, 196, 111, 0.24), rgba(102, 230, 173, 0.19) 50%, rgba(94, 170, 230, 0.24)),
-    rgba(7, 21, 24, 0.74);
-  box-shadow:
-    0 0 28px rgba(255, 196, 111, 0.12),
-    0 0 34px rgba(102, 230, 173, 0.1),
-    0 12px 30px rgba(4, 13, 15, 0.28);
-  color: var(--text);
-  font-size: 0.82rem;
-  font-weight: 900;
-  overflow: hidden;
-  text-decoration: none;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-}
-
-.agency-link-btn::before {
-  position: absolute;
-  inset: 1px;
-  z-index: -1;
-  content: "";
-  border-radius: 7px;
-  background:
-    linear-gradient(90deg, rgba(255, 196, 111, 0.2), rgba(102, 230, 173, 0.16), rgba(94, 170, 230, 0.18));
-  opacity: 0.72;
-}
-
-.agency-link-btn::after {
-  position: absolute;
-  inset: -42% -18%;
-  z-index: -2;
-  content: "";
-  background:
-    radial-gradient(circle at 18% 50%, rgba(255, 196, 111, 0.34), transparent 28%),
-    radial-gradient(circle at 50% 50%, rgba(102, 230, 173, 0.28), transparent 30%),
-    radial-gradient(circle at 82% 50%, rgba(94, 170, 230, 0.34), transparent 30%);
-  filter: blur(14px);
-  opacity: 0.78;
-}
-
-.agency-link-btn:hover {
-  border-color: rgba(255, 248, 235, 0.28);
-  box-shadow:
-    0 0 34px rgba(255, 196, 111, 0.2),
-    0 0 42px rgba(102, 230, 173, 0.16),
-    0 0 46px rgba(94, 170, 230, 0.18),
-    0 16px 36px rgba(4, 13, 15, 0.34);
-  color: var(--text);
-  transform: translateY(-1px);
-}
-
-.agency-link-btn:focus-visible {
-  outline: 3px solid rgba(94, 222, 230, 0.28);
-  outline-offset: 3px;
 }
 
 .toast {
@@ -789,7 +749,7 @@ input[type="text"]:focus {
   }
 
   .hero-art__frame {
-    width: min(58%, 230px);
+    width: min(76%, 300px);
   }
 
   .progress-panel {
@@ -823,14 +783,9 @@ input[type="text"]:focus {
     min-height: 180px;
   }
 
-  .hero-art figcaption {
-    left: 22px;
-    right: 22px;
-    bottom: 20px;
-  }
-
-  .hero-art figcaption strong {
-    font-size: 2rem;
+  .hero-art__frame {
+    min-height: 160px;
+    padding: 22px;
   }
 
   .section-nav,
@@ -855,8 +810,7 @@ input[type="text"]:focus {
     justify-content: stretch;
   }
 
-  .action-btn,
-  .agency-link-btn {
+  .action-btn {
     width: 100%;
   }
 

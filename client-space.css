@@ -3309,3 +3309,35 @@ textarea:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+.request-status {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--forest, #173f2c);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.request-reply {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(23, 63, 44, 0.14);
+  border-radius: 16px;
+  background: rgba(201, 242, 107, 0.12);
+}
+
+.request-reply strong,
+.request-reply span {
+  display: block;
+}
+
+.request-reply p {
+  margin: 7px 0;
+}
+
+.request-reply span {
+  color: var(--muted, #68736d);
+  font-size: 12px;
+}

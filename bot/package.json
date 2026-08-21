@@ -4,7 +4,8 @@
   "description": "Telegram Bot for 34ForFree7 Agency",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "test": "node --test"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",

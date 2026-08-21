@@ -5,3 +5,9 @@ bot/admin_chats.json
 bot/bot.log
 bot/bot.pid
 .agents
+
+# Protected private local material — never commit.
+# " client-space/" contains private client research/source material;
+# "tmp/" contains temporary working files.
+ client-space/
+tmp/

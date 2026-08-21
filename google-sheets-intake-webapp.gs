@@ -1,74 +1,85 @@
-const SPREADSHEET_ID = '18JxwZgWl66mSAkGdCBHAB9EsHypZtYFDVqq2oviAkeI';
 const ANSWERS_SHEET_NAME = 'Question answers';
-const MAINTENANCE_TOKEN = '34forfree7-prohor-2026-06-25';
+const CONFIG_KEYS = Object.freeze({
+  spreadsheetId: 'PLATUM_INTAKE_SPREADSHEET_ID',
+  writeToken: 'PLATUM_INTAKE_WRITE_TOKEN',
+});
 
-const TABLE_HEADERS = ['Вопрос', 'Ответ'];
+const TABLE_HEADERS = ['Question', 'Answer'];
 
 const BLOCKS = [
   {
-    title: 'A. Операционные вопросы',
+    title: 'A. Booking operations',
     questions: [
-      'Сколько сейчас обычно проходит времени от “клиент написал” до “выступление состоялось”?',
-      'Добавь реальный контекст по срокам',
-      'Откуда сейчас приходят запросы на выступления?',
-      'Какие каналы реально дают самые качественные запросы?',
-      'Есть ли уже premium-tier выступления или близкие к этому прецеденты?',
+      'How long does it usually take from the first inquiry to the performance?',
+      'Add real context about lead times',
+      'Where do performance inquiries currently come from?',
+      'Which channels produce the strongest inquiries?',
+      'Do you already have premium-tier performances or close precedents?',
     ],
   },
   {
-    title: 'B. Контент-производство',
+    title: 'B. Content production',
     questions: [
-      'Что ты сейчас снимаешь или уже имеешь в сырых материалах?',
-      'Что из этого можно реально найти и передать нам?',
-      'Есть ли stock-видео с прошлых выступлений?',
-      'Какие события или поездки запланированы на ближайшие 6 месяцев?',
-      'Есть ли UGC-команда или videographer на локации?',
-      'Как сейчас выглядит реальный процесс съемки?',
+      'What do you currently record or already have as raw material?',
+      'What can realistically be found and prepared?',
+      'Is there footage from previous performances?',
+      'Which events or trips are planned for the next six months?',
+      'Is a videographer or content helper available on location?',
+      'How does the recording process work today?',
     ],
   },
   {
-    title: 'C. История и нарратив',
+    title: 'C. Story and narrative',
     questions: [
-      'Какая твоя личная история в музыке — коротко, 3-5 предложений?',
-      'Что тебя удерживает в музыке сейчас, когда сложно?',
-      'Какой один момент карьеры был “тогда я понял, что это мое”?',
+      'What is your personal story in music in three to five sentences?',
+      'What keeps you in music when the work is difficult?',
+      'Which career moment made you realize this was your path?',
     ],
   },
   {
-    title: 'D. Технические вопросы',
+    title: 'D. Technical readiness',
     questions: [
-      'Техрайдер существует?',
-      'Что точно должно быть в техрайдере?',
-      'Длина сетов — какой минимальный и комфортный формат?',
-      'Нужен ли back-up DJ на случай форс-мажора?',
-      'Как сейчас закрываешь риски форс-мажора?',
+      'Does a technical rider exist?',
+      'What must the technical rider include?',
+      'What is the minimum and comfortable set length?',
+      'Is a backup performer needed for emergencies?',
+      'How are operational risks handled today?',
     ],
   },
   {
-    title: 'E. Партнерства и коллаборации',
+    title: 'E. Partnerships and collaborations',
     questions: [
-      'С кем из артистов дружишь или уже работал?',
-      'Есть ли лейбл, менеджмент или booking agent, с которыми готов сотрудничать в будущем?',
-      'Кто из артистов в твоем жанре — уровень мечты?',
+      'Which artists do you know or have worked with?',
+      'Which label, management, or booking partners could fit in the future?',
+      'Which artists represent the level you want to reach?',
     ],
   },
   {
-    title: 'F. Тон коммуникации',
+    title: 'F. Communication tone',
     questions: [
-      '3-5 слов, которыми тебя описывают друзья или фаны',
-      'Что тебя бесит в музыкальной индустрии?',
-      'С чем точно НЕ хочешь, чтобы ассоциировался твой бренд?',
+      'Which three to five words do friends or fans use to describe you?',
+      'What frustrates you about the music industry?',
+      'What should never be associated with your brand?',
     ],
   },
 ];
 
 function doPost(e) {
-  const lock = LockService.getScriptLock();
-  lock.waitLock(10000);
+  let lock;
+  let lockAcquired = false;
 
   try {
-    const payload = parsePayload(e);
-    const sheet = getAnswerSheet();
+    const config = getRequiredConfig();
+    const payload = parseAuthorizedPayload(e, config.writeToken);
+
+    lock = LockService.getScriptLock();
+    lockAcquired = lock.tryLock(10000);
+
+    if (!lockAcquired) {
+      throw new Error('LOCK_UNAVAILABLE');
+    }
+
+    const sheet = getAnswerSheet(config.spreadsheetId);
     const answersByQuestion = readExistingAnswers(sheet);
     const updates = buildAnswerUpdates(payload);
 
@@ -84,72 +95,42 @@ function doPost(e) {
     return jsonResponse({
       ok: true,
       rows,
-      message: 'Saved to Google Sheets',
+      message: 'Answers saved',
     });
   } catch (error) {
+    console.error('Intake write request rejected.');
     return jsonResponse({
       ok: false,
-      error: String(error),
+      error: 'Request rejected',
     });
   } finally {
-    lock.releaseLock();
+    if (lock && lockAcquired) {
+      lock.releaseLock();
+    }
   }
 }
 
-function doGet(e) {
-  if (e && e.parameter && e.parameter.action === 'clear' && e.parameter.token === MAINTENANCE_TOKEN) {
-    return jsonResponse(clearQuestionAnswersSheet());
-  }
-
-  if (e && e.parameter && e.parameter.action === 'compact' && e.parameter.token === MAINTENANCE_TOKEN) {
-    return jsonResponse(compactQuestionAnswersSheet());
-  }
-
-  if (e && e.parameter && e.parameter.payload) {
-    return doPost(e);
-  }
-
+function doGet() {
   return jsonResponse({
     ok: true,
-    app: '34ForFree7 Prohor intake collector',
-    spreadsheetId: SPREADSHEET_ID,
+    app: 'Platum artist strategy intake collector',
+    writeMethod: 'authenticated POST only',
   });
 }
 
-function compactQuestionAnswersSheet() {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(ANSWERS_SHEET_NAME) || spreadsheet.insertSheet(ANSWERS_SHEET_NAME);
-  const answersByQuestion = readExistingAnswers(sheet);
-  const rows = renderGroupedAnswers(sheet, answersByQuestion);
+function getRequiredConfig() {
+  const properties = PropertiesService.getScriptProperties();
+  const spreadsheetId = String(properties.getProperty(CONFIG_KEYS.spreadsheetId) || '').trim();
+  const writeToken = String(properties.getProperty(CONFIG_KEYS.writeToken) || '').trim();
 
-  cleanupExtraSheets(spreadsheet);
-
-  return {
-    ok: true,
-    sheet: ANSWERS_SHEET_NAME,
-    rows,
-  };
-}
-
-function clearQuestionAnswersSheet() {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(ANSWERS_SHEET_NAME) || spreadsheet.insertSheet(ANSWERS_SHEET_NAME);
-  const rows = renderGroupedAnswers(sheet, {});
-
-  cleanupExtraSheets(spreadsheet);
+  if (!spreadsheetId || writeToken.length < 32) {
+    throw new Error('CONFIGURATION_REQUIRED');
+  }
 
   return {
-    ok: true,
-    sheet: ANSWERS_SHEET_NAME,
-    cleared: true,
-    rows,
+    spreadsheetId,
+    writeToken,
   };
-}
-
-function cleanupExtraSheets(spreadsheet) {
-  deleteSheetIfExists(spreadsheet, 'Raw submission events');
-  deleteSheetIfExists(spreadsheet, 'Intake responses');
-  deleteEmptySheetIfExists(spreadsheet, 'Sheet1');
 }
 
 function buildAnswerUpdates(payload) {
@@ -176,8 +157,8 @@ function buildAnswerUpdates(payload) {
 function readExistingAnswers(sheet) {
   const values = sheet.getDataRange().getValues();
   const headers = values[0] || [];
-  const questionIndex = findHeaderIndex(headers, ['question', 'Вопрос']);
-  const answerIndex = findHeaderIndex(headers, ['answer', 'Ответ']);
+  const questionIndex = findHeaderIndex(headers, ['question']);
+  const answerIndex = findHeaderIndex(headers, ['answer']);
   const knownQuestions = getKnownQuestionsByKey();
   const answersByQuestion = {};
 
@@ -214,7 +195,6 @@ function renderGroupedAnswers(sheet, answersByQuestion) {
     rows.push.apply(rows, questionRows);
   });
 
-  sheet.clear();
   sheet.getRange(1, 1, 1, TABLE_HEADERS.length).setValues([TABLE_HEADERS]);
   sheet.setFrozenRows(1);
 
@@ -222,16 +202,12 @@ function renderGroupedAnswers(sheet, answersByQuestion) {
     sheet.getRange(2, 1, rows.length, TABLE_HEADERS.length).setValues(rows);
   }
 
-  if (sheet.getMaxColumns() > TABLE_HEADERS.length) {
-    sheet.deleteColumns(TABLE_HEADERS.length + 1, sheet.getMaxColumns() - TABLE_HEADERS.length);
-  }
-
-  formatAnswerSheet(sheet, blockRowNumbers);
+  formatAnswerSheet(sheet, blockRowNumbers, rows.length + 1);
   return rows.length - blockRowNumbers.length;
 }
 
-function getAnswerSheet() {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+function getAnswerSheet(spreadsheetId) {
+  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
   const sheet = spreadsheet.getSheetByName(ANSWERS_SHEET_NAME) || spreadsheet.insertSheet(ANSWERS_SHEET_NAME);
 
   if (sheet.getLastRow() === 0) {
@@ -242,8 +218,8 @@ function getAnswerSheet() {
   return sheet;
 }
 
-function formatAnswerSheet(sheet, blockRowNumbers) {
-  const lastRow = Math.max(sheet.getLastRow(), 1);
+function formatAnswerSheet(sheet, blockRowNumbers, managedLastRow) {
+  const lastRow = Math.max(managedLastRow, 1);
   const fullRange = sheet.getRange(1, 1, lastRow, TABLE_HEADERS.length);
 
   sheet.setColumnWidth(1, 480);
@@ -275,36 +251,50 @@ function getKnownQuestionsByKey() {
   return knownQuestions;
 }
 
-function deleteSheetIfExists(spreadsheet, name) {
-  const sheet = spreadsheet.getSheetByName(name);
-
-  if (sheet && spreadsheet.getSheets().length > 1) {
-    spreadsheet.deleteSheet(sheet);
-  }
-}
-
-function deleteEmptySheetIfExists(spreadsheet, name) {
-  const sheet = spreadsheet.getSheetByName(name);
-
-  if (!sheet || spreadsheet.getSheets().length <= 1) {
-    return;
-  }
-
-  if (sheet.getLastRow() <= 1 && sheet.getLastColumn() <= 1 && !sheet.getRange(1, 1).getValue()) {
-    spreadsheet.deleteSheet(sheet);
-  }
-}
-
-function parsePayload(e) {
-  if (e && e.parameter && e.parameter.payload) {
-    return JSON.parse(e.parameter.payload);
-  }
-
+function parseAuthorizedPayload(e, expectedWriteToken) {
   if (!e || !e.postData || !e.postData.contents) {
-    return {};
+    throw new Error('POST_BODY_REQUIRED');
   }
 
-  return JSON.parse(e.postData.contents);
+  const request = JSON.parse(e.postData.contents);
+
+  if (!request || typeof request !== 'object' || Array.isArray(request)) {
+    throw new Error('INVALID_REQUEST');
+  }
+
+  if (!tokensMatch(request.writeToken, expectedWriteToken)) {
+    throw new Error('AUTHORIZATION_REQUIRED');
+  }
+
+  if (!request.payload || typeof request.payload !== 'object' || Array.isArray(request.payload)) {
+    throw new Error('PAYLOAD_REQUIRED');
+  }
+
+  return request.payload;
+}
+
+function tokensMatch(providedToken, expectedToken) {
+  if (!providedToken || !expectedToken) {
+    return false;
+  }
+
+  const providedDigest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    String(providedToken),
+    Utilities.Charset.UTF_8
+  );
+  const expectedDigest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    String(expectedToken),
+    Utilities.Charset.UTF_8
+  );
+  let difference = 0;
+
+  for (let index = 0; index < expectedDigest.length; index += 1) {
+    difference |= providedDigest[index] ^ expectedDigest[index];
+  }
+
+  return difference === 0;
 }
 
 function findHeaderIndex(headers, candidates) {
@@ -325,40 +315,23 @@ function isTestQuestion(value) {
 }
 
 function formatAnswer(value) {
+  let formattedValue;
+
   if (Array.isArray(value)) {
-    return value.join(', ');
+    formattedValue = value.join(', ');
+  } else if (value === null || value === undefined) {
+    formattedValue = '';
+  } else if (typeof value === 'object') {
+    formattedValue = JSON.stringify(value);
+  } else {
+    formattedValue = String(value);
   }
 
-  if (value === null || value === undefined) {
-    return '';
-  }
-
-  if (typeof value === 'object') {
-    return JSON.stringify(value);
-  }
-
-  return String(value);
+  return /^[\s]*[=+\-@]/.test(formattedValue) ? `'${formattedValue}` : formattedValue;
 }
 
 function jsonResponse(value) {
   return ContentService
     .createTextOutput(JSON.stringify(value))
     .setMimeType(ContentService.MimeType.JSON);
-}
-
-function testWrite() {
-  const payload = {
-    sectionQuestionAnswers: [
-      {
-        question: 'Что тебя удерживает в музыке сейчас, когда сложно?',
-        answer: 'Manual test answer',
-      },
-    ],
-  };
-
-  doPost({
-    parameter: {
-      payload: JSON.stringify(payload),
-    },
-  });
 }

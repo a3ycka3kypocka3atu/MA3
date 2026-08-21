@@ -6,12 +6,7 @@
   const SUPABASE_PUBLISHABLE_KEY = config.supabasePublishableKey || '';
   const SESSION_KEY = 'client-cabinet:auth:v1';
   const LEGACY_SESSION_KEY = '34forfree7:cabinet-auth:v1';
-  const LANGUAGE_KEY = 'client-cabinet:language:v1';
-  const LEGACY_LANGUAGE_KEY = '34forfree7:client-space:language:v1';
   const hasAuthConfig = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
-  const translations = window.CLIENT_SPACE_I18N?.ru || {};
-  const savedLanguage = localStorage.getItem(LANGUAGE_KEY) || localStorage.getItem(LEGACY_LANGUAGE_KEY);
-  const language = savedLanguage === 'en' ? 'en' : 'ru';
   let authReadyResolved = false;
   let resolveAuthReady;
 
@@ -34,12 +29,11 @@
     accountName: document.getElementById('account-name'),
     accountProvider: document.getElementById('account-provider'),
     logoutButton: document.getElementById('logout-button'),
-    languageButtons: document.querySelectorAll('[data-auth-language]'),
   };
 
   function applyConfiguration() {
-    const brandName = String(config.brandName || 'Client Cabinet');
-    const brandMark = String(config.brandMark || 'CC').slice(0, 3);
+    const brandName = String(config.brandName || 'Platum');
+    const brandMark = String(config.brandMark || 'P').slice(0, 3);
     document.querySelectorAll('[data-cabinet-brand-name]').forEach((element) => {
       element.textContent = brandName;
     });
@@ -58,7 +52,7 @@
   }
 
   function translate(message) {
-    return language === 'ru' ? (translations[message] || message) : message;
+    return message;
   }
 
   function setStatus(message, isError = false) {
@@ -105,6 +99,23 @@
   function clearSession() {
     localStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(LEGACY_SESSION_KEY);
+  }
+
+  function clearSensitiveWorkspaceCache() {
+    const sensitiveKeyPatterns = [
+      /^client-cabinet:state:v1:/,
+      /^client-cabinet:agency-os:/,
+      /^cabinet:agency-os:/,
+      /^client-cabinet:.*:(?:tasks|questions):v1$/,
+      /^34forfree7:client-space:.*:(?:tasks|questions):v1$/,
+    ];
+
+    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+      const key = localStorage.key(index);
+      if (key && sensitiveKeyPatterns.some((pattern) => pattern.test(key))) {
+        localStorage.removeItem(key);
+      }
+    }
   }
 
   function authHeaders(extra = {}) {
@@ -190,11 +201,10 @@
     return user.app_metadata?.role === 'admin';
   }
 
-  function showCabinet(user, session = null) {
+  function showCabinet(user, session = null, previewAdmin = false) {
     const name = displayName(user);
-    const isAdmin = isAdminUser(user);
-    const assignedClientId = String(user.app_metadata?.client_id || 'starter').trim().toLowerCase();
-    const clientId = assignedClientId || 'starter';
+    const isLocalPreview = !session;
+    const isAdmin = isLocalPreview && (previewAdmin || isAdminUser(user));
     dom.body.classList.remove('auth-loading');
     dom.body.classList.add('is-authenticated');
     dom.gate.setAttribute('aria-hidden', 'true');
@@ -202,7 +212,7 @@
     dom.accountProvider.textContent = providerName(user);
     dom.accountButton.textContent = name.trim().charAt(0).toUpperCase() || 'C';
     dom.accountButton.title = name;
-    publishAuthContext(user, clientId, isAdmin, session);
+    publishAuthContext(user, null, isAdmin, session);
   }
 
   function showLogin(message = 'Choose a secure sign-in method.') {
@@ -213,22 +223,39 @@
 
   async function initializeAuth() {
     const localPreviewClient = new URLSearchParams(window.location.search).get('preview');
-    const localAdminPreview = ['admin', 'admin-email', 'admin-telegram'].includes(localPreviewClient);
+    const localAdminPreview = localPreviewClient === 'admin';
+    const localTestUser = String(config.testUser || '').trim();
+    const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname)
-      && (['starter', 'prohor'].includes(localPreviewClient) || localAdminPreview);
+      && (localPreviewClient === 'starter' || localAdminPreview);
+
+    if (isLocalHost && localTestUser && hasAuthConfig) {
+      const testSession = {
+        accessToken: localTestUser,
+        refreshToken: '',
+        expiresAt: Date.now() + 3600000,
+      };
+      const testUser = await getUser(testSession);
+      if (!testUser) {
+        showLogin('The local test identity could not be authenticated.');
+        return;
+      }
+      showCabinet(testUser, testSession);
+      return;
+    }
 
     if (isLocalPreview) {
       showCabinet({
         id: `local-${localPreviewClient}`,
-        email: ['admin', 'admin-email'].includes(localPreviewClient) ? 'andrijpycha@gmail.com' : '',
-        email_confirmed_at: ['admin', 'admin-email'].includes(localPreviewClient) ? new Date().toISOString() : null,
-        user_metadata: { full_name: localPreviewClient === 'prohor' ? 'Prohor' : localAdminPreview ? 'Andrij' : 'New Client' },
+        email: '',
+        email_confirmed_at: null,
+        user_metadata: { full_name: localAdminPreview ? 'Platform Admin' : 'New Client' },
         app_metadata: {
           provider: 'prototype',
           client_id: localAdminPreview ? 'starter' : localPreviewClient,
           role: localAdminPreview ? 'admin' : 'client',
         },
-      });
+      }, null, localAdminPreview);
       return;
     }
 
@@ -330,17 +357,6 @@
     });
   });
 
-  dom.languageButtons.forEach((button) => {
-    const isActive = button.dataset.authLanguage === language;
-    button.classList.toggle('is-active', isActive);
-    button.setAttribute('aria-pressed', String(isActive));
-    button.addEventListener('click', () => {
-      localStorage.setItem(LANGUAGE_KEY, button.dataset.authLanguage);
-      localStorage.removeItem(LEGACY_LANGUAGE_KEY);
-      window.location.reload();
-    });
-  });
-
   dom.accountButton.addEventListener('click', () => {
     const isOpen = !dom.accountMenu.hidden;
     dom.accountMenu.hidden = isOpen;
@@ -350,6 +366,7 @@
   dom.logoutButton.addEventListener('click', () => {
     const session = readSession();
     clearSession();
+    clearSensitiveWorkspaceCache();
     dom.accountMenu.hidden = true;
     dom.accountButton.setAttribute('aria-expanded', 'false');
 
@@ -369,6 +386,12 @@
       dom.accountButton.setAttribute('aria-expanded', 'false');
     }
   });
+
+  window.CLIENT_SPACE_DENY_ACCESS = (message = 'Your account does not have access to a Platum workspace.') => {
+    clearSensitiveWorkspaceCache();
+    showLogin(message);
+    dom.status.classList.add('is-error');
+  };
 
   applyConfiguration();
   initializeAuth();

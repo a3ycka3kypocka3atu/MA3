@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Анкета Prohor Music для стратегии артиста и персонального бренда.">
+  <meta name="description" content="Questionnaire for preparing an artist strategy, personal brand, and booking process.">
   <meta name="robots" content="noindex, nofollow">
-  <title>Prohor Music — Анкета артиста</title>
+  <title>Artist strategy questionnaire</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -15,38 +15,34 @@
   <main class="intake-shell">
     <section class="intake-hero" aria-labelledby="page-title">
       <div class="hero-copy">
-        <p class="eyebrow">34ForFree7 анкета / Prohor Music</p>
-        <h1 id="page-title">Prohor: стратегия артиста</h1>
-        <p class="hero-lede">Короткие блоки про booking, контент, историю, EPK и медиа-стратегию. После каждого блока ответы сохраняются отдельно.</p>
-        <div class="hero-actions">
-          <a class="agency-link-btn" href="https://34forfree7-rose.vercel.app" target="_blank" rel="noopener">
-            Перейти на сайт агенции
-          </a>
-        </div>
+        <p class="eyebrow">Strategy questionnaire</p>
+        <h1 id="page-title">Artist strategy</h1>
+        <p class="hero-lede">Focused sections about booking, content, narrative, EPK, and media strategy. Answers remain only in this browser.</p>
       </div>
 
-      <figure class="hero-art">
-        <img class="hero-art__bg" src="assets/prohor-profile.jpeg" alt="">
+      <div class="hero-art" aria-hidden="true">
         <div class="hero-art__frame">
-          <img src="assets/prohor-profile.jpeg" alt="Фото артиста Prohor">
+          <span>Artist</span>
+          <strong>Strategy intake</strong>
+          <small>Booking · Content · Narrative · EPK</small>
         </div>
-        <figcaption>
-          <span>DJ / producer</span>
-          <strong>Prohor</strong>
-        </figcaption>
-      </figure>
+      </div>
     </section>
 
-    <section class="intake-workspace" aria-label="Рабочая область анкеты">
+    <section class="intake-workspace" aria-label="Questionnaire workspace">
       <aside class="progress-panel">
         <div class="progress-topline">
-          <span>Прогресс</span>
+          <span>Progress</span>
           <strong id="progress-percent">0%</strong>
         </div>
         <div class="progress-track" aria-hidden="true">
           <span id="progress-fill"></span>
         </div>
-        <ol id="section-nav" class="section-nav" aria-label="Блоки вопросов"></ol>
+        <div class="intake-status" role="status" aria-live="polite">
+          <span id="save-indicator" class="save-indicator"></span>
+          <span id="storage-indicator" class="storage-indicator">Data remains only on this device</span>
+        </div>
+        <ol id="section-nav" class="section-nav" aria-label="Question sections"></ol>
       </aside>
 
       <form id="intake-form" class="form-stage" novalidate>
@@ -55,10 +51,8 @@
     </section>
 
     <footer class="intake-footer">
-      <span>34ForFree7 Agency</span>
-      <a class="agency-link-btn" href="https://34forfree7-rose.vercel.app" target="_blank" rel="noopener">
-        Перейти на сайт агенции
-      </a>
+      <span>Local draft</span>
+      <span>Answers are not sent to the team automatically</span>
     </footer>
   </main>
 

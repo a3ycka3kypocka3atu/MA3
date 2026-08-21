@@ -1,0 +1,37 @@
+name: Verify Platum
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - codex/client-space-prototype
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run repository integrity checks
+        run: node scripts/check-integrity.js
+
+      - name: Install Telegram worker dependencies
+        run: npm ci --prefix bot
+
+      - name: Run Telegram access-control tests
+        run: npm --prefix bot test
+
+      - name: Audit production dependencies
+        run: npm --prefix bot audit --omit=dev --audit-level=high

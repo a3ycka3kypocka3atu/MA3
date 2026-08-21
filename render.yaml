@@ -15,11 +15,11 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      - key: ADMIN_TELEGRAM_USER_IDS
+        sync: false
+      - key: TELEGRAM_WORKSPACE_ASSIGNMENTS
+        sync: false
       - key: ADMIN_CHAT_IDS
         sync: false
-      - key: ADMIN_USERNAMES
-        value: andrisav,hirchak
-      - key: PROHOR_TELEGRAM_USERNAME
-        value: prohormusic
       - key: CABINET_URL
         value: https://client-cabinet.vercel.app

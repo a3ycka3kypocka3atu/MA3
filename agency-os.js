@@ -1,36 +1,27 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'client-cabinet:agency-os:v1';
+  const STORAGE_KEY = 'client-cabinet:agency-os:v2';
+  const PREVIOUS_STORAGE_KEY = 'client-cabinet:agency-os:v1';
   const LEGACY_STORAGE_KEY = 'cabinet:agency-os:prototype:v1';
-  const STATE_VERSION = 1;
-  const TASK_STATUSES = ['ready', 'in_progress', 'review', 'waiting_client', 'blocked', 'done'];
+  const STATE_VERSION = 2;
+  const TASK_STATUSES = ['open', 'in_progress', 'waiting', 'review', 'completed', 'cancelled'];
 
+  // Public seed data is intentionally generic. Real client and internal records
+  // must be loaded from authenticated workspace storage.
   const SEED = {
     workspaces: [
-      {
-        id: 'prohor',
-        cabinetId: 'prohor',
-        name: 'Prohor Music',
-        initials: 'PM',
-        kind: 'Client workspace',
-        phase: 'Marketing foundation',
-        progress: 42,
-        health: 'attention',
-        nextGate: 'Approve positioning and offer',
-        summary: 'Premium artist positioning, booking funnel, media system, and measurable content learning.',
-      },
       {
         id: 'agency',
         cabinetId: null,
         name: 'Internal operations',
-        initials: 'AG',
+        initials: 'IO',
         kind: 'Internal workspace',
-        phase: 'Operating foundation',
-        progress: 18,
-        health: 'active',
-        nextGate: 'Approve the first methodology library',
-        summary: 'The agency runs through the same workspace model as clients, with internal visibility by default.',
+        phase: 'MVP foundation',
+        progress: 20,
+        health: 'attention',
+        nextGate: 'Connect the shared workspace backend',
+        summary: 'Release preparation, data contracts, security validation, and operational readiness.',
       },
       {
         id: 'template',
@@ -38,134 +29,189 @@
         name: 'New client template',
         initials: 'NC',
         kind: 'Reusable template',
-        phase: 'Onboarding ready',
+        phase: 'Onboarding shell',
         progress: 5,
         health: 'ready',
-        nextGate: 'Create a workspace from the first brief',
-        summary: 'A clean cabinet and pipeline starting point for the next authenticated client.',
+        nextGate: 'Create a workspace from an authenticated brief',
+        summary: 'A generic cabinet structure with no client-specific information in the public bundle.',
       },
     ],
     domains: [
-      { id: 'marketing', name: 'Marketing', owner: 'Strategy team', status: 'active', description: 'Research, Client DNA, awareness, positioning, offer, and acquisition strategy.' },
-      { id: 'media', name: 'Media', owner: 'Media team', status: 'waiting_client', description: 'Media strategy, content architecture, production, publishing, and learning.' },
-      { id: 'growth', name: 'Growth', owner: 'Growth lead', status: 'planned', description: 'Hypotheses, experiments, paid campaigns, conversion, and scaling.' },
-      { id: 'product', name: 'Product & Funnel', owner: 'Strategy team', status: 'planned', description: 'Product packaging, offers, lead magnets, landing pages, CRM, and onboarding.' },
+      {
+        id: 'product',
+        name: 'Product',
+        owner: 'Product team',
+        status: 'active',
+        description: 'Shared workspace contracts, client participation, operator controls, and release quality.',
+      },
+      {
+        id: 'delivery',
+        name: 'Delivery',
+        owner: 'Delivery team',
+        status: 'planned',
+        description: 'Tasks, requests, forms, materials, progress, and controlled client publication.',
+      },
     ],
     skills: [
-      { id: 'business-context', number: '01', category: 'Foundation', name: 'Business Context Intake', goal: 'Turn a conversation and source files into a reliable project brief.', input: 'Interview, questionnaire, links, source files', output: 'Structured brief + missing-input list', quality: 'Facts and assumptions are separated; sources are linked', version: 'v0.1' },
-      { id: 'deep-research', number: '02', category: 'Research', name: 'Deep Research', goal: 'Build an evidence-backed view of the business, market, audience, and context.', input: 'Brief, sources, research questions', output: 'Research dossier + source register', quality: 'Every important claim is sourced or labeled as a hypothesis', version: 'v0.1' },
-      { id: 'market-landscape', number: '03', category: 'Research', name: 'Market Landscape', goal: 'Map categories, demand, alternatives, trends, and strategic openings.', input: 'Research dossier, market scope', output: 'Market map + opportunity areas', quality: 'Scope and confidence are explicit', version: 'v0.1' },
-      { id: 'competitor-analysis', number: '04', category: 'Research', name: 'Competitor Analysis', goal: 'Compare relevant competitors by promise, proof, offer, channel, and customer experience.', input: 'Competitor set, public evidence', output: 'Comparison matrix + gaps', quality: 'Like-for-like comparison; no invented facts', version: 'v0.1' },
-      { id: 'client-dna', number: '05', category: 'Strategy', name: 'Client DNA', goal: 'Create a shared, structured truth about the business and its customers.', input: 'Brief, research, interviews, analytics', output: 'Client DNA artifact', quality: 'Usable by every downstream domain without reinterpretation', version: 'v0.1' },
-      { id: 'awareness-map', number: '06', category: 'Strategy', name: 'Awareness Map', goal: 'Map customer awareness from unaware to ready-to-buy and define the message needed at each level.', input: 'Client DNA, buying journey evidence', output: 'Awareness ladder + message jobs', quality: 'Stages reflect observable customer language and behavior', version: 'v0.1' },
-      { id: 'positioning', number: '07', category: 'Strategy', name: 'Positioning', goal: 'Choose a valuable, credible, and differentiated place in the customer mind.', input: 'Client DNA, market, competitors, proof', output: 'Positioning system + guardrails', quality: 'Specific audience, alternative, value, proof, and boundaries', version: 'v0.1' },
-      { id: 'offer-architecture', number: '08', category: 'Product', name: 'Offer Architecture', goal: 'Package value into a clear offer that reduces uncertainty and supports conversion.', input: 'Positioning, audience, proof, economics', output: 'Offer structure + proof plan', quality: 'Promise, mechanism, scope, proof, risk, and CTA align', version: 'v0.1' },
-      { id: 'growth-math', number: '09', category: 'Growth', name: 'Growth Math', goal: 'Connect business targets to funnel volumes, conversion assumptions, and learning priorities.', input: 'Targets, price, conversion data, capacity', output: 'Growth model + sensitivity ranges', quality: 'Assumptions are visible and editable', version: 'v0.1' },
-      { id: 'funnel-design', number: '10', category: 'Product', name: 'Funnel Design', goal: 'Design the steps from first attention to qualified action and retention.', input: 'Awareness map, offer, channels, growth math', output: 'Funnel map + measurement plan', quality: 'Each step has a user job, owner, CTA, and success signal', version: 'v0.1' },
-      { id: 'media-strategy', number: '11', category: 'Media', name: 'Media Strategy', goal: 'Turn the marketing foundation into a channel and content system.', input: 'Client DNA, positioning, offers, awareness map', output: 'Media strategy + channel roles', quality: 'Every channel and format has a business role', version: 'v0.1' },
-      { id: 'content-pillars', number: '12', category: 'Media', name: 'Content Architecture', goal: 'Create repeatable content pillars tied to audience needs and funnel movement.', input: 'Media strategy, audience questions, proof', output: 'Pillars, series, formats, CTAs', quality: 'Ideas can be generated repeatedly without losing strategy', version: 'v0.1' },
-      { id: 'content-plan', number: '13', category: 'Media', name: 'Content Planning', goal: 'Convert strategy into a feasible production and publication plan.', input: 'Pillars, resources, calendar, priorities', output: 'Prioritized content backlog + calendar', quality: 'Capacity, dependencies, owner, platform, and intent are explicit', version: 'v0.1' },
-      { id: 'script-development', number: '14', category: 'Media', name: 'Script Development', goal: 'Create production-ready scripts with a clear audience, hook, proof, and action.', input: 'Content brief, source context, format rules', output: 'Script + shot/asset notes', quality: 'Truthful, on-brand, platform-fit, and reviewable', version: 'v0.1' },
-      { id: 'performance-analysis', number: '15', category: 'Learning', name: 'Performance Analysis', goal: 'Explain results and convert them into reusable learning and next experiments.', input: 'Content/campaign metadata, metrics, hypothesis', output: 'Finding + decision + next test', quality: 'Separates signal from noise and links back to the hypothesis', version: 'v0.1' },
+      {
+        id: 'context-intake',
+        number: '01',
+        category: 'Foundation',
+        name: 'Context Intake',
+        goal: 'Turn an authenticated brief and approved source material into a reliable project context.',
+        input: 'Brief, links, approved source files',
+        output: 'Structured context and missing-input list',
+        quality: 'Facts and assumptions are separated; no private data enters public assets',
+        version: 'v0.1',
+      },
+      {
+        id: 'release-review',
+        number: '02',
+        category: 'Quality',
+        name: 'Release Review',
+        goal: 'Verify one complete client and operator journey before production.',
+        input: 'Feature branch, test accounts, environment inventory',
+        output: 'Evidence-backed release decision',
+        quality: 'Auth, isolation, data integrity, browser flows, and rollback are verified',
+        version: 'v0.1',
+      },
+      {
+        id: 'controlled-handoff',
+        number: '03',
+        category: 'Automation',
+        name: 'Controlled AI Handoff',
+        goal: 'Prepare portable project context for assisted execution with human review.',
+        input: 'Approved task, relevant context, constraints',
+        output: 'Model-neutral handoff package',
+        quality: 'No automatic client publication; a human reviewer remains accountable',
+        version: 'v0.1',
+      },
     ],
     pipelines: [
       {
-        id: 'marketing-foundation',
-        workspaceId: 'prohor',
-        domainId: 'marketing',
-        name: 'Marketing Foundation',
-        purpose: 'Move from raw client inputs to an approved positioning, offer, funnel, and strategy foundation.',
-        version: 'Template v0.1',
-        stages: [
-          { name: 'Intake', skillId: 'business-context', status: 'done' },
-          { name: 'Deep research', skillId: 'deep-research', status: 'done' },
-          { name: 'Market', skillId: 'market-landscape', status: 'done' },
-          { name: 'Client DNA', skillId: 'client-dna', status: 'review' },
-          { name: 'Awareness', skillId: 'awareness-map', status: 'in_progress' },
-          { name: 'Positioning', skillId: 'positioning', status: 'review' },
-          { name: 'Offer', skillId: 'offer-architecture', status: 'blocked' },
-          { name: 'Growth math', skillId: 'growth-math', status: 'planned' },
-          { name: 'Funnel', skillId: 'funnel-design', status: 'planned' },
-          { name: 'Approval', skillId: null, status: 'planned' },
-        ],
-      },
-      {
-        id: 'media-system',
-        workspaceId: 'prohor',
-        domainId: 'media',
-        name: 'Media & Content Factory',
-        purpose: 'Turn approved strategy into a repeatable loop from idea to published result and learning.',
-        version: 'Template v0.1',
-        stages: [
-          { name: 'Media strategy', skillId: 'media-strategy', status: 'waiting_client' },
-          { name: 'Pillars', skillId: 'content-pillars', status: 'planned' },
-          { name: 'Backlog', skillId: 'content-plan', status: 'planned' },
-          { name: 'Script', skillId: 'script-development', status: 'planned' },
-          { name: 'Approval', skillId: null, status: 'planned' },
-          { name: 'Production', skillId: null, status: 'planned' },
-          { name: 'Publish', skillId: null, status: 'planned' },
-          { name: 'Learn', skillId: 'performance-analysis', status: 'planned' },
-        ],
-      },
-      {
-        id: 'agency-os-adoption',
+        id: 'mvp-release',
         workspaceId: 'agency',
         domainId: 'product',
-        name: 'Agency OS Adoption',
-        purpose: 'Turn the agency methodology into versioned skills, live client workflows, and measurable operating habits.',
+        name: 'MVP Release Readiness',
+        purpose: 'Move from a static prototype to one secure, shared, tester-ready client-service loop.',
         version: 'Internal v0.1',
         stages: [
-          { name: 'Map method', skillId: null, status: 'in_progress' },
-          { name: 'Write skills', skillId: null, status: 'in_progress' },
-          { name: 'Pilot client', skillId: null, status: 'active' },
-          { name: 'Review gaps', skillId: null, status: 'planned' },
-          { name: 'Connect data', skillId: null, status: 'planned' },
-          { name: 'Automate safely', skillId: null, status: 'planned' },
+          { name: 'Audit current state', skillId: 'release-review', status: 'done' },
+          { name: 'Remove public client data', skillId: 'context-intake', status: 'in_progress' },
+          { name: 'Connect shared records', skillId: null, status: 'blocked' },
+          { name: 'Verify isolation', skillId: 'release-review', status: 'planned' },
+          { name: 'Release review', skillId: 'release-review', status: 'planned' },
         ],
       },
     ],
     tasks: [
-      { id: 't-101', workspaceId: 'prohor', domainId: 'marketing', skillId: 'client-dna', title: 'Review Client DNA confidence labels', description: 'Confirm which audience and booking claims are facts, hypotheses, or missing inputs.', assigneeType: 'human', assignee: 'Strategy lead', status: 'review', priority: 'high', due: 'This week', clientVisible: false },
-      { id: 't-102', workspaceId: 'prohor', domainId: 'marketing', skillId: 'positioning', title: 'Approve positioning direction', description: 'Prepare the working positioning for client review and record the final decision.', assigneeType: 'client', assignee: 'Prohor', status: 'waiting_client', priority: 'high', due: 'Next gate', clientVisible: true },
-      { id: 't-103', workspaceId: 'prohor', domainId: 'product', skillId: 'offer-architecture', title: 'Build premium booking offer', description: 'Package event fit, proof, process, scope, and inquiry next step.', assigneeType: 'agent', assignee: 'Unassigned AI', status: 'blocked', priority: 'high', due: 'After positioning', clientVisible: false },
-      { id: 't-104', workspaceId: 'prohor', domainId: 'media', skillId: 'media-strategy', title: 'Collect filming workflow and content boundaries', description: 'Get the real capacity, raw materials, events, formats, and no-go topics from the client.', assigneeType: 'client', assignee: 'Prohor', status: 'waiting_client', priority: 'medium', due: 'This week', clientVisible: true },
-      { id: 't-105', workspaceId: 'prohor', domainId: 'marketing', skillId: 'awareness-map', title: 'Draft the booking-buyer awareness map', description: 'Map messages from event-fit uncertainty to a confident inquiry.', assigneeType: 'agent', assignee: 'Codex / Claude / Hermes', status: 'ready', priority: 'medium', due: 'Ready now', clientVisible: false },
-      { id: 't-106', workspaceId: 'prohor', domainId: 'marketing', skillId: 'competitor-analysis', title: 'Normalize competitor evidence', description: 'Make sources, dates, categories, and confidence consistent across the comparison.', assigneeType: 'human', assignee: 'Researcher', status: 'done', priority: 'medium', due: 'Completed', clientVisible: false },
-      { id: 't-201', workspaceId: 'agency', domainId: 'marketing', skillId: null, title: 'Inventory the 15 current marketing skills', description: 'Find the latest source for each method and nominate an owner for version 0.1.', assigneeType: 'human', assignee: 'Methodology owner', status: 'in_progress', priority: 'high', due: 'This week', clientVisible: false },
-      { id: 't-202', workspaceId: 'agency', domainId: 'product', skillId: null, title: 'Approve canonical task and artifact statuses', description: 'Use one state language across team, clients, and agents.', assigneeType: 'human', assignee: 'Agency team', status: 'review', priority: 'high', due: 'Next decision', clientVisible: false },
-      { id: 't-203', workspaceId: 'agency', domainId: 'product', skillId: null, title: 'Deploy shared Supabase workspace model', description: 'Connect the correct project, apply the prepared RLS migration, and verify it with the security advisors.', assigneeType: 'human', assignee: 'Platform', status: 'blocked', priority: 'high', due: 'When project access is connected', clientVisible: false },
-      { id: 't-204', workspaceId: 'agency', domainId: 'growth', skillId: 'performance-analysis', title: 'Define agency learning review', description: 'Decide how findings become decisions, skill improvements, and new experiments.', assigneeType: 'agent', assignee: 'Any approved model', status: 'ready', priority: 'medium', due: 'Ready now', clientVisible: false },
+      {
+        id: 't-201',
+        workspaceId: 'agency',
+        domainId: 'product',
+        skillId: 'context-intake',
+        title: 'Keep private workspace content out of public assets',
+        description: 'Load client and internal records only after authenticated authorization succeeds.',
+        assigneeType: 'human',
+        assignee: 'Platform',
+        status: 'in_progress',
+        priority: 'high',
+        due: 'Before deployment',
+        clientVisible: false,
+      },
+      {
+        id: 't-202',
+        workspaceId: 'agency',
+        domainId: 'product',
+        skillId: null,
+        title: 'Connect a valid Supabase project and shared workspace model',
+        description: 'Apply reviewed migrations, verify RLS, and test two-client isolation.',
+        assigneeType: 'human',
+        assignee: 'Platform',
+        status: 'waiting',
+        priority: 'high',
+        due: 'Environment required',
+        clientVisible: false,
+      },
+      {
+        id: 't-203',
+        workspaceId: 'agency',
+        domainId: 'delivery',
+        skillId: 'release-review',
+        title: 'Verify the complete client and operator loop',
+        description: 'Test tasks, requests, forms, progress, and a deliverable across two authenticated sessions.',
+        assigneeType: 'human',
+        assignee: 'Release reviewer',
+        status: 'open',
+        priority: 'high',
+        due: 'After backend connection',
+        clientVisible: false,
+      },
     ],
     artifacts: [
-      { id: 'a-101', workspaceId: 'prohor', domainId: 'marketing', title: 'Research foundation', type: 'Research', version: 'v0.4', status: 'approved', visibility: 'internal', source: 'Brief + agency research', updated: '1 Aug 2026' },
-      { id: 'a-102', workspaceId: 'prohor', domainId: 'marketing', title: 'Client DNA', type: 'Strategy', version: 'v0.3', status: 'ready_for_review', visibility: 'internal', source: 'Research foundation', updated: '1 Aug 2026' },
-      { id: 'a-103', workspaceId: 'prohor', domainId: 'marketing', title: 'Positioning system', type: 'Decision', version: 'v0.5', status: 'ready_for_review', visibility: 'client', source: 'Client DNA + positioning board', updated: '1 Aug 2026' },
-      { id: 'a-104', workspaceId: 'prohor', domainId: 'product', title: 'Booking funnel map', type: 'Funnel', version: 'v0.2', status: 'draft', visibility: 'internal', source: 'Positioning + booking evidence', updated: '1 Aug 2026' },
-      { id: 'a-105', workspaceId: 'prohor', domainId: 'media', title: 'Content pillar draft', type: 'Media', version: 'v0.2', status: 'draft', visibility: 'internal', source: 'Working strategy', updated: '1 Aug 2026' },
-      { id: 'a-201', workspaceId: 'agency', domainId: 'product', title: 'Agency OS vision', type: 'Method', version: 'v1.0', status: 'approved', visibility: 'internal', source: 'Agency operating vision', updated: '5 Aug 2026' },
-      { id: 'a-202', workspaceId: 'agency', domainId: 'marketing', title: 'Marketing skill inventory', type: 'Method', version: 'v0.1', status: 'draft', visibility: 'internal', source: 'Current agency methodology', updated: '5 Aug 2026' },
+      {
+        id: 'a-201',
+        workspaceId: 'agency',
+        domainId: 'product',
+        title: 'Platum product vision',
+        type: 'Product',
+        version: 'v1.0',
+        status: 'approved',
+        visibility: 'internal',
+        source: 'Canonical project documentation',
+        updated: 'Current',
+      },
+      {
+        id: 'a-202',
+        workspaceId: 'agency',
+        domainId: 'product',
+        title: 'MVP completion assessment',
+        type: 'Release',
+        version: 'v0.1',
+        status: 'ready_for_review',
+        visibility: 'internal',
+        source: 'Repository and environment audit',
+        updated: 'Current',
+      },
     ],
     decisions: [
-      { id: 'd-101', workspaceId: 'prohor', date: '1 Aug 2026', status: 'working', title: 'Use premium bookings as the north-star outcome', summary: 'Marketing and media activity should ultimately support qualified premium booking conversations.', reason: 'Reach alone does not show commercial movement.', owner: 'Strategy team' },
-      { id: 'd-102', workspaceId: 'prohor', date: '1 Aug 2026', status: 'working', title: 'Treat listeners and booking buyers as separate audiences', summary: 'They are connected, but they need different messages, proof, and actions.', reason: 'A fan journey and a commercial buyer journey are not interchangeable.', owner: 'Strategy team' },
-      { id: 'd-103', workspaceId: 'prohor', date: '1 Aug 2026', status: 'pending', title: 'Delay paid scaling until the organic path is measurable', summary: 'Build the destination, inquiry flow, and baseline learning loop first.', reason: 'Paid reach would amplify an unproven path.', owner: 'Growth lead' },
-      { id: 'd-201', workspaceId: 'agency', date: '5 Aug 2026', status: 'approved', title: 'Keep methodology independent from AI providers', summary: 'Skills define the work; models are replaceable executors.', reason: 'The agency must own its process, quality rules, and memory.', owner: 'Agency team' },
-      { id: 'd-202', workspaceId: 'agency', date: '5 Aug 2026', status: 'approved', title: 'Human review is required before client delivery', summary: 'AI outputs remain internal drafts until a responsible person approves visibility.', reason: 'Client trust and professional accountability cannot be delegated to a model.', owner: 'Agency team' },
+      {
+        id: 'd-201',
+        workspaceId: 'agency',
+        date: 'Current',
+        status: 'approved',
+        title: 'Keep client-specific content out of public bundles',
+        summary: 'Authenticated workspace records are the only source for private client and internal information.',
+        reason: 'A visual browser gate cannot protect static JavaScript or repository history.',
+        owner: 'Platform',
+      },
+      {
+        id: 'd-202',
+        workspaceId: 'agency',
+        date: 'Current',
+        status: 'approved',
+        title: 'Require human review before client delivery',
+        summary: 'Assisted outputs remain internal drafts until a responsible person approves visibility.',
+        reason: 'Client trust and professional accountability remain human responsibilities.',
+        owner: 'Delivery team',
+      },
     ],
-    clientRequests: [
-      { id: 'r-101', workspaceId: 'prohor', title: 'Approve positioning direction', detail: 'Confirm audience priority, promise, and brand boundaries.', status: 'waiting_client', due: 'Next check-in' },
-      { id: 'r-102', workspaceId: 'prohor', title: 'Share three booking examples', detail: 'Event type, lead source, decision time, and result.', status: 'waiting_client', due: 'This week' },
-      { id: 'r-103', workspaceId: 'prohor', title: 'Collect 5–10 performance clips', detail: 'Show venue quality, atmosphere, audience response, and presence.', status: 'in_progress', due: 'This week' },
-      { id: 'r-104', workspaceId: 'prohor', title: 'Confirm filming capacity', detail: 'Realistic days, formats, editing support, and raw-material flow.', status: 'ready', due: 'Before media planning' },
-    ],
+    clientRequests: [],
     agentJobs: [
-      { id: 'j-101', workspaceId: 'prohor', taskId: 't-105', skillId: 'awareness-map', title: 'Draft booking-buyer awareness map', model: 'Provider not selected', status: 'ready', context: ['Project summary', 'Client DNA draft', 'Research sources', 'Relevant decisions'], output: 'Awareness map artifact', review: 'Strategy lead' },
-      { id: 'j-102', workspaceId: 'prohor', taskId: 't-103', skillId: 'offer-architecture', title: 'Build premium booking offer', model: 'Provider not selected', status: 'blocked', context: ['Approved positioning', 'Proof register', 'Booking examples'], output: 'Offer architecture artifact', review: 'Strategy lead' },
-      { id: 'j-103', workspaceId: 'agency', taskId: 't-204', skillId: 'performance-analysis', title: 'Draft the agency learning review', model: 'Provider not selected', status: 'ready', context: ['Agency OS vision', 'Decision log', 'Existing analytics method'], output: 'Learning review template', review: 'Methodology owner' },
-      { id: 'j-104', workspaceId: 'agency', taskId: 't-201', skillId: null, title: 'Normalize skill source inventory', model: 'Manual research first', status: 'queued', context: ['Methodology folders', 'Current prompts', 'Existing templates'], output: 'Skill inventory artifact', review: 'Methodology owner' },
+      {
+        id: 'j-201',
+        workspaceId: 'agency',
+        taskId: 't-203',
+        skillId: 'controlled-handoff',
+        title: 'Prepare final release verification handoff',
+        model: 'Provider not selected',
+        status: 'ready',
+        context: ['MVP scope', 'Security requirements', 'Acceptance journey'],
+        output: 'Release verification package',
+        review: 'Release reviewer',
+      },
     ],
   };
-
   const root = document.getElementById('agency-os-root');
   const workspaceFilter = document.querySelector('[data-os-workspace-filter]');
   const toast = document.getElementById('portal-toast');
@@ -174,6 +220,7 @@
   let searchTerm = '';
   let toastTimer = null;
   let activeAuthContext = null;
+  let isRemoteMode = false;
   let state = hydrateState();
 
   function clone(value) {
@@ -182,7 +229,7 @@
 
   function readSavedState() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY));
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
       return parsed?.version === STATE_VERSION ? parsed : null;
     } catch (error) {
       return null;
@@ -201,13 +248,78 @@
 
   function hydrateState(savedState = readSavedState()) {
     const saved = savedState;
-    if (!saved) return clone(SEED);
+    if (!saved || saved.version !== STATE_VERSION) return clone(SEED);
     return {
       ...clone(SEED),
       tasks: mergeRecords(SEED.tasks, saved.tasks),
       artifacts: mergeRecords(SEED.artifacts, saved.artifacts),
       agentJobs: mergeRecords(SEED.agentJobs, saved.agentJobs),
     };
+  }
+
+  function workspaceInitials(name) {
+    return String(name || 'Workspace')
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase();
+  }
+
+  function mapRemoteTask(task) {
+    return {
+      id: task.id,
+      workspaceId: task.workspace_id,
+      domainId: 'delivery',
+      skillId: null,
+      title: task.title,
+      description: task.description,
+      assigneeType: task.assignee_kind,
+      assignee: task.assignee_kind === 'client' ? 'Client' : 'Project team',
+      status: task.status,
+      priority: task.priority,
+      due: task.due_at || 'Not scheduled',
+      clientVisible: task.client_visible,
+    };
+  }
+
+  function mapRemoteRequest(request) {
+    return {
+      id: request.id,
+      workspaceId: request.workspace_id,
+      title: request.title,
+      detail: request.message,
+      topic: request.topic,
+      status: request.status,
+      due: request.responded_at ? 'Responded' : 'Needs team response',
+      createdAt: request.created_at,
+      replies: request.replies || [],
+    };
+  }
+
+  async function loadRemoteState(access) {
+    const bundles = await Promise.all(
+      access.workspaces.map((workspace) => window.CABINET_DATA.loadWorkspaceBundle(workspace.id, activeAuthContext))
+    );
+    state = {
+      ...clone(SEED),
+      workspaces: access.workspaces.map((workspace) => ({
+        id: workspace.id,
+        cabinetId: workspace.id,
+        name: workspace.name,
+        initials: workspaceInitials(workspace.name),
+        kind: `${formatLabel(workspace.role)} workspace`,
+        phase: workspace.current_phase,
+        progress: workspace.progress,
+        health: workspace.status === 'active' ? 'ready' : 'attention',
+        nextGate: workspace.current_focus || 'Review current client actions',
+        summary: workspace.description || workspace.current_focus || 'Shared client-service workspace.',
+      })),
+      tasks: bundles.flatMap((bundle) => bundle.tasks.map(mapRemoteTask)),
+      clientRequests: bundles.flatMap((bundle) => bundle.requests.map(mapRemoteRequest)),
+    };
+    isRemoteMode = true;
   }
 
   function saveState() {
@@ -217,9 +329,12 @@
       artifacts: state.artifacts,
       agentJobs: state.agentJobs,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
-    localStorage.removeItem(LEGACY_STORAGE_KEY);
-    window.CABINET_DATA?.save('agency-os', activeAuthContext, savedState, { workspaceKey: 'agency' });
+    if (!isRemoteMode) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
+      localStorage.removeItem(PREVIOUS_STORAGE_KEY);
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+      window.CABINET_DATA?.save('agency-os', activeAuthContext, savedState, { workspaceKey: 'agency' });
+    }
   }
 
   function escapeHtml(value) {
@@ -237,6 +352,19 @@
 
   function workspaceName(id) {
     return state.workspaces.find((workspace) => workspace.id === id)?.name || id;
+  }
+
+  function renderWorkspaceFilter() {
+    if (!workspaceFilter) return;
+    const selectable = state.workspaces.filter((workspace) => workspace.id !== 'template');
+    workspaceFilter.innerHTML = [
+      '<option value="all">All workspaces</option>',
+      ...selectable.map((workspace) => `<option value="${escapeHtml(workspace.id)}">${escapeHtml(workspace.name)}</option>`),
+    ].join('');
+    if (activeWorkspace !== 'all' && !selectable.some((workspace) => workspace.id === activeWorkspace)) {
+      activeWorkspace = 'all';
+    }
+    workspaceFilter.value = activeWorkspace;
   }
 
   function domainName(id) {
@@ -300,9 +428,9 @@
     const workspaces = activeWorkspace === 'all'
       ? state.workspaces.filter((workspace) => workspace.id !== 'template')
       : state.workspaces.filter((workspace) => workspace.id === activeWorkspace);
-    const blocked = tasks.filter((task) => task.status === 'blocked');
+    const blocked = tasks.filter((task) => task.status === 'waiting');
     const reviews = artifacts.filter((artifact) => artifact.status === 'ready_for_review');
-    const waiting = requests.filter((request) => request.status === 'waiting_client');
+    const waiting = requests.filter((request) => ['waiting_team', 'waiting_client'].includes(request.status));
     const readyJobs = jobs.filter((job) => job.status === 'ready');
 
     return `
@@ -493,11 +621,11 @@
   function tasksView() {
     const tasks = filtered(state.tasks);
     const groups = [
-      { label: 'Ready', statuses: ['ready'] },
+      { label: 'Open', statuses: ['open'] },
       { label: 'In progress', statuses: ['in_progress'] },
-      { label: 'Review / client', statuses: ['review', 'waiting_client'] },
-      { label: 'Blocked', statuses: ['blocked'] },
-      { label: 'Done', statuses: ['done'] },
+      { label: 'Waiting / review', statuses: ['waiting', 'review'] },
+      { label: 'Completed', statuses: ['completed'] },
+      { label: 'Cancelled', statuses: ['cancelled'] },
     ];
     return `
       <div class="agency-os-section-heading">
@@ -530,6 +658,43 @@
             </section>
           `;
         }).join('')}
+      </div>
+    `;
+  }
+
+  function requestsView() {
+    const requests = filtered(state.clientRequests);
+    return `
+      <div class="agency-os-section-heading">
+        <div><span class="section-kicker">Client participation</span><h2>Questions and requests</h2></div>
+        <p>Client actions arrive here from the same authenticated workspace. Responses are persisted and become visible to the client after reload or a later session.</p>
+      </div>
+      <div class="agency-os-request-list">
+        ${requests.map((request) => `
+          <article class="agency-os-panel agency-os-request">
+            <div class="agency-os-panel-heading">
+              <div><span>${escapeHtml(request.topic || 'Request')} · ${escapeHtml(workspaceName(request.workspaceId))}</span><h2>${escapeHtml(request.title)}</h2></div>
+              ${statusBadge(request.status)}
+            </div>
+            <p>${escapeHtml(request.detail)}</p>
+            <div class="agency-os-request-replies">
+              ${(request.replies || []).map((reply) => `
+                <div>
+                  <strong>Published response</strong>
+                  <p>${escapeHtml(reply.body)}</p>
+                  <small>${escapeHtml(new Date(reply.created_at).toLocaleDateString('en'))}</small>
+                </div>
+              `).join('')}
+            </div>
+            ${isRemoteMode && request.status !== 'resolved' ? `
+              <form class="agency-os-response-form" data-os-response-form="${escapeHtml(request.id)}">
+                <label for="response-${escapeHtml(request.id)}">Respond to the client</label>
+                <textarea id="response-${escapeHtml(request.id)}" name="response" rows="4" maxlength="5000" required placeholder="Write the project update or answer that the client should see."></textarea>
+                <button class="primary-button" type="submit">Publish response <span>→</span></button>
+              </form>
+            ` : ''}
+          </article>
+        `).join('') || '<div class="agency-os-empty">No client requests need attention.</div>'}
       </div>
     `;
   }
@@ -624,13 +789,16 @@
       pipelines: pipelinesView,
       skills: skillsView,
       tasks: tasksView,
+      requests: requestsView,
       artifacts: artifactsView,
       decisions: decisionsView,
       agents: agentsView,
     };
     root.innerHTML = (views[activeTab] || commandView)();
     document.querySelectorAll('[data-os-tab]').forEach((button) => {
-      button.classList.toggle('is-active', button.dataset.osTab === activeTab);
+      const isActive = button.dataset.osTab === activeTab;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
     });
   }
 
@@ -674,41 +842,90 @@
     dialog.querySelector('[name="title"]').focus();
   }
 
-  function saveNewTask(event) {
+  async function saveNewTask(event) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
     const workspaceId = String(data.get('workspaceId'));
     const assigneeType = String(data.get('assigneeType'));
-    state.tasks.unshift({
-      id: `custom-${Date.now()}`,
-      workspaceId,
-      domainId: String(data.get('domainId')),
-      skillId: String(data.get('skillId')) || null,
-      title: String(data.get('title')).trim(),
-      description: String(data.get('description')).trim(),
-      assigneeType,
-      assignee: assigneeType === 'client' ? workspaceName(workspaceId) : assigneeType === 'agent' ? 'Unassigned AI' : 'Unassigned team member',
-      status: String(data.get('status')),
-      priority: String(data.get('priority')),
-      due: 'Not scheduled',
-      clientVisible: assigneeType === 'client',
-    });
-    saveState();
-    form.reset();
-    document.getElementById('agency-os-task-dialog').close();
-    activeTab = 'tasks';
-    render();
-    showToast('Task created.');
+    try {
+      if (isRemoteMode) {
+        const created = await window.CABINET_DATA.createTask(workspaceId, activeAuthContext, {
+          title: String(data.get('title')).trim(),
+          description: String(data.get('description')).trim(),
+          category: domainName(String(data.get('domainId'))),
+          assigneeKind: assigneeType === 'client' ? 'client' : 'team',
+          status: String(data.get('status')),
+          priority: String(data.get('priority')),
+        });
+        state.tasks.unshift(mapRemoteTask(created));
+      } else {
+        state.tasks.unshift({
+          id: `custom-${Date.now()}`,
+          workspaceId,
+          domainId: String(data.get('domainId')),
+          skillId: String(data.get('skillId')) || null,
+          title: String(data.get('title')).trim(),
+          description: String(data.get('description')).trim(),
+          assigneeType,
+          assignee: assigneeType === 'client' ? workspaceName(workspaceId) : assigneeType === 'agent' ? 'Unassigned AI' : 'Unassigned team member',
+          status: String(data.get('status')),
+          priority: String(data.get('priority')),
+          due: 'Not scheduled',
+          clientVisible: assigneeType === 'client',
+        });
+        saveState();
+      }
+      form.reset();
+      document.getElementById('agency-os-task-dialog').close();
+      activeTab = 'tasks';
+      render();
+      showToast('Task created.');
+    } catch (error) {
+      showToast(error.message || 'The task could not be created.');
+    }
   }
 
-  function updateTaskStatus(taskId, status) {
+  async function updateTaskStatus(taskId, status) {
     const task = state.tasks.find((item) => item.id === taskId);
     if (!task || !TASK_STATUSES.includes(status)) return;
+    const previous = task.status;
     task.status = status;
-    saveState();
     render();
-    showToast(`Task moved to ${formatLabel(status)}.`);
+    try {
+      if (isRemoteMode) {
+        await window.CABINET_DATA.updateTaskStatus(taskId, task.workspaceId, activeAuthContext, status);
+      } else {
+        saveState();
+      }
+      showToast(`Task moved to ${formatLabel(status)}.`);
+    } catch (error) {
+      task.status = previous;
+      render();
+      showToast(error.message || 'The task status could not be updated.');
+    }
+  }
+
+  async function respondToClientRequest(event) {
+    event.preventDefault();
+    if (!isRemoteMode) return;
+    const form = event.target;
+    const response = String(new FormData(form).get('response') || '').trim();
+    const button = form.querySelector('[type="submit"]');
+    if (!response) return;
+    button.disabled = true;
+    try {
+      await window.CABINET_DATA.respondToRequest(form.dataset.osResponseForm, activeAuthContext, response);
+      const access = await window.CABINET_DATA.getWorkspaceAccess(activeAuthContext);
+      await loadRemoteState(access);
+      renderWorkspaceFilter();
+      activeTab = 'requests';
+      render();
+      showToast('Response published to the client workspace.');
+    } catch (error) {
+      button.disabled = false;
+      showToast(error.message || 'The response could not be published.');
+    }
   }
 
   function toggleArtifactVisibility(artifactId) {
@@ -781,6 +998,10 @@
   }
 
   function bindEvents() {
+    document.addEventListener('submit', (event) => {
+      if (event.target.matches('[data-os-response-form]')) respondToClientRequest(event);
+    });
+
     document.addEventListener('click', (event) => {
       const tabButton = event.target.closest('[data-os-tab], [data-os-tab-jump]');
       if (tabButton) {
@@ -837,18 +1058,28 @@
   async function init() {
     if (!root) return;
     const authContext = await (window.CLIENT_SPACE_AUTH_READY || Promise.resolve({ isAdmin: false }));
-    if (!authContext?.isAdmin) return;
     activeAuthContext = authContext;
-    if (window.CABINET_DATA) {
+    const access = window.CABINET_DATA
+      ? await window.CABINET_DATA.getWorkspaceAccess(authContext).catch(() => null)
+      : null;
+    if (!authContext?.isAdmin && !access?.isOperator) return;
+    if (access?.mode === 'remote') {
+      try {
+        await loadRemoteState(access);
+      } catch (error) {
+        root.innerHTML = `<div class="agency-os-empty">${escapeHtml(error.message || 'Agency OS could not load shared workspace data.')}</div>`;
+        return;
+      }
+    } else if (window.CABINET_DATA) {
       const result = await window.CABINET_DATA.load('agency-os', authContext, {
         workspaceKey: 'agency',
         fallback: readSavedState(),
       });
       state = hydrateState(result.value);
     }
+    renderWorkspaceFilter();
     createTaskDialog();
     bindEvents();
-    if (workspaceFilter) workspaceFilter.value = activeWorkspace;
     render();
   }
 

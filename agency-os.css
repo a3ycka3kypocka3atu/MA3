@@ -1148,3 +1148,67 @@
     scroll-behavior: auto;
   }
 }
+
+.agency-os-request-list {
+  display: grid;
+  gap: 18px;
+}
+
+.agency-os-request {
+  display: block;
+}
+
+.agency-os-request > p {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: var(--ink-soft, #536059);
+  line-height: 1.65;
+}
+
+.agency-os-request-replies {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.agency-os-request-replies > div {
+  padding: 14px 16px;
+  border: 1px solid rgba(23, 63, 44, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.agency-os-request-replies p {
+  margin: 6px 0;
+}
+
+.agency-os-response-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(23, 63, 44, 0.12);
+}
+
+.agency-os-response-form label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.agency-os-response-form textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  padding: 14px;
+  border: 1px solid rgba(23, 63, 44, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: inherit;
+  font: inherit;
+}
+
+.agency-os-response-form .primary-button {
+  justify-self: start;
+}
