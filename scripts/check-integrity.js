@@ -269,14 +269,17 @@ check(
     && !/[А-Яа-яЁё]/.test(`${clientHtml}\n${publicClientSource}\n${clientAuthSource}\n${browserIntakeSource}\n${intakeHtml}`)
 );
 check(
-  'browser configuration does not target the retired Supabase project',
-  !/mnqrblzdpdttdynlpqey/.test(publicConfig)
+  'browser configuration targets only the verified Platum Supabase project',
+  /https:\/\/mnqrblzdpdttdynlpqey\.supabase\.co/.test(publicConfig)
+    && /supabasePublishableKey:\s*'sb_publishable_[^']+'/.test(publicConfig)
     && !/sb_secret_|serviceRole\s*:/i.test(publicConfig)
 );
 check(
   'authentication is invite-only and local test identities stay localhost-only',
   /^enable_signup\s*=\s*false/m.test(supabaseConfig)
     && /\[auth\.email\][\s\S]*?enable_signup\s*=\s*false/.test(supabaseConfig)
+    && /create_user:\s*false/.test(clientAuthSource)
+    && /invitation sent by your Platum administrator/i.test(clientHtml)
     && /isLocalHost\s*&&\s*localTestUser/.test(clientAuthSource)
 );
 check(
