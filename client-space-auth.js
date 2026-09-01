@@ -6,7 +6,10 @@
   const SUPABASE_PUBLISHABLE_KEY = config.supabasePublishableKey || '';
   const SESSION_KEY = 'client-cabinet:auth:v1';
   const LEGACY_SESSION_KEY = '34forfree7:cabinet-auth:v1';
+  const TEST_WORKSPACE_SESSION_KEY = 'client-cabinet:test-workspace:v1';
   const hasAuthConfig = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+  const publicTestWorkspaceEnabled = config.enablePublicTestWorkspace === true;
+  let testWorkspaceActive = false;
   let authReadyResolved = false;
   let resolveAuthReady;
 
@@ -49,6 +52,9 @@
       dom.supportLink.href = config.supportUrl;
       dom.supportLink.hidden = false;
     }
+    if (publicTestWorkspaceEnabled) {
+      dom.previewLogin.hidden = false;
+    }
   }
 
   function translate(message) {
@@ -67,6 +73,7 @@
       isAdmin,
       accessToken: session?.accessToken || null,
       isLocalPreview: !session,
+      isTestWorkspace: !session && user?.app_metadata?.provider === 'test',
     };
     window.CLIENT_SPACE_AUTH_CONTEXT = context;
     if (!authReadyResolved) {
@@ -99,6 +106,28 @@
   function clearSession() {
     localStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(LEGACY_SESSION_KEY);
+  }
+
+  function publicTestWorkspaceRequested() {
+    try {
+      return publicTestWorkspaceEnabled && sessionStorage.getItem(TEST_WORKSPACE_SESSION_KEY) === 'active';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function setPublicTestWorkspace(active) {
+    try {
+      if (active) sessionStorage.setItem(TEST_WORKSPACE_SESSION_KEY, 'active');
+      else sessionStorage.removeItem(TEST_WORKSPACE_SESSION_KEY);
+    } catch (error) {
+      // Test access still fails closed when browser storage is unavailable.
+    }
+  }
+
+  function reloadWithoutWorkspaceHash() {
+    window.history.replaceState({}, '', `${window.location.pathname}${window.location.search}`);
+    window.location.reload();
   }
 
   function clearSensitiveWorkspaceCache() {
@@ -149,7 +178,7 @@
   }
 
   async function refreshSession(session) {
-    if (!session?.refreshToken) return null;
+    if (!session?.refreshToken || testWorkspaceActive) return null;
 
     const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
       method: 'POST',
@@ -158,17 +187,20 @@
     });
 
     if (!response.ok) return null;
-    return saveSession(await response.json());
+    const payload = await response.json();
+    return testWorkspaceActive ? null : saveSession(payload);
   }
 
   async function getUser(session) {
-    if (!session?.accessToken) return null;
+    if (!session?.accessToken || testWorkspaceActive) return null;
 
     const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       headers: authHeaders({ Authorization: `Bearer ${session.accessToken}` }),
     });
 
-    return response.ok ? response.json() : null;
+    if (!response.ok) return null;
+    const user = await response.json();
+    return testWorkspaceActive ? null : user;
   }
 
   async function getAuthSettings() {
@@ -217,19 +249,39 @@
     publishAuthContext(user, null, isAdmin, session);
   }
 
-  function showLogin(message = 'Choose a secure sign-in method.') {
+  function showLogin(message = '') {
     dom.body.classList.remove('auth-loading', 'is-authenticated');
     dom.gate.removeAttribute('aria-hidden');
-    setStatus(message);
+    setStatus(message || (publicTestWorkspaceEnabled
+      ? 'Sign in securely, or enter the isolated test workspace.'
+      : 'Choose a secure sign-in method.'));
   }
 
   async function initializeAuth() {
     const localPreviewClient = new URLSearchParams(window.location.search).get('preview');
+    const redirectParams = new URLSearchParams(window.location.hash.slice(1));
+    const hasAuthRedirect = ['access_token', 'refresh_token', 'error', 'error_description']
+      .some((key) => redirectParams.has(key));
     const localAdminPreview = localPreviewClient === 'admin';
     const localTestUser = String(config.testUser || '').trim();
     const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname)
       && (localPreviewClient === 'starter' || localAdminPreview);
+
+    if (hasAuthRedirect) setPublicTestWorkspace(false);
+
+    if (publicTestWorkspaceRequested()) {
+      testWorkspaceActive = true;
+      clearSession();
+      showCabinet({
+        id: 'platum-test-user',
+        email: '',
+        email_confirmed_at: null,
+        user_metadata: { full_name: 'Test User' },
+        app_metadata: { provider: 'test', client_id: 'starter', role: 'admin' },
+      }, null, true);
+      return;
+    }
 
     if (isLocalHost && localTestUser && hasAuthConfig) {
       const testSession = {
@@ -274,6 +326,8 @@
       dom.emailForm.hidden = false;
     }
 
+    if (testWorkspaceActive) return;
+
     let session = consumeAuthRedirect() || readSession();
 
     try {
@@ -287,6 +341,11 @@
         user = await getUser(session);
       }
 
+      if (testWorkspaceActive) {
+        clearSession();
+        return;
+      }
+
       if (user) {
         showCabinet(user, session);
         return;
@@ -294,6 +353,8 @@
     } catch (error) {
       console.warn('Cabinet session check failed.', error);
     }
+
+    if (testWorkspaceActive) return;
 
     clearSession();
     showLogin();
@@ -352,11 +413,11 @@
   });
 
   dom.previewLogin.addEventListener('click', () => {
-    showCabinet({
-      id: 'prototype',
-      user_metadata: { full_name: 'Prototype client' },
-      app_metadata: { provider: 'prototype', client_id: 'starter' },
-    });
+    testWorkspaceActive = true;
+    setPublicTestWorkspace(true);
+    clearSession();
+    clearSensitiveWorkspaceCache();
+    reloadWithoutWorkspaceHash();
   });
 
   dom.accountButton.addEventListener('click', () => {
@@ -367,6 +428,7 @@
 
   dom.logoutButton.addEventListener('click', () => {
     const session = readSession();
+    setPublicTestWorkspace(false);
     clearSession();
     clearSensitiveWorkspaceCache();
     dom.accountMenu.hidden = true;
@@ -376,10 +438,11 @@
       fetch(`${SUPABASE_URL}/auth/v1/logout`, {
         method: 'POST',
         headers: authHeaders({ Authorization: `Bearer ${session.accessToken}` }),
+        keepalive: true,
       }).catch(() => {});
     }
 
-    showLogin('You have signed out.');
+    reloadWithoutWorkspaceHash();
   });
 
   document.addEventListener('click', (event) => {

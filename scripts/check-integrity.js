@@ -216,6 +216,7 @@ const appsScriptSource = fs.readFileSync(path.join(ROOT, 'google-sheets-intake-w
 const botSource = fs.readFileSync(path.join(ROOT, 'bot/bot.js'), 'utf8');
 const renderSource = fs.readFileSync(path.join(ROOT, 'render.yaml'), 'utf8');
 const clientHtml = fs.readFileSync(path.join(ROOT, 'client-space.html'), 'utf8');
+const clientCss = fs.readFileSync(path.join(ROOT, 'client-space.css'), 'utf8');
 const clientAuthSource = fs.readFileSync(path.join(ROOT, 'client-space-auth.js'), 'utf8');
 const dataSource = fs.readFileSync(path.join(ROOT, 'cabinet-data.js'), 'utf8');
 const intakeHtml = fs.readFileSync(path.join(ROOT, 'prohor-intake.html'), 'utf8');
@@ -275,13 +276,45 @@ check(
     && !/sb_secret_|serviceRole\s*:/i.test(publicConfig)
 );
 check(
-  'authentication is invite-only and local test identities stay localhost-only',
+  'authentication is invite-only and token-based test identities stay localhost-only',
   /^enable_signup\s*=\s*false/m.test(supabaseConfig)
     && /\[auth\.email\][\s\S]*?enable_signup\s*=\s*false/.test(supabaseConfig)
     && /create_user:\s*false/.test(clientAuthSource)
     && /dom\.emailForm\.hidden\s*=\s*false/.test(clientAuthSource)
     && /invitation sent by your Platum administrator/i.test(clientHtml)
     && /isLocalHost\s*&&\s*localTestUser/.test(clientAuthSource)
+);
+check(
+  'public test workspace is isolated local demo access',
+  /enablePublicTestWorkspace:\s*true/.test(publicConfig)
+    && /Enter test workspace/.test(clientHtml)
+    && /Test access uses isolated demo data/.test(clientHtml)
+    && /TEST_WORKSPACE_SESSION_KEY\s*=\s*'client-cabinet:test-workspace:v1'/.test(clientAuthSource)
+    && /sessionStorage\.getItem\(TEST_WORKSPACE_SESSION_KEY\)\s*===\s*'active'/.test(clientAuthSource)
+    && /hasAuthRedirect[\s\S]*?if\s*\(hasAuthRedirect\)\s*setPublicTestWorkspace\(false\);[\s\S]*?if\s*\(publicTestWorkspaceRequested\(\)\)/.test(clientAuthSource)
+    && /id:\s*'platum-test-user'/.test(clientAuthSource)
+    && /app_metadata:\s*\{\s*provider:\s*'test',\s*client_id:\s*'starter',\s*role:\s*'admin'\s*\}/.test(clientAuthSource)
+    && /\},\s*null,\s*true\);/.test(clientAuthSource)
+    && /isTestWorkspace:\s*!session\s*&&\s*user\?\.app_metadata\?\.provider\s*===\s*'test'/.test(clientAuthSource)
+    && /let\s+testWorkspaceActive\s*=\s*false/.test(clientAuthSource)
+    && /testWorkspaceActive\s*=\s*true;\s*\n\s*clearSession\(\)/.test(clientAuthSource)
+    && /setPublicTestWorkspace\(true\);\s*\n\s*clearSession\(\);\s*\n\s*clearSensitiveWorkspaceCache\(\);\s*\n\s*reloadWithoutWorkspaceHash\(\)/.test(clientAuthSource)
+    && /setPublicTestWorkspace\(false\);\s*\n\s*clearSession\(\)/.test(clientAuthSource)
+    && /keepalive:\s*true/.test(clientAuthSource)
+    && /reloadWithoutWorkspaceHash\(\);/.test(clientAuthSource)
+    && /if\s*\(!session\?\.refreshToken\s*\|\|\s*testWorkspaceActive\)\s*return\s+null;/.test(clientAuthSource)
+    && /return\s+testWorkspaceActive\s*\?\s*null\s*:\s*saveSession\(payload\)/.test(clientAuthSource)
+    && /if\s*\(!session\?\.accessToken\s*\|\|\s*testWorkspaceActive\)\s*return\s+null;/.test(clientAuthSource)
+    && /return\s+testWorkspaceActive\s*\?\s*null\s*:\s*user;/.test(clientAuthSource)
+    && /if\s*\(testWorkspaceActive\)\s*\{\s*clearSession\(\);\s*return;\s*\}/.test(clientAuthSource)
+    && /isAdminMode\s*&&\s*!authContext\.isTestWorkspace/.test(publicClientSource)
+    && /dom\.sidebarAccessRole\.textContent\s*=\s*'Test access'/.test(publicClientSource)
+);
+check(
+  'workspace view switching stays deterministic across browsers',
+  /\.portal-view\s*\{[^}]*display:\s*none;[^}]*\}/.test(clientCss)
+    && /\.portal-view\.is-active\s*\{[^}]*display:\s*block;[^}]*\}/.test(clientCss)
+    && !/view-in|\.portal-view(?:\.is-active)?\s*\{[^}]*animation:/.test(clientCss)
 );
 check(
   'authenticated application uses normalized shared workspace records',

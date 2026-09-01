@@ -897,22 +897,10 @@ textarea:focus-visible {
 
 .portal-view {
   display: none;
-  animation: view-in 260ms ease both;
 }
 
 .portal-view.is-active {
   display: block;
-}
-
-@keyframes view-in {
-  from {
-    opacity: 0;
-    transform: translateY(7px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 .welcome-panel {

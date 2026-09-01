@@ -1121,14 +1121,20 @@
     renderAllContent();
     bindEvents();
 
-    if (isAdminMode) {
+    if (isAdminMode && !authContext.isTestWorkspace) {
       showAdminHome();
       return;
+    }
+
+    if (authContext.isTestWorkspace) {
+      dom.sidebarAccessRole.textContent = 'Test access';
     }
 
     const initialView = window.location.hash.replace('#', '');
     if (initialView && document.querySelector(`[data-view="${initialView}"]`)) {
       switchView(initialView);
+    } else {
+      switchView('overview');
     }
   }
 
