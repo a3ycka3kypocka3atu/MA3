@@ -78,13 +78,11 @@ select throws_ok(
   'client A cannot create a request in workspace B'
 );
 
-select is(
-  (with changed as (
-    update public.requests set status = 'resolved'
+select is_empty(
+  $$update public.requests
+    set status = 'resolved'
     where id = '33333333-3333-4333-8333-333333333333'
-    returning id
-  ) select count(*) from changed),
-  0::bigint,
+    returning id$$,
   'client A cannot apply operator-only request updates'
 );
 
@@ -186,5 +184,5 @@ select throws_ok(
   'anonymous access to requests is denied'
 );
 
-select * from finish();
+select * from finish(true);
 rollback;
