@@ -279,6 +279,7 @@ check(
   /^enable_signup\s*=\s*false/m.test(supabaseConfig)
     && /\[auth\.email\][\s\S]*?enable_signup\s*=\s*false/.test(supabaseConfig)
     && /create_user:\s*false/.test(clientAuthSource)
+    && /dom\.emailForm\.hidden\s*=\s*false/.test(clientAuthSource)
     && /invitation sent by your Platum administrator/i.test(clientHtml)
     && /isLocalHost\s*&&\s*localTestUser/.test(clientAuthSource)
 );

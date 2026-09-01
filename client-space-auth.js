@@ -183,7 +183,9 @@
   function configureProviders(settings) {
     const external = settings?.external || {};
     dom.googleLogin.hidden = !external.google;
-    dom.emailForm.hidden = !external.email;
+    // Invite-only projects report public email signup as disabled even though
+    // existing and invited users can still authenticate with an email OTP.
+    dom.emailForm.hidden = false;
   }
 
   function displayName(user) {
